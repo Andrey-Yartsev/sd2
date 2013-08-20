@@ -6,14 +6,20 @@ class SdContainerItems extends ConfigItems {
     parent::__construct("sd/$name");
   }
 
-  /*
-  function getItems() {
-    return array_map(function($v) {
-      $path = "/{$this->name}/bg/{$v['id']}.jpg";
-      if (file_exists(UPLOAD_PATH.$path)) $v['bg'] = '/'.UPLOAD_DIR.$path;
-      return $v;
-    }, parent::getItems());
+  function getItemF($id) {
+    return $this->getItem($id);
   }
-  */
+
+  function getItemE($id) {
+    return $this->getItem($id);
+  }
+
+  function getItemD($id) {
+    return $this->getItem($id);
+  }
+
+  function getItemsF() {
+    return $this->getItems();
+  }
 
 }

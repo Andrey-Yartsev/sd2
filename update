@@ -1,0 +1,2 @@
+php /home/user/ngn-env/run/run.php dc AllErrors clear
+php /home/user/ngn-env/run/run.php test allErrors

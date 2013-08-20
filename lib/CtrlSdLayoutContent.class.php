@@ -1,7 +1,7 @@
 <?php
 
 class CtrlSdLayoutContent extends CtrlCommon {
-use SdBgCtrl;
+use SdItemsCtrl;
 
   protected function items() {
     return new SdContainerItems('layoutContent');

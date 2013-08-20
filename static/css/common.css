@@ -1,164 +1,99 @@
-.body {
--webkit-user-select: none;
-cursor: default;
+/*body, html, */
+html{
+height: 100%;
 }
-#layout .container {
+/*
+body {
+height: 100%;
+}
+*/
+.body, .layout, .lCont {
+height: 100%;
+}
+#layout, .container {
+position: relative;
+}
+.id_layout1 .container {
 min-height: 100px;
-border: 1px dashed #F00;
+box-sizing: border-box;
 background-repeat: no-repeat;
 background-position: top center;
 position: relative;
 margin: 0 auto;
-width: 800px;
+width: 100%;
 }
 .lCont {
-border: 3px dashed #f00;
 background-repeat: no-repeat;
 background-position: top center;
 position: relative;
 margin: 0 auto;
-width: 800px;
-padding: 15px;
+width: 950px;
+box-sizing: border-box;
 }
-
-
-
-
-#panel {
-/*position: absolute;*/
-border: 2px solid #ffbd5a;
-padding: 10px;
-}
-.blockPreview {
-border: 1px dashed #F00;
-top: 0px;
-left: 0px;
-width: 170px;
-height: 166px;
-background: url(/sd/img/news.png);
+.type_blockContainer.id_footer {
+position: absolute;
+bottom: 0px;
 }
 
 .block {
-width: 300px;
-height: 200px;
-background: rgba(0, 170, 238, 0.3);
-}
-
-.block.absolute {
-position: absolute;
-}
-.block .cont {
-overflow: hidden;
-}
-/* ------------ иконки блоков -------------- */
-.btnBlock {
-display: inline-block;
-width: 30px;
-height: 30px;
-background: url(/i/img/icons/page-block-icons.png) no-repeat;
-margin-right: 10px;
-cursor: move;
-}
-.btnBlock.type_text {
-background-position: -89px -11px;
-}
-.btnBlock.type_menu {
-background-position: -127px -11px;
-}
-.btnBlock.type_image {
-background-position: -50px -11px;
-}
-/* ------------ конец иконки блоков -------------- */
-
-
-
-
-.btnResize {
-position: absolute;
-bottom: -5px;
-right: -5px;
-width: 8px;
-height: 8px;
-border: 1px solid rgba(0, 0, 0, 0.2);
-background: rgba(0, 0, 0, 0.1);
-cursor: se-resize;
-z-index: 10;
-}
-.btnResize:hover {
-border-color: rgba(0, 0, 0, 0.5);
-background: rgba(0, 0, 0, 0.3);
-}
-
-.btnSet {
-z-index: 1;
-position: absolute;
-right: 0px;
-top: 0px;
-}
-.block .btnSet {
-background: rgba(0, 170, 238, 0.3);
-border-bottom-right-radius: 4px;
-border-bottom-left-radius: 4px;
-padding: 0px 3px 3px 3px;
-bottom: -20px;
-top: auto;
-right: auto;
-}
-.dragBox {
-width: 15px;
-height: 15px;
-border-radius: 4px;
-}
-
-.slider {
-background: #CCC;
-height: 16px;
 width: 200px;
-}
-.slider .knob {
-background: #000;
-width: 16px;
-height: 16px;
-}
-/*
-
-.menuCont {
-height: 100px;
-}
-.dragging {
-border: 1px solid #f00;
+height: 70px;
 position: absolute;
 }
-.hl {
-border: 1px solid #8DB82C;
+
+/* ------- конкретные типы блоков ------------ */
+
+.block.type_menu a {
+display: inline-block;
 }
-#layout {
-background-repeat: no-repeat;
-background-position: 0px 0px;
+.block.type_feedback textarea, .block.type_feedback input[type=text] {
+width: 95%;
 }
-*/
-
-
-
-
-
-
-.preview .btnSet,
-.preview .btnResize {
-display: none;
+.block.type_feedback textarea {
+height: 50px;
 }
-.btnSet a.smIcons.bordered {
-background: rgba(0, 0, 0, 0.1);
-border-color: rgba(0, 0, 0, 0.2);
+.block.type_feedback .element {
+margin-bottom: 10px;
 }
-.btnSet a.smIcons.bordered:hover {
-background: rgba(0, 0, 0, 0.3);
-border-color: rgba(0, 0, 0, 0.5);
+.block.type_feedback .label {
+margin-bottom: 3px;
+}
+.block.type_blog {
+height: auto;
+}
+.block.type_blog .f_dateCreate {
+font-style: italic;
+text-align: right;
 }
 
-.preview .block {
-background: none;
+
+.block.type_button .btn {
+width: 150px;
+height: 50px;
 }
-.preview#layout .container, .preview .lCont {
-border: none;
+.block.type_button .btn span {
+padding: 0px;
+line-height: 1em;
+}
+/* ------- конец конкретных типов блоков ------------ */
+
+/*--------------лейауты--------------*/
+.id_layout1.inner .mainContent .container {
+float: left;
+height: 100%;
+}
+.id_layout1.inner .mainContent .id_contentLeft {
+width: 30%;
+}
+.id_layout1.inner .mainContent .id_content {
+width: 70%;
+}
+
+
+/*--------------бордюры--------------*/
+.layout .container {
+border: 1px dashed #F05030;
+}
+.lCont {
+border: 3px dotted #F05030;
 }

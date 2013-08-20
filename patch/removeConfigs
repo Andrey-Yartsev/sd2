@@ -1,0 +1,6 @@
+cd /home/user/ngn-env/projects
+rm `find . -path '*/sd/blockContainerHome.php'`
+rm `find . -path '*/sd/blockContainerInner.php'`
+rm `find . -path '*/sd/layout.php'`
+rm `find . -path '*/sd/layoutContent.php'`
+rm `find . -path '*/sd/pages.php'`
