@@ -67,7 +67,7 @@ class SdProjectItems extends DdItems {
   }
 
   protected function createStat($id) {
-    //return;
+    return;
     $item = $this->getItem($id);
     $db = new Db(DB_USER, DB_PASS, DB_HOST, 'stat');
     $statId = $db->insert('stat_site', [

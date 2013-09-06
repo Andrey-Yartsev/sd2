@@ -6,9 +6,10 @@ Ngn::addBasePath(__DIR__, 3);
 Config::addBasePath(dirname(NGN_PATH).'/projects/sitedraw/site/config', 3);
 O::replaceInjection('DefaultRouter', 'SdRouter');
 Sflm::$version = 9;
+Sflm::$absBasePaths['sd'] = __DIR__.'/static';
 
 setConstant('DB_HOST', 'localhost');
 setConstant('DB_USER', 'root');
-setConstant('DB_PASS', '{dbPass}');
+setConstant('DB_PASS', 'ypyfjipdtl');
 setConstant('DB_LOGGING', false);
 setConstant('DB_NAME', 'sitedraw');

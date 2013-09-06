@@ -4,10 +4,8 @@ class CtrlSdCpanel extends CtrlCommon {
 use SdPersonalCtrl;
 
   function action_default() {
-
-    //die2(DB_NAME);
-
-    $this->d['staticLib'] = 'sdEdit';
+    Sflm::get('css')->addLib('sdEdit');
+    Sflm::get('js')->addLib('sdEdit');
     if (!Auth::check()) $this->d['tpl'] = 'auth/login';
     else $this->d['tpl'] = 'inner';
   }
@@ -68,7 +66,7 @@ use SdPersonalCtrl;
 
   function action_json_export() {
     $t = Tt()->getTpl('export', [
-      'staticLib' => 'sdSite',
+      'sfl' => 'sdSite',
       'html'      => $this->req['html']
     ]);
     $t = preg_replace('/"(\/u\/[^"]+)"/', '"http://'.SITE_DOMAIN.'$1"', $t);
