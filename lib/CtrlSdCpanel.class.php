@@ -19,7 +19,8 @@ use SdPersonalCtrl;
       }
     }
     $this->json['project'] = SdCore::getProject();
-    $this->json['blockUserTypes'] = $this->getUserTypes($this->json['project']['package']['id']);
+    //$this->json['blockUserTypes'] = $this->getUserTypes($this->json['project']['package']['id']);
+    $this->json['blockUserTypes'] = $this->getUserTypes(312);
     $this->json['layout'] = SdCore::getLayout($this->req['ownPageId']);
   }
 
