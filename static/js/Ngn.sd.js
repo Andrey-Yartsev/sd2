@@ -1282,13 +1282,13 @@ Ngn.sd.PageBlocksShift = new Class({
   updateOrder: function(id) {
     var esBlocks = Ngn.sd.blocks[id].el.getParent().getElements('.block');
     var ids = [];
-    for (var i=0; i<esBlocks.length; i++) ids.push(esBlocks[i].get('data-id'));
+    for (var i = 0; i < esBlocks.length; i++) ids.push(esBlocks[i].get('data-id'));
     new Ngn.Request({
       url: '/pageBlock/ajax_updateOrder'
     }).post({
-      containerId: Ngn.sd.blocks[id].data.containerId,
-      ids: ids
-    });
+        containerId: Ngn.sd.blocks[id].data.containerId,
+        ids: ids
+      });
   }
 
 });
@@ -1425,19 +1425,21 @@ Ngn.sd.buildPanel = function() {
   Ngn.sd.btnPreview = new Ngn.Btn(Ngn.sd.fbtn('Предпросмотр (Shift + P)', 'preview'), function() {
     Ngn.sd.previewSwitch();
   });
+  /*
   Ngn.sd.btnSelect = new Ngn.Btn(Ngn.sd.fbtn('Выделить', 'select2'), function() {
   }, {
     usePushed: true
   });
+  */
 
   /*
-  Ngn.sd.btnFullscreen = new Ngn.Btn(Ngn.sd.fbtn('Во весь экран (Shift + F)', 'select'), function() {
-    var el = document.documentElement, rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen;
-    rfs.call(el);
-  }, {
-    usePushed: true
-  });
-  */
+   Ngn.sd.btnFullscreen = new Ngn.Btn(Ngn.sd.fbtn('Во весь экран (Shift + F)', 'select'), function() {
+   var el = document.documentElement, rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen;
+   rfs.call(el);
+   }, {
+   usePushed: true
+   });
+   */
 
   Ngn.sd.exportRequest = function(pageName, onComplete) {
     new Ngn.Request.JSON({
@@ -1683,27 +1685,26 @@ Ngn.sd.SvgSelectDialog = new Class({
   }
 });
 
+Ngn.sd.exportPageR = function(n) {
+  c('Загружаю данные');
+  var onLoaded = function(n) {
+    if (Ngn.sd.pages[n + 1]) {
+      var onComplete = function() {
+        Ngn.sd.exportPageR(n + 1);
+      }
+    } else {
+      var onComplete = function() {
+        new Ngn.Dialog.Link({ link: '/index.html' });
+      }
+    }
+    c('Экспортирую ' + (n == 1 ? 'индекс' : n));
+    Ngn.sd.exportRequest(n == 1 ? 'index' : 'page' + n, onComplete);
+  };
+  Ngn.sd.loadData(n, onLoaded);
+};
+
 Ngn.sd.init = function() {
   Ngn.sd.buildPanel();
-
-  Ngn.sd.exportPageR = function(n) {
-    c('Загружаю данные');
-    var onLoaded = function(n) {
-      if (Ngn.sd.pages[n + 1]) {
-        var onComplete = function() {
-          Ngn.sd.exportPageR(n + 1);
-        }
-      } else {
-        var onComplete = function() {
-          new Ngn.Dialog.Link({ link: '/index.html' });
-        }
-      }
-      c('Экспортирую ' + (n == 1 ? 'индекс' : n));
-      Ngn.sd.exportRequest(n == 1 ? 'index' : 'page' + n, onComplete);
-    };
-    Ngn.sd.loadData(n, onLoaded);
-  };
-
 };
 
 Ngn.sd.updateContainerHeight = function(eContainer) {
