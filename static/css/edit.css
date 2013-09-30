@@ -447,7 +447,14 @@ margin: 5px;
 width: 50px;
 height: 50px;
 }
-
+.selectDialog .selectItems .tit {
+text-align: center;
+margin: 5px 0px 5px 0px;
+font-size: 10px;
+width: 60px;
+text-align: center;
+white-space: nowrap;
+}
 
 /* -- меняем тень -- */
 .dialog-shade {

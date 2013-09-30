@@ -9,8 +9,9 @@ use SdPersonalCtrl;
   }
 
   function action_default() {
-    if (!Auth::check()) $this->d['tpl'] = 'auth/login';
-    else $this->d['tpl'] = 'inner';
+    //if (!Auth::check()) $this->d['tpl'] = 'auth/login';
+    //else $this->d['tpl'] = 'inner';
+    $this->d['tpl'] = 'inner';
   }
 
   function action_json_get() {

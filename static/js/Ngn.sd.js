@@ -1264,7 +1264,6 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
 };
 
 Ngn.sd.PageBlocksShift = new Class({
-
   back: function(id) {
     var ePrev = Ngn.sd.blocks[id].el.getPrevious('.block');
     if (ePrev) {
@@ -1290,12 +1289,10 @@ Ngn.sd.PageBlocksShift = new Class({
         ids: ids
       });
   }
-
 });
 
 Ngn.sd.PagesSet = new Class({
   Extends: Ngn.FieldSet,
-
   initRows: function() {
     this.parent();
     for (var i = 0; i < this.esRows.length; i++) {
@@ -1309,7 +1306,6 @@ Ngn.sd.PagesSet = new Class({
       });
     }
   }
-
 });
 
 Ngn.sd.pages = {};
@@ -1320,7 +1316,6 @@ Ngn.sd.setPageTitle = function(n) {
 };
 
 Ngn.sd.UserPanel = new Class({
-
   initialize: function(blockUserTypes) {
     var eBlocksPanel = new Element('div', {
       'class': 'dropRightMenu extraBlocks'
@@ -1329,7 +1324,6 @@ Ngn.sd.UserPanel = new Class({
     Ngn.sd.buildBlockBtns(blockUserTypes, eBlocksPanel);
     new Ngn.HidebleBar.V(eBlocksPanel);
   }
-
 });
 
 Ngn.sd.buildBlockBtns = function(blockTypes, eCont) {
@@ -1426,11 +1420,11 @@ Ngn.sd.buildPanel = function() {
     Ngn.sd.previewSwitch();
   });
   /*
-  Ngn.sd.btnSelect = new Ngn.Btn(Ngn.sd.fbtn('Выделить', 'select2'), function() {
-  }, {
-    usePushed: true
-  });
-  */
+   Ngn.sd.btnSelect = new Ngn.Btn(Ngn.sd.fbtn('Выделить', 'select2'), function() {
+   }, {
+   usePushed: true
+   });
+   */
 
   /*
    Ngn.sd.btnFullscreen = new Ngn.Btn(Ngn.sd.fbtn('Во весь экран (Shift + F)', 'select'), function() {
@@ -1556,7 +1550,6 @@ Ngn.sd.updateLayoutContentHeight = function() {
 
 Ngn.sd.SelectDialog = new Class({
   Extends: Ngn.Dialog,
-
   options: {
     // message: html,
     // title: '123'
@@ -1589,7 +1582,6 @@ Ngn.sd.SelectDialog = new Class({
       new Fx.Scroll(obj.message).toElement(eSelected)
     }).delay(500);
   }
-
 });
 
 Ngn.sd.FontSelectDialog = new Class({
@@ -1601,6 +1593,7 @@ Ngn.sd.FontSelectDialog = new Class({
     message: Ngn.tpls.fontSelect,
     title: 'Выбор шрифта'
   },
+
   init: function() {
     this.parent();
     this.message.addClass('hLoader');
@@ -1633,13 +1626,10 @@ Ngn.Form.El.DialogSelect.Sd = new Class({
 
 Ngn.Form.El.FontFamilyCufon = new Class({
   Extends: Ngn.Form.El.DialogSelect.Sd,
-
   baseName: 'font',
-
   options: {
     selectClass: 'font'
   },
-
   init: function() {
     this.parent();
     this.value ? Ngn.sd.loadFont(this.value, this.initControl.bind(this)) : this.initControl();
@@ -1653,7 +1643,6 @@ Ngn.Form.El.FontFamilyCufon = new Class({
   getDialogClass: function() {
     return Ngn.sd.FontSelectDialog;
   }
-
 });
 
 Ngn.sd.itemTpl = function(k, v) {
@@ -1662,26 +1651,28 @@ Ngn.sd.itemTpl = function(k, v) {
 
 Ngn.Form.El.SvgSelect = new Class({
   Extends: Ngn.Form.El.DialogSelect.Sd,
-
   baseName: 'svg',
-
   getDialogClass: function() {
     return Ngn.sd.SvgSelectDialog;
   },
-
   setValue: function(value) {
     this.parent(value);
     this.eSelectDialog.set('html', Ngn.sd.itemTpl('svgSelect', value));
   }
-
 });
 
 Ngn.sd.SvgSelectDialog = new Class({
   Extends: Ngn.sd.SelectDialog,
   name: 'svg',
   options: {
-    message: Ngn.tpls.svgSelect,
+    message: /*Ngn.tpls.svgUploadForm + */Ngn.tpls.svgSelect,
     title: 'Выбор векторной картинки'
+  },
+  init: function() {
+    this.parent();
+    //new Ngn.Form(this.message.getElement('form'), {
+    //  ajaxSubmit: true
+    //});
   }
 });
 
@@ -1704,6 +1695,7 @@ Ngn.sd.exportPageR = function(n) {
 };
 
 Ngn.sd.init = function() {
+  new Ngn.sd.SvgSelectDialog();
   Ngn.sd.buildPanel();
 };
 
