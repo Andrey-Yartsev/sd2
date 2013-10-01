@@ -1551,9 +1551,6 @@ Ngn.sd.updateLayoutContentHeight = function() {
 Ngn.sd.SelectDialog = new Class({
   Extends: Ngn.Dialog,
   options: {
-    // message: html,
-    // title: '123'
-    dialogClass: 'dialog selectDialog',
     selectedName: false,
     footer: false,
     width: 580,
@@ -1586,14 +1583,11 @@ Ngn.sd.SelectDialog = new Class({
 
 Ngn.sd.FontSelectDialog = new Class({
   Extends: Ngn.sd.SelectDialog,
-
   name: 'font',
-
   options: {
     message: Ngn.tpls.fontSelect,
     title: 'Выбор шрифта'
   },
-
   init: function() {
     this.parent();
     this.message.addClass('hLoader');
@@ -1607,7 +1601,6 @@ Ngn.sd.FontSelectDialog = new Class({
       }.bind(this));
     }.bind(this));
   }
-
 });
 
 Ngn.Form.El.DialogSelect.Sd = new Class({
