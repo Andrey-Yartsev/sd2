@@ -1549,7 +1549,7 @@ Ngn.sd.updateLayoutContentHeight = function() {
 };
 
 Ngn.sd.SelectDialog = new Class({
-  Extends: Ngn.Dialog,
+  Extends: Ngn.ElSelectDialog,
   options: {
     selectedName: false,
     footer: false,
