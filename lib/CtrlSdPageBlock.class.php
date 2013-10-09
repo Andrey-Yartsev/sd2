@@ -12,7 +12,7 @@ use SdItemsCtrl;
   }
 
   function action_json_edit() {
-    return $this->jsonFormActionUpdate(new SdPageBlockEditForm($this->req->param(2), $this->items()));
+    return $this->jsonFormActionUpdate(SdFormFactory::edit($this->req->param(2), $this->items()));
   }
 
   function uploadCreate($type) {
@@ -75,17 +75,14 @@ use SdItemsCtrl;
   }
 
   function action_ajax_updateOrder() {
-    $items = $this->items()->getItems();
-    $o = $this;
-    $newItems = array_filter($items, function($item) use ($o) {
-      return $item['data']['containerId'] != $o->req['containerId'];
-    });
-    $items = array_filter($items, function($item) use ($o) {
-      return $item['data']['containerId'] == $o->req['containerId'];
-    });
-    $ids = array_flip($o->req['ids']);
-    foreach ($items as &$item) $item['orderKey'] = $ids[$item['id']];
-    die2($items);
+    $items = $this->items()->getItemsFF();
+    $ids = array_flip($this->req['ids']);
+    //prr($ids);
+    foreach ($items as &$item) {
+      //prr($item['id']);
+      $item['orderKey'] = $ids[$item['id']];
+    }
+    $this->items()->replace(Arr::sortByOrderKey($items, 'orderKey'));
   }
 
 }

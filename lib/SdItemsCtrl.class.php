@@ -34,11 +34,11 @@ use ItemsCtrl;
   }
 
   function action_json_cufonSettings() {
-    return $this->jsonFormActionUpdate(new SdCufonSettingsForm($this->items(), $this->req->param(2)));
+    return $this->jsonFormActionUpdate(new SdCufonSettingsForm($this->req->param(2), $this->items()));
   }
 
   function action_json_fontSettings() {
-    return $this->jsonFormActionUpdate(new SdFontSettingsForm($this->items(), $this->req->param(2)));
+    return $this->jsonFormActionUpdate(SdFormFactory::fontSettings($this->req->param(2), $this->items()));
   }
 
 }

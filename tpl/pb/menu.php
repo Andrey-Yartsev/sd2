@@ -12,10 +12,10 @@ $d['menu'] = $pages['name'];
 </style>
 <div class="menu menu<?= $d['id']?>">
 <? foreach ($d['menu'] as $i => $v) { $curPageId = $i+1; ?>
-  <? if ($curPageId != $d['ownPageId']) { ?>
-    <a href="/page<?= $i+1 ?>.html"><?= $v ?></a>
+  <? if ($curPageId != $d['ownPageId']) { $pageName = $i ? 'page'.($i+1) : 'index' ?>
+    <a href="/<?= $pageName ?>.html?<?= time() ?>"><?= $v ?></a>
   <? } else { ?>
-    <a href="/page<?= $i+1 ?>.html"><b><?= $v ?></b></a>
+    <a href="/<?= $pageName ?>.html?<?= time() ?>" class="sel"><?= $v ?></a>
   <? } ?>
 <? } ?>
 </div>

@@ -15,6 +15,14 @@ class SdPageBlockItems extends SdContainerItems {
     parent::update($id, $data);
   }
 
+  function replace(array $_items) {
+    $items = $this->getItems();
+    foreach ($items as $k => $item) if ($item['data']['ownPageId'] == $this->ownPageId) unset($items[$k]);
+    $items = array_values($items);
+    $items = array_merge($items, $_items);
+    SiteConfig::updateVar($this->name, $items, true);
+  }
+
   function updateContent($id, $content, $replace = false) {
     $item = $this->getItem($id);
     $_content = $item['content'];
@@ -79,9 +87,16 @@ class SdPageBlockItems extends SdContainerItems {
     $r = [];
     foreach (parent::getItems() as $v) {
       $item = SdPageBlockItem::factory($v)->prepareHtml($this->ownPageId);
+      //prr([$item['id'], $this->ownPageId, $item->isShow($this->ownPageId)]);
       if ($item->isShow($this->ownPageId)) $r[] = $item->r;
     }
     return $r;
+  }
+
+  function getItemsFF() {
+    return array_filter(parent::getItems(), function($v) {
+      return $this->ownPageId == $v['data']['ownPageId'];
+    });
   }
 
 }

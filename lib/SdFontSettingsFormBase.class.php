@@ -8,7 +8,7 @@ class SdFontSettingsFormBase extends Form {
     return Arr::append(Fields::defaults(['fontSize', 'color']), Fields::defaults([$this->fontField]));
   }
 
-  function __construct(SdContainerItems $items, $id) {
+  function __construct($id, SdContainerItems $items) {
     $this->items = $items;
     $this->id = $id;
     $item = $this->items->getItemD($this->id);

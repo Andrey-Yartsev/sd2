@@ -14,32 +14,68 @@ Ngn.sd.setMinHeight = function(parent, offset, min) {
 
 Ngn.sd.Font = new Class({
 
-  _updateFont: function() {
-    if (this.data.font) {
-      var s = ['font-size', 'font-family', 'color'];
-      for (var i = 0; i < s.length; i++) this.styleEl().sdSetStyle(s[i], '');
-      for (i in this.data.font) this.styleEl().sdSetStyle(i.hyphenate(), this.data.font[i]);
-      if (this.eStyle) this.eStyle.dispose();
-      var color = this.data.font.linkColor || this.data.font.color;
-      if (color) {
-        var parents = this.styleEl().getParents('.sdEl').filter(function(v) {
-          return v.retrieve('obj').linkColor();
-        });
-        var parentSelector = '';
-        if (parents.length > 0) {
-          parentSelector = parents.map(function(el) {
-            return '.type_' + el.get('data-type') + '.id_' + el.get('data-id');
-          }).join(' ') + ' ';
-        }
-        var selector = '';
-        if (this.styleEl().get('data-type') && this.styleEl().get('data-id')) selector = '.type_' + this.styleEl().get('data-type') + '.id_' + this.styleEl().get('data-id');
-        selector = parentSelector + selector;
-        this.eStyle = new Element('style', {
-          type: 'text/css',
-          html: selector + ' a { color: ' + color + '; } \n' + (this.defaultFontColor() ? selector + ' a:hover { color: ' + this.defaultFontColor() + '; } ' : '')
-        }).inject($('layout'), 'top');
-      }
+  /*
+   _updateLinkColor: function(color, over) {
+   if (!color) return;
+   var parents = this.styleEl().getParents('.sdEl').filter(function(v) {
+   return over ? v.retrieve('obj').linkOverColor() : v.retrieve('obj').linkColor();
+   });
+   c(parents);
+   var parentSelector = '';
+   if (parents.length > 0) {
+   parentSelector = parents.map(function(el) {
+   return '.type_' + el.get('data-type') + '.id_' + el.get('data-id');
+   }).join(' ');
+   }
+   if (this.styleEl().get('data-type') && this.styleEl().get('data-id')) {
+   // если это блок или контейнер
+   var selector = '.type_' + this.styleEl().get('data-type') + '.id_' + this.styleEl().get('data-id');
+   //Ngn.sd.addStyle(selector + ' a' + (over ? ':hover' : ''), 'color', color);
+   return;
+   }
+   if (!parentSelector) throw new Error('no parent selector');
+   c(parentSelector + ' .cont a' + (over ? ':hover' : '') + ' -- ' + color);
+   Ngn.sd.addStyle(parentSelector + ' .cont a' + (over ? ':hover' : ''), 'color', color);
+   },
+   */
+  _updateLinkColor: function(color, over) {
+    if (!color) return;
+    if (this.styleEl().get('data-type') && this.styleEl().get('data-id')) {
+      var el = this.styleEl();
+    } else {
+      var parents = this.styleEl().getParents('.sdEl').filter(function(v) {
+        return over ? v.retrieve('obj').linkOverColor() : v.retrieve('obj').linkColor();
+      });
+      if (parents.length > 0) var el = parents[0]; else throw new Error('no parents');
     }
+    var selector = '.type_' + el.get('data-type') + '.id_' + el.get('data-id');
+    Ngn.sd.addStyle(selector + ' .cont a' + (over ? ':hover' : ''), 'color', color);
+  },
+
+  updateLinkColor: function() {
+    this._updateLinkColor(this.linkColor());
+  },
+
+  updateLinkOverColor: function() {
+    this._updateLinkColor(this.linkOverColor(), true);
+  },
+
+  directChangeFontStyleProps: function() {
+    return [];
+  },
+
+  _updateFont: function(forceDirectChange) {
+    if (!this.data.font) return;
+    var s = ['font-size', 'font-family', 'color'];
+    for (var i = 0; i < s.length; i++) this.styleEl().sdSetStyle(s[i], '');
+    var prop;
+    for (i in this.data.font) {
+      prop = i.hyphenate();
+      if (forceDirectChange || in_array(prop, this.directChangeFontStyleProps())) this.styleEl().setStyle(prop, this.data.font[i]);
+      if (in_array(prop, s)) this.styleEl().sdSetStyle(prop, this.data.font[i]);
+    }
+    this.updateLinkColor();
+    this.updateLinkOverColor();
   },
 
   defaultFontColor: function() {
@@ -51,14 +87,21 @@ Ngn.sd.Font = new Class({
     return this.data.font.linkColor || this.data.font.color || false;
   },
 
+  linkOverColor: function() {
+    if (!this.data.font) return false;
+    return this.data.font.linkOverColor || false;
+  },
+
   fontSettingsAction: 'json_fontSettings',
 
   fontSettingsDialogOptions: function() {
-    width: 450
+    return {
+      width: 420
+    };
   },
 
   initFont: function() {
-    this._updateFont();
+    this.updateFont();
     new Ngn.Btn(Ngn.btn2('Настройки шрифта', 'font').inject(this.eBtns), function() {
       new Ngn.sd.FontSettingsDialog($merge({
         dialogClass: 'settingsDialog compactFields dialog',
@@ -66,6 +109,18 @@ Ngn.sd.Font = new Class({
         url: this.ctrl + '/' + this.fontSettingsAction + '/' + this.id(),
         onSubmitSuccess: function() {
           this.reload();
+        }.bind(this),
+        onChangeFont: function(fontFamily) {
+          this.data.font.fontFamily = fontFamily;
+          this._updateFont(true);
+        }.bind(this),
+        onChangeColor: function(color) {
+          this.data.font.color = color;
+          this._updateFont(true);
+        }.bind(this),
+        onChangeSize: function(fontSize) {
+          this.data.font.fontSize = fontSize;
+          this._updateFont(true);
         }.bind(this)
       }, this.fontSettingsDialogOptions()));
     }.bind(this));
@@ -82,6 +137,12 @@ Ngn.sd.FontSettingsDialog = new Class({
 
   formInit: function() {
     var obj = this;
+    var el = this.message.getElement('[name=fontFamily]');
+    if (el) {
+      el.addEvent('change', function() {
+        obj.fireEvent('changeFont', this.get('value'));
+      });
+    }
     this.message.getElement('[name=fontSize]').addEvent('change', function() {
       obj.fireEvent('changeSize', this.get('value'));
     });
@@ -124,7 +185,6 @@ Ngn.sd.ElementMeta = new Class({
   initElement: function(el) {
     this.el = el;
     if (!this.id()) return;
-    //c(this.finalData().data);
     if (!this.finalData().data.type) throw new Error('this.finalData().data.type');
     this.el.addClass('sdEl').store('obj', this).set('data-id', this.id()).set('data-type', this.finalData().data.type).addClass('type_' + this.finalData().data.type).addClass('id_' + this.id());
   }
@@ -134,7 +194,6 @@ Ngn.sd.ElementMeta = new Class({
 Ngn.sd.styles = {};
 
 Ngn.sd.buildStyles = function() {
-  if (Ngn.sd.eStyle) Ngn.sd.eStyle.dispose();
   var r = {};
   for (var selector in Ngn.sd.styles) {
     var styles = Ngn.sd.styles[selector];
@@ -152,8 +211,10 @@ Ngn.sd.buildStyles = function() {
   return css;
 };
 
+Ngn.sd.directChangeStyleProperies = '(width|height|left|top|margin|padding)';
+
 Element.implement({
-  sdSetStyle: function(property, value) {
+  sdSetStyle: function(property, value, subSelector) {
     if (property == 'opacity') {
       setOpacity(this, parseFloat(value));
       return this;
@@ -171,18 +232,24 @@ Element.implement({
     var cls = this.get('class');
     if (cls) cls = cls.replace(/\s*dynamicStyles\s*/, '');
     if (this.hasClass('sdEl')) {
+      if (subSelector) throw new Error('U can not use subSelector on .sdEl');
       var selector = '.' + cls.replace(/(\s+)/g, '.');
     } else {
       var eParent = this.getParent('.sdEl');
       if (eParent) var pCls = this.getParent('.sdEl').get('class').replace(/\s*dynamicStyles\s*/, '');
-      var selector = (pCls ? '.' + pCls.replace(/(\s+)/g, '.') : '') + ' ' + (cls ? '.' + cls : this.get('tag'));
+      var selector = (pCls ? '.' + pCls.replace(/(\s+)/g, '.') : '');
+      if (subSelector) {
+        selector += (cls ? ' .' + cls : '') + ' ' + subSelector;
+      } else {
+        selector += ' ' + (cls ? '.' + cls : this.get('tag'));
+      }
     }
-    if (value) {
-      if (!Ngn.sd.styles[selector]) Ngn.sd.styles[selector] = {};
+    if (!value) return;
+    if (!subSelector && property.test(new RegExp(Ngn.sd.directChangeStyleProperies, 'i'))) {
       if (!this.hasClass('dynamicStyles')) this.addClass('dynamicStyles');
-      Ngn.sd.styles[selector][property] = value;
       this.style[property] = value;
     }
+    Ngn.sd.addStyle(selector, property, value);
   },
   sdSetPosition: function(obj) {
     return this.sdSetStyles(this.computePosition(obj));
@@ -191,6 +258,24 @@ Element.implement({
     for (var style in styles) this.sdSetStyle(style, styles[style]);
   }
 });
+
+Ngn.sd.addStyle = function(selector, property, value) {
+  if (!Ngn.sd.styles[selector]) Ngn.sd.styles[selector] = {};
+  Ngn.sd.styles[selector][property] = value;
+  Ngn.sd.updateCommonStyle();
+};
+
+Ngn.sd.updateCommonStyle = function() {
+  if (Ngn.sd.commonStyleGenId) clearTimeout(Ngn.sd.commonStyleGenId);
+  Ngn.sd.commonStyleGenId = (function() {
+    if ($('commonStyles')) $('commonStyles').dispose();
+    new Element('style', {
+      id: 'commonStyles',
+      type: 'text/css',
+      html: Ngn.sd.buildStyles()
+    }).inject($('layout'), 'top');
+  }).delay(300);
+};
 
 Ngn.sd.BlockAbstract = new Class({
   Implements: [Options, Ngn.Class, Ngn.sd.ElementMeta, Ngn.sd.Items],
@@ -224,11 +309,15 @@ Ngn.sd.BlockAbstract = new Class({
   updateContainerHeight: function() {
     Ngn.sd.updateContainerHeight(this.container());
   },
-  updateElement: function() {
+  updateFont: function() {
     this._updateFont();
+  },
+  updateElement: function() {
+    this.updateFont();
     this.updateContainerHeight();
     this.el.set('data-id', this.id());
     this.replaceContent();
+    this.updateContent();
     this.updateSize();
     window.fireEvent('resize');
   },
@@ -269,6 +358,7 @@ Ngn.sd.BlockAbstract = new Class({
     } else {
       var p = {
         id: this._data.id,
+        content: this._data.content,
         data: this.data
       };
     }
@@ -426,9 +516,14 @@ Ngn.sd.BlockB = new Class({
     var eContainer = this.container();
     this.el.sdSetPosition(this.data.position);
     this.initControls();
+    this.initFont();
     this.replaceContent();
+    this.updateContent();
     this.updateSize();
     Ngn.sd.setMinHeight(eContainer);
+  },
+  // предназначено для изменения стилей внутренних элементов из данных блока
+  updateContent: function() {
   },
   rotate: function(deg) {
     var eCont = this.el.getElement('.cont');
@@ -485,8 +580,7 @@ Ngn.sd.BlockB = new Class({
       this.eBtns.setStyle('display', 'none');
     }.bind(this));
   },
-  initBtns: function() {
-    this.eBtns = new Element('div', {'class': 'btnSet'}).inject(this.el, 'top');
+  initDeleteBtn: function() {
     new Ngn.Btn(Ngn.btn2('Удалить', 'delete').inject(this.eBtns, 'top'), function() {
       if (!Ngn.confirm()) return;
       this.loading(true);
@@ -498,8 +592,8 @@ Ngn.sd.BlockB = new Class({
         }.bind(this)
       }).send();
     }.bind(this));
-    if (this.finalData().data.type != 'image') new Ngn.Btn(Ngn.btn2('Редактировать', 'edit').inject(this.eBtns, 'top'), this.editAction.bind(this));
-    this.initCopyCloneBtn();
+  },
+  initBlockScopeBtn: function() {
     Ngn.btn2Flag(this.global(), {
       title: 'Блок глобальный. Нажмите, что бы сделать локальным',
       cls: 'global',
@@ -509,18 +603,34 @@ Ngn.sd.BlockB = new Class({
       cls: 'local',
       url: '/pageBlock/ajax_updateGlobal/' + this._data.id + '/1'
     }).inject(this.eBtns, 'top');
+  },
+  initTextScopeBtn: function() {
     if (Ngn.sd.getBlockType(this.finalData().data.type).separateContent) {
       Ngn.btn2Flag(this.data.separateContent, {
         title: 'Блок имеет отдельный текст для каждого раздела. Сделать общий текст для всех разделов',
         cls: 'dynamic',
         url: '/pageBlock/ajax_updateSeparateContent/' + this._data.id + '/0',
         confirm: 'Тексты для всех, кроме самого первого раздела будут удалены. Вы уверены?'
+
       }, {
         title: 'Блок имеет общий текст для всех разделов. Сделать отдельный текст для каждого раздела',
         cls: 'static',
         url: '/pageBlock/ajax_updateSeparateContent/' + this._data.id + '/1'
       }).inject(this.eBtns, 'top');
     }
+  },
+  initEditBtn: function() {
+    if (this.finalData().data.type != 'image') {
+      new Ngn.Btn(Ngn.btn2('Редактировать', 'edit').inject(this.eBtns, 'top'), this.editAction.bind(this));
+    }
+  },
+  initBtns: function() {
+    this.eBtns = new Element('div', {'class': 'btnSet'}).inject(this.el, 'top');
+    this.initDeleteBtn();
+    this.initEditBtn();
+    this.initCopyCloneBtn();
+    this.initBlockScopeBtn();
+    this.initTextScopeBtn();
   },
   global: function() {
     if (this.data.global !== undefined) return this.data.global;
@@ -554,7 +664,6 @@ Ngn.sd.BlockB = new Class({
     this.initBtnsHide();
     this.initDrag();
     new Ngn.sd.BlockResize(this);
-    this.initFont();
   },
   initDrag: function() {
     this.eDrag = Elements.from('<a class="btn control drag dragBox2" data-move="1" title="Передвинуть блок"></a>')[0].inject(this.eBtns, 'top');
@@ -562,18 +671,25 @@ Ngn.sd.BlockB = new Class({
   },
   updateSize: function() {
     if (!this.finalData().data.size) return;
-    this._resize(this.finalData().data.size);
-  },
-  _resize: function(size) {
-    if (size.x) this.el.sdSetStyle('width', size.x + 'px');
-    if (size.y) this.el.sdSetStyle('height', size.y + 'px');
-    var eCont = this.el.getElement('.cont');
-    if (size.x) eCont.sdSetStyle('width', size.x + 'px');
-    if (size.y) eCont.sdSetStyle('height', size.y + 'px');
+    this.resizeEl(this.finalData().data.size);
   },
   resize: function(size) {
-    this._resize(size);
+    this.resizeEl(size);
     this.data = $merge(this.data, {size: size});
+  },
+  resizeEl: function(size) {
+    this.resizeBlockEl(size);
+    this.resizeContentEl(size);
+  },
+  resizeBlockEl: function(size) {
+    this._resizeEl(this.el, size);
+  },
+  resizeContentEl: function(size) {
+    this._resizeEl(this.el.getElement('.cont'), size);
+  },
+  _resizeEl: function(el, size) {
+    if (size.x) el.sdSetStyle('width', size.x + 'px');
+    if (size.y) el.sdSetStyle('height', size.y + 'px');
   },
   move: function(d) {
     var r = {
@@ -590,6 +706,69 @@ Ngn.sd.BlockB = new Class({
   }
 });
 
+Ngn.sd.BlockBMenu = new Class({
+  Extends: Ngn.sd.BlockB,
+  init: function() {
+    this.parent();
+  },
+  editDialogOptions: function() {
+    var obj = this;
+    return {
+      width: 250,
+      id: 'menu',
+      savePosition: true,
+      //footer: false,
+      onFormResponse: function() {
+        this.form.addEvent('elHDistanceChange', function(value) {
+          obj.data.prop.hDistance = value;
+          obj.updateContent();
+        });
+        this.form.addEvent('elHDistanceChanged', function() {
+          obj.save();
+        });
+        this.form.addEvent('elHPaddingChange', function(value) {
+          obj.data.prop.hPadding = value;
+          obj.updateContent();
+        });
+        this.form.addEvent('elHPaddingChanged', function() {
+          obj.save();
+        });
+        this.form.addEvent('elVPaddingChange', function(value) {
+          obj.data.prop.vPadding = value;
+          obj.updateContent();
+        });
+        this.form.addEvent('elVPaddingChanged', function() {
+          obj.save();
+        });
+        this.form.eForm.getElement('[name=activeBgColor]').addEvent('change', function(color) {
+          obj.data.prop.activeBgColor = color.hex;
+          obj.updateContent();
+          //obj.save();
+        });
+      }
+    };
+  },
+  updateContent: function() {
+    if (!this.data.prop) this.data.prop = {};
+    if (this.data.prop.activeBgColor)
+      this.el.getElement('.cont').getElement('a.sel').sdSetStyle('background-color', this.data.prop.activeBgColor);
+    if (this.data.prop.overBgColor)
+      this.el.getElement('.cont').sdSetStyle('background-color', this.data.prop.overBgColor, 'a:hover');
+    this.el.getElement('.cont').sdSetStyle('margin-right', this.data.prop.hDistance + 'px', 'a');
+    this.el.getElement('.cont').sdSetStyle('padding-left', this.data.prop.hPadding + 'px', 'a');
+    this.el.getElement('.cont').sdSetStyle('padding-right', this.data.prop.hPadding + 'px', 'a');
+    this.el.getElement('.cont').sdSetStyle('padding-top', this.data.prop.vPadding + 'px', 'a');
+    this.el.getElement('.cont').sdSetStyle('padding-bottom', this.data.prop.vPadding + 'px', 'a');
+  },
+  _updateFont: function() {
+    this.parent();
+    this.updateLinkSelectedColor();
+  },
+  updateLinkSelectedColor: function() {
+    if (!this.data.font.linkSelectedColor) return;
+    this.styleEl().sdSetStyle('color', this.data.font.linkSelectedColor, 'a.sel');
+  }
+});
 
 Ngn.sd.BlockBImage = new Class({
   Extends: Ngn.sd.BlockB,
@@ -630,6 +809,10 @@ Ngn.sd.BlockBSvg = new Class({
         }
       ]
     }
+  },
+
+  resizeContentEl: function(size) {
+    this._resizeEl(this.el.getElement('img'), size);
   },
 
   _setColor: function(color, n) {
@@ -683,9 +866,11 @@ Ngn.sd.BlockBFont = new Class({
       width: 350,
       savePosition: true,
       onChangeFont: function(font) {
+        console.trace();
         Cufon.set('fontFamily', font).replace(this.styleEl());
       }.bind(this),
       onChangeSize: function(size) {
+        console.trace();
         Cufon.set('fontSize', size).replace(this.styleEl());
       }.bind(this),
       onChangeColor: function(color) {
@@ -700,23 +885,30 @@ Ngn.sd.BlockBFont = new Class({
       }.bind(this)
     };
   },
-  replaceFont: function() {
-    this._updateFont();
-    Ngn.sd.BlockBFont.html[this.id()] = this._data.html;
-    this.loadFont(function() {
-      this.el.set('data-fontFamily', this.data.font.fontFamilyCufon);
-      Cufon.set('fontFamily', this.data.font.fontFamilyCufon).replace(this.styleEl());
-      Ngn.loading(false);
-    }.bind(this));
+  directChangeFontStyleProps: function() {
+    return ['font-size', 'font-family', 'color'];
   },
+  replaceCufon: function() {
+    this.updateCufon();
+  },
+  cufonInitialized: false,
   updateFont: function() {
+    if (!this.cufonInitialized) {
+      this.updateCufon();
+      return;
+    }
+    this.updateCufon(true);
+  },
+  updateCufon: function(refrash) {
     this._updateFont();
     Ngn.sd.BlockBFont.html[this.id()] = this.data.html;
     this.loadFont(function() {
       this.el.set('data-fontFamily', this.data.font.fontFamilyCufon);
-      Cufon.set('fontFamily', this.data.font.fontFamilyCufon).refresh(this.styleEl());
+      var cf = Cufon.set('fontFamily', this.data.font.fontFamilyCufon);
+      refrash ? cf.refresh(this.styleEl()) : cf.replace(this.styleEl());
       Ngn.loading(false);
     }.bind(this));
+    this.cufonInitialized = true;
   },
   loadFont: function(onLoad) {
     if (!this.data.font || !this.data.font.fontFamilyCufon) return;
@@ -725,31 +917,11 @@ Ngn.sd.BlockBFont = new Class({
   },
   replaceContent: function() {
     this.parent();
-    this.replaceFont();
+    this.replaceCufon();
   },
   initControls: function() {
     this.parent();
     new Ngn.sd.BlockRotate(this);
-    this.initSlider();
-  },
-  initSlider: function() {
-    return;
-    var eSlider = Elements.from('<div class="slider"><div class="knob"></div></div>')[0].inject(this.eBtns);
-    new Slider(eSlider, eSlider.getElement('.knob'), {
-      dragOptions: {
-        stopPropagation: true
-      },
-      range: [9, 250],
-      initialStep: this.data.font && this.data.font.fontSize ? this.data.font.fontSize.toInt() : 14,
-      onChange: function(size) {
-        this.data.font.fontSize = size + 'px';
-        this.updateFont();
-        Cufon.refresh(this.styleEl());
-      }.bind(this),
-      onComplete: function() {
-        this.save();
-      }.bind(this)
-    });
   }
 });
 Ngn.sd.BlockBFont.html = {};
@@ -965,7 +1137,7 @@ Ngn.sd.ContainerAbstract = new Class({
     if (!this.data.position) this.data.position = {x: 0, y: 0};
     this.setPosition(this.data.position);
     this.initControls();
-    //this.initFont();
+    if (!this.options.disableFont) this.initFont();
   },
   afterData: function() {
   },
@@ -985,7 +1157,6 @@ Ngn.sd.ContainerAbstract = new Class({
         }.bind(this)
       }).send();
     }.bind(this));
-    if (!this.options.disableFont) this.initFont();
     new Ngn.Btn(Ngn.btn2('Настройки фона', 'bgSettings').inject(this.eBtns), function() {
       new Ngn.Dialog.RequestForm({
         dialogClass: 'settingsDialog compactFields dialog',
@@ -1060,6 +1231,9 @@ Ngn.sd.ContainerAbstract = new Class({
     this.refreshBg();
     this._updateFont();
   },
+  updateFont: function() {
+    this._updateFont();
+  },
   setPosition: function(position) {
     if (!position.x && !position.y) {
       this.el.sdSetStyle('background-position', '');
@@ -1130,6 +1304,7 @@ Ngn.sd.blockTypes = [
     },
     separateContent: true,
     editDialogOptions: {
+      id: 'text',
       dialogClass: 'dialog elNoPadding',
       vResize: Ngn.Dialog.VResize.Wisiwig
     }
@@ -1195,7 +1370,7 @@ Ngn.sd.exportLayout = function() {
   eLayout.getElements('.block.type_font').each(function(eBlock) {
     eBlock.getElement('.cont').set('html', Ngn.sd.BlockBFont.html[eBlock.get('data-id')]);
   });
-  eLayout.getElements('.dynamicStyles').set('style', '').removeClass('dynamicStyles');
+  eLayout.getElements('.dynamicStyles').removeProperty('style').removeClass('dynamicStyles');
   // replace dynamic blocks content
   eLayout.getElements('.block').each(function(eBlock) {
     // разобраться в этом куске
@@ -1222,6 +1397,8 @@ Ngn.sd.initUserTypes = function(types) {
   Ngn.sd.blockUserTypes = types;
 };
 
+Ngn.sd.initPageTitle = document.getElement('head title').get('text');
+
 Ngn.sd.loadData = function(ownPageId, onComplete) {
   onComplete = onComplete || function() {
   };
@@ -1232,6 +1409,7 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
   new Ngn.Request.JSON({
     url: '/cpanel/json_get?ownPageId=' + ownPageId,
     onComplete: function(data) {
+      document.getElement('head title').set('html', data.pageTitle + ' - ' + Ngn.sd.initPageTitle);
       Ngn.sd.initUserTypes(data.blockUserTypes);
       for (var i = 0; i < data.items.layout.length; i++) {
         new Ngn.sd.Layout(data.items.layout[i], {
@@ -1254,6 +1432,7 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
         }
       }
       Ngn.sd.updateLayoutContentHeight();
+      Ngn.sd.updateOrderBar(data.items.pageBlock);
       Ngn.sd.setPageTitle(ownPageId);
       Ngn.initTips('.btn,.btnBlock,.logo,.smIcons,.dragBox');
       Ngn.loading(false);
@@ -1279,7 +1458,7 @@ Ngn.sd.PageBlocksShift = new Class({
     }
   },
   updateOrder: function(id) {
-    var esBlocks = Ngn.sd.blocks[id].el.getParent().getElements('.block');
+    var esBlocks = Ngn.sd.blocks[id].el.getParent('.layout').getElements('.block');
     var ids = [];
     for (var i = 0; i < esBlocks.length; i++) ids.push(esBlocks[i].get('data-id'));
     new Ngn.Request({
@@ -1338,6 +1517,31 @@ Ngn.sd.buildBlockBtns = function(blockTypes, eCont) {
     });
   });
 }
+
+Ngn.sd.OrderBarItem = new Class({
+
+  initialize: function(id) {
+    this.id = id;
+    this.el = new Element('div', {
+      'class': 'item',
+      html: Ngn.sd.blocks[id]._data.data.type + ' ' + Ngn.sd.blocks[id]._data.id
+    }).inject($('orderBar'));
+    this.el.addEvent('mouseover', function() {
+      Ngn.sd.blocks[id].el.addClass('highlight');
+    });
+    this.el.addEvent('mouseout', function() {
+      Ngn.sd.blocks[id].el.removeClass('highlight');
+    });
+  }
+
+});
+
+Ngn.sd.updateOrderBar = function(orderedBlocks) {
+  $('orderBar').set('html', '');
+  for (var i=0; i<orderedBlocks.length; i++) {
+    if (Ngn.sd.blocks[orderedBlocks[i].id]) new Ngn.sd.OrderBarItem(orderedBlocks[i].id);
+  }
+};
 
 Ngn.sd.buildPanel = function() {
   Ngn.sd.ePanel = new Element('div', {'class': 'cont'}).inject($('panel'));
@@ -1437,7 +1641,7 @@ Ngn.sd.buildPanel = function() {
 
   Ngn.sd.exportRequest = function(pageName, onComplete) {
     new Ngn.Request.JSON({
-      url: '/cpanel/json_export/' + pageName,
+      url: '/export/' + pageName,
       onComplete: onComplete ? onComplete.pass(pageName) : function() {
       }
     }).post({
@@ -1585,6 +1789,7 @@ Ngn.sd.FontSelectDialog = new Class({
   Extends: Ngn.sd.SelectDialog,
   name: 'font',
   options: {
+    width: 600,
     message: Ngn.tpls.fontSelect,
     title: 'Выбор шрифта'
   },
@@ -1678,7 +1883,7 @@ Ngn.sd.exportPageR = function(n) {
       }
     } else {
       var onComplete = function() {
-        new Ngn.Dialog.Link({ link: '/index.html' });
+        new Ngn.Dialog.Link({ link: '/index.html?' + Math.random() });
       }
     }
     c('Экспортирую ' + (n == 1 ? 'индекс' : n));
@@ -1688,7 +1893,7 @@ Ngn.sd.exportPageR = function(n) {
 };
 
 Ngn.sd.init = function() {
-  new Ngn.sd.SvgSelectDialog();
+  new Ngn.sd.FontSelectDialog();
   Ngn.sd.buildPanel();
 };
 

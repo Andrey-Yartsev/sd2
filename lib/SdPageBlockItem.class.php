@@ -2,6 +2,10 @@
 
 class SdPageBlockItem extends ArrayAccesseble {
 
+  /**
+   * @param array $item
+   * @return SdPageBlockItem
+   */
   static function factory(array $item) {
     $class = ucfirst('SdPageBlockItem'.ucfirst($item['data']['type']));
     $class = class_exists($class) ? $class : 'SdPageBlockItem';

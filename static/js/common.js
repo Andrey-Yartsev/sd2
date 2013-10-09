@@ -8,8 +8,6 @@ Ngn.positionDiff = function(pos1, pos2, offset) {
 
 Ngn.sd = {};
 
-Ngn.sd.baseUrl = false;
-
 Ngn.sd.loadedFonts = {};
 Ngn.sd.loadFont = function(font, onLoad) {
   if (!font) return;

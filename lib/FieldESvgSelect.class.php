@@ -2,7 +2,7 @@
 
 class FieldESvgSelect extends FieldEDialogSelect {
 
-  protected $useDefaultJs = true;
+  protected $useTypeJs = true;
 
   protected function defineOptions() {
     $options['options'] = Html::defaultOption();

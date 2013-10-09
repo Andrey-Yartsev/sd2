@@ -44,7 +44,9 @@ position: absolute;
 /* ------- конкретные типы блоков ------------ */
 
 .block.type_menu a {
-display: inline-block;
+/*display: inline-block;*/
+display: block;
+float: left;
 }
 .block.type_feedback textarea, .block.type_feedback input[type=text] {
 width: 95%;
@@ -96,4 +98,8 @@ border: 1px dashed #F05030;
 }
 .lCont {
 border: 3px dotted #F05030;
+}
+
+.menu a.sel {
+font-weight: bold;
 }

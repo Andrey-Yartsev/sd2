@@ -69,6 +69,9 @@ background: url(/sd/img/news.png);
 .block {
 background: rgba(0, 170, 238, 0.3);
 }
+.block.highlight {
+background: rgba(0, 270, 138, 0.3);
+}
 .block .cont a {
 cursor: default;
 }
@@ -280,17 +283,6 @@ margin-right: 3px;
 position: relative;
 }
 
-.slider {
-background: #CCC;
-height: 16px;
-width: 200px;
-}
-.slider .knob {
-background: #000;
-width: 16px;
-height: 16px;
-}
-
 /* ------------ конец контролов блоков -------------- */
 
 
@@ -459,4 +451,28 @@ white-space: nowrap;
 /* -- меняем тень -- */
 .dialog-shade {
 opacity: 0;
+}
+
+
+
+
+
+
+
+#orderBar {
+position: absolute;
+top: 0px;
+right: 0px;
+width: 150px;
+height: 90%;
+background: #fff;
+z-index: 100;
+border: 1px solid #F00;
+}
+#orderBar .item {
+padding: 3px 10px;
+border-bottom: 1px solid #ccc;
+}
+#orderBar .item:hover {
+color: #f00;
 }

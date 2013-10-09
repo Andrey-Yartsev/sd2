@@ -1,6 +1,6 @@
 <?php
 
-class SdPageBlockEditForm extends Form {
+class SdPageBlockEditFormAbstract extends Form {
 
   /**
    * @var ConfigItems
@@ -19,113 +19,119 @@ class SdPageBlockEditForm extends Form {
 
   protected $ownPageId;
 
+  function _update(array $d) {
+  }
+
+  function _getDefaultData() {
+  }
+
   function __construct($id, SdPageBlockItems $items) {
     $this->id = $id;
     $this->items = $items;
     $this->item = $this->items->getItemE($id);
-    if (!empty($this->item['content'])) $this->defaultData = $this->item['content'];
+    $this->defaultData = $this->_getDefaultData();
     $fields = [
-      'text'  => [
+      'text'    => [
         [
           'type' => 'wisiwigSimple2',
           'name' => 'text'
         ]
       ],
-      'font'  => [
+      'font'    => [
         [
           'type' => 'textareaTypo',
           'name' => 'text'
         ],
       ],
-      'image' => [
+      'image'   => [
         [
           'type' => 'image',
           'name' => 'image'
         ],
       ],
-      'button' => [
+      'button'  => [
         [
           'title' => 'Текст',
-          'type' => 'text',
-          'name' => 'text'
+          'type'  => 'text',
+          'name'  => 'text'
         ],
         [
           'title' => 'Ссылка',
-          'type' => 'text',
-          'name' => 'link'
+          'type'  => 'text',
+          'name'  => 'link'
         ],
         [
           'title' => 'Цвет текста',
-          'type' => 'color',
-          'name' => 'color'
+          'type'  => 'color',
+          'name'  => 'color'
         ],
         [
           'title' => 'Цвет фона кнопки',
-          'type' => 'color',
-          'name' => 'bgColor'
+          'type'  => 'color',
+          'name'  => 'bgColor'
         ],
         [
           'title' => 'Открывать в новом окне',
-          'type' => 'bool',
-          'name' => 'newWindow'
+          'type'  => 'bool',
+          'name'  => 'newWindow'
         ],
       ],
-      'auth' => [
+      'auth'    => [
         [
           'title' => 'Текст кнопки регистрации',
-          'type' => 'text',
-          'name' => 'regBtnText'
+          'type'  => 'text',
+          'name'  => 'regBtnText'
         ],
         [
           'title' => 'Ссылка для перехода',
-          'type' => 'text',
-          'name' => 'presonalUrl'
+          'type'  => 'text',
+          'name'  => 'presonalUrl'
         ],
         [
           'title' => 'Текст кнопки перехода',
-          'type' => 'text',
-          'name' => 'presonalBtnText'
+          'type'  => 'text',
+          'name'  => 'presonalBtnText'
         ],
         [
           'title' => 'Цвет текста',
-          'type' => 'color',
-          'name' => 'color'
+          'type'  => 'color',
+          'name'  => 'color'
         ],
         [
           'title' => 'Цвет фона фона кнопки',
-          'type' => 'color',
-          'name' => 'bgColor'
+          'type'  => 'color',
+          'name'  => 'bgColor'
         ],
       ],
-      'tpl' => [
+      'tpl'     => [
         [
           'title' => 'Имя',
-          'type' => 'name',
-          'name' => 'name'
+          'type'  => 'name',
+          'name'  => 'name'
         ],
         [
           'title' => 'HTML',
-          'type' => 'textarea',
-          'name' => 'html'
+          'type'  => 'textarea',
+          'name'  => 'html'
         ]
       ],
-      'svg' => [
+      'svg'     => [
         ['type' => 'col'],
         [
           'title' => 'Картинка',
-          'type' => 'svgSelect',
-          'name' => 'name'
+          'type'  => 'svgSelect',
+          'name'  => 'name'
         ],
         ['type' => 'col'],
         [
           'title' => 'Цвет',
-          'type' => 'color',
-          'name' => 'color'
+          'type'  => 'color',
+          'name'  => 'color'
         ],
         [
-          'title' => 'Размер',
-          'name' => 'size',
-          'type' => 'select',
+          'title'   => 'Размер',
+          'name'    => 'size',
+          'type'    => 'select',
           'options' => [
             30,
             50,
@@ -136,16 +142,38 @@ class SdPageBlockEditForm extends Form {
           ]
         ],
       ],
-      'menu' => [
+      'menu'    => [
         [
-          'title' => 'Ширина ячейки',
-          'name' => 'itemWidth',
-          'type' => 'pixels'
+          'title' => 'Расстояние между ячейками',
+          'name'  => 'hDistance',
+          'help'  => 'по горизонтали',
+          'type'  => 'slider',
+          'range' => [0, 100]
         ],
         [
-          'title' => 'Высота ячейки',
-          'name' => 'itemHeight',
-          'type' => 'pixels'
+          'title' => 'Отступ по горизонтали',
+          'name'  => 'hPadding',
+          'help'  => 'от текста до границы ячейки',
+          'type'  => 'slider',
+          'range' => [0, 100]
+        ],
+        [
+          'title' => 'Отступ по вертикали',
+          'name'  => 'vPadding',
+          'help'  => 'от текста до границы ячейки',
+          'type'  => 'slider',
+          'steps' => 20,
+          'range' => [1, 40]
+        ],
+        [
+          'title' => 'Фон активной ячейки',
+          'name'  => 'activeBgColor',
+          'type'  => 'color',
+        ],
+        [
+          'title' => 'Фон ячейки при наведении мыши',
+          'name'  => 'overBgColor',
+          'type'  => 'color',
         ],
         /*
         [
@@ -169,14 +197,17 @@ class SdPageBlockEditForm extends Form {
         ],
         */
       ],
+      'gallery' => [
+        [
+          'title' => 'Картинки',
+          'type'  => 'image',
+          'multiple' => true,
+          'name' => 'images'
+        ]
+      ]
     ];
     parent::__construct($fields[$this->item['data']['type']]);
     UploadTemp::extendFormOptions($this, "/{$this->req->param(0)}/json_updateImage/{$this->req->param(2)}");
-  }
-
-  function _update(array $d) {
-    //prr([$this->req->r, $d]);
-    $this->items->updateContent($this->id, $d);
   }
 
 }

@@ -1,7 +1,7 @@
 <?php
 
 class CtrlSdCpanel extends CtrlCommon {
-use SdPersonalCtrl;
+  use SdPersonalCtrl;
 
   protected function init() {
     Sflm::flm('css')->addLib('sdEdit');
@@ -9,6 +9,7 @@ use SdPersonalCtrl;
   }
 
   function action_default() {
+    //die2((new SdPageBlockItems)->getItem(17)->isShow(1));
     //if (!Auth::check()) $this->d['tpl'] = 'auth/login';
     //else $this->d['tpl'] = 'inner';
     $this->d['tpl'] = 'inner';
@@ -26,6 +27,7 @@ use SdPersonalCtrl;
     //$this->json['blockUserTypes'] = $this->getUserTypes($this->json['project']['package']['id']);
     $this->json['blockUserTypes'] = $this->getUserTypes(312);
     $this->json['layout'] = SdCore::getLayout($this->req['ownPageId']);
+    $this->json['pageTitle'] = Config::getVar("sd/pages")['name'][$this->req['ownPageId'] - 1];
   }
 
   protected function getUserTypes($package) {
@@ -39,14 +41,25 @@ use SdPersonalCtrl;
         'dialogOptions' => [
           'dialogClass' => 'settingsDialog compactFields dialog'
         ],
-        'packages' => [312]
-      ], [
-        'title'=> 'Блог',
-        'data' => [
+        'packages'      => [312]
+      ],
+      /*
+      [
+        'title'    => 'Блог',
+        'data'     => [
           'type' => 'blog'
         ],
         'packages' => [312]
-      ], [
+      ],
+      */
+      [
+        'title'    => 'Галерея',
+        'data'     => [
+          'type' => 'gallery'
+        ],
+        'packages' => [312]
+      ],
+      [
         'title'         => 'Произвольный шаблон',
         'data'          => [
           'type' => 'tpl'
@@ -55,33 +68,24 @@ use SdPersonalCtrl;
           'width'       => '220',
           'dialogClass' => 'dialog fieldFullWidth'
         ],
-        'packages' => [312]
-      ], [
-        'title'         => 'Аудио',
-        'data'          => [
+        'packages'      => [312]
+      ],
+      [
+        'title'    => 'Аудио',
+        'data'     => [
           'type' => 'audio'
         ],
         'packages' => [315]
       ]
     ];
-    return array_values(array_filter($r, function($v) use ($package) {
+    return array_values(array_filter($r, function ($v) use ($package) {
       return in_array($package, $v['packages']);
     }));
   }
 
-  function action_json_export() {
-    $t = Tt()->getTpl('export', [
-      'sfl' => 'sdSite',
-      'html'      => $this->req['html']
-    ]);
-    $t = preg_replace('/"(\/u\/[^"]+)"/', '"http://'.SITE_DOMAIN.'$1"', $t);
-    $t = preg_replace('/\((\/u\/[^)]+)\)/', '(http://'.SITE_DOMAIN.'$1)', $t);
-    $t = $this->addStat($t);
-    file_put_contents(WEBROOT_PATH.'/'.$this->req->param(2).'.html', $t);
-    file_put_contents(SITE_PATH.'/html', $this->req['html']);
-  }
-
   protected function addStat($t) {
+    return $t;
+    /*
     $statId = SdCore::getProject()['statId'];
     $trackCode = <<<CODE
 <script type="text/javascript">
@@ -100,6 +104,7 @@ use SdPersonalCtrl;
 <noscript><p><img src="http://stat.sitedraw.ru/piwik.php?idsite=$statId" style="border:0" alt="" /></p></noscript>
 CODE;
     return str_replace('</body>', $trackCode.'</body>', $t);
+    */
   }
 
   function action_ajax_exportPhp() {
