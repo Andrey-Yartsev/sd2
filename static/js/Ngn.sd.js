@@ -14,30 +14,6 @@ Ngn.sd.setMinHeight = function(parent, offset, min) {
 
 Ngn.sd.Font = new Class({
 
-  /*
-   _updateLinkColor: function(color, over) {
-   if (!color) return;
-   var parents = this.styleEl().getParents('.sdEl').filter(function(v) {
-   return over ? v.retrieve('obj').linkOverColor() : v.retrieve('obj').linkColor();
-   });
-   c(parents);
-   var parentSelector = '';
-   if (parents.length > 0) {
-   parentSelector = parents.map(function(el) {
-   return '.type_' + el.get('data-type') + '.id_' + el.get('data-id');
-   }).join(' ');
-   }
-   if (this.styleEl().get('data-type') && this.styleEl().get('data-id')) {
-   // если это блок или контейнер
-   var selector = '.type_' + this.styleEl().get('data-type') + '.id_' + this.styleEl().get('data-id');
-   //Ngn.sd.addStyle(selector + ' a' + (over ? ':hover' : ''), 'color', color);
-   return;
-   }
-   if (!parentSelector) throw new Error('no parent selector');
-   c(parentSelector + ' .cont a' + (over ? ':hover' : '') + ' -- ' + color);
-   Ngn.sd.addStyle(parentSelector + ' .cont a' + (over ? ':hover' : ''), 'color', color);
-   },
-   */
   _updateLinkColor: function(color, over) {
     if (!color) return;
     if (this.styleEl().get('data-type') && this.styleEl().get('data-id')) {
@@ -644,6 +620,7 @@ Ngn.sd.BlockB = new Class({
       dialogClass: 'settingsDialog dialog',
       title: 'Редактирование (ID ' + this._data.id + ')',
       width: 500,
+      id: this.data.type,
       // force: false,
       onClose: function() {
         Ngn.sd.previewSwitch(false);
@@ -703,6 +680,9 @@ Ngn.sd.BlockB = new Class({
     this.setPosition(p);
     clearTimeout(this.timeoutId);
     this.timeoutId = this.save.bind(this).delay(1000);
+  },
+  resetData: function() {
+    this.data = this._data.data;
   }
 });
 
@@ -866,19 +846,21 @@ Ngn.sd.BlockBFont = new Class({
       width: 350,
       savePosition: true,
       onChangeFont: function(font) {
-        console.trace();
-        Cufon.set('fontFamily', font).replace(this.styleEl());
+        this.data.fontFamily = font;
+        this.updateCufonStyles();
       }.bind(this),
       onChangeSize: function(size) {
-        console.trace();
-        Cufon.set('fontSize', size).replace(this.styleEl());
+        this.data.fontSize = size;
+        this.updateCufonStyles();
       }.bind(this),
       onChangeColor: function(color) {
-        Cufon.set('color', color).replace(this.styleEl());
+        this.data.color = color;
+        this.updateCufonStyles();
       }.bind(this),
       onCancelClose: function() {
-        if (this.data.font && this.data.font.fontFamilyCufon) {
-          Cufon.set('fontFamily', this.data.font.fontFamilyCufon).replace(this.styleEl());
+        if (this.data.font) {
+          this.resetData();
+          this.updateCufonStyles();
         } else {
           this.styleEl().set('html', this.data.html);
         }
@@ -893,22 +875,29 @@ Ngn.sd.BlockBFont = new Class({
   },
   cufonInitialized: false,
   updateFont: function() {
+    this.updateCufon();
+    /*
     if (!this.cufonInitialized) {
       this.updateCufon();
       return;
     }
     this.updateCufon(true);
+    */
   },
   updateCufon: function(refrash) {
-    this._updateFont();
+    //this._updateFont();
     Ngn.sd.BlockBFont.html[this.id()] = this.data.html;
     this.loadFont(function() {
-      this.el.set('data-fontFamily', this.data.font.fontFamilyCufon);
-      var cf = Cufon.set('fontFamily', this.data.font.fontFamilyCufon);
-      refrash ? cf.refresh(this.styleEl()) : cf.replace(this.styleEl());
+      this.updateCufonStyles(refrash);
       Ngn.loading(false);
     }.bind(this));
     this.cufonInitialized = true;
+  },
+  updateCufonStyles: function(refrash) {
+    Cufon.set('font-family1', this.data.font.fontFamilyCufon);
+    Cufon.set('font-size', this.data.font.fontSize);
+    Cufon.set('color', this.data.font.color);
+    refrash ? Cufon.refresh(this.styleEl()) : Cufon.replace(this.styleEl());
   },
   loadFont: function(onLoad) {
     if (!this.data.font || !this.data.font.fontFamilyCufon) return;
@@ -1304,7 +1293,6 @@ Ngn.sd.blockTypes = [
     },
     separateContent: true,
     editDialogOptions: {
-      id: 'text',
       dialogClass: 'dialog elNoPadding',
       vResize: Ngn.Dialog.VResize.Wisiwig
     }
@@ -1893,7 +1881,6 @@ Ngn.sd.exportPageR = function(n) {
 };
 
 Ngn.sd.init = function() {
-  new Ngn.sd.FontSelectDialog();
   Ngn.sd.buildPanel();
 };
 
