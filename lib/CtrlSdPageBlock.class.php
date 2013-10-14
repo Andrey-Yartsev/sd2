@@ -66,6 +66,18 @@ use SdItemsCtrl;
     $this->uploadUpdate('image');
   }
 
+  function action_json_updateImages() {
+    $items = $this->items();
+    $id = $this->req->param(2);
+    $n = 0;
+    foreach ($this->req->files['images'] as $v) {
+      $file = Dir::make(UPLOAD_PATH."/{$items->name}/images/$id").'/'.$n.'.jpg';
+      copy($v['tmp_name'], $file);
+      $n++;
+    }
+    $items->updateContent($id, ['n' => $n]);
+  }
+
   function action_ajax_updateGlobal() {
     $this->items()->updateGlobal($this->req->param(2), $this->req->params[3]);
   }
@@ -77,7 +89,6 @@ use SdItemsCtrl;
   function action_ajax_updateOrder() {
     $items = $this->items()->getItemsFF();
     $ids = array_flip($this->req['ids']);
-    //prr($ids);
     foreach ($items as &$item) {
       //prr($item['id']);
       $item['orderKey'] = $ids[$item['id']];

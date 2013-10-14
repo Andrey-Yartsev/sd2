@@ -2,10 +2,14 @@
 
 class SdFontSettingsFormBase extends Form {
 
-  protected $items, $id, $fontField = 'fontFamily';
+  protected $items, $id, $fontFieldType = 'fontFamily';
 
   protected function getInitFields() {
-    return Arr::append(Fields::defaults(['fontSize', 'color']), Fields::defaults([$this->fontField]));
+    return array_merge(Fields::defaults(['fontSize', 'color']), [[
+      'title' => 'Шрифт',
+      'type'  => $this->fontFieldType,
+      'name'  => 'fontFamily'
+    ]]);
   }
 
   function __construct($id, SdContainerItems $items) {

@@ -42,12 +42,13 @@ Ngn.sd.Font = new Class({
 
   _updateFont: function(forceDirectChange) {
     if (!this.data.font) return;
-    var s = ['font-size', 'font-family', 'color'];
+    var s = ['font-size', 'font-family', 'color'], prop;
     for (var i = 0; i < s.length; i++) this.styleEl().sdSetStyle(s[i], '');
-    var prop;
     for (i in this.data.font) {
       prop = i.hyphenate();
-      if (forceDirectChange || in_array(prop, this.directChangeFontStyleProps())) this.styleEl().setStyle(prop, this.data.font[i]);
+      if (forceDirectChange || in_array(prop, this.directChangeFontStyleProps())) {
+        this.styleEl().setStyle(prop, this.data.font[i]);
+      }
       if (in_array(prop, s)) this.styleEl().sdSetStyle(prop, this.data.font[i]);
     }
     this.updateLinkColor();
@@ -621,6 +622,7 @@ Ngn.sd.BlockB = new Class({
       title: 'Редактирование (ID ' + this._data.id + ')',
       width: 500,
       id: this.data.type,
+      savePosition: true,
       // force: false,
       onClose: function() {
         Ngn.sd.previewSwitch(false);
@@ -696,7 +698,6 @@ Ngn.sd.BlockBMenu = new Class({
     return {
       width: 250,
       id: 'menu',
-      savePosition: true,
       //footer: false,
       onFormResponse: function() {
         this.form.addEvent('elHDistanceChange', function(value) {
@@ -765,6 +766,25 @@ Ngn.sd.BlockBImage = new Class({
   },
 
   initFont: function() {
+  }
+
+});
+
+Ngn.sd.BlockBGallery = new Class({
+  Extends: Ngn.sd.BlockB,
+
+
+  init: function() {
+    this.parent();
+    var carousel = new Ngn.Carousel(this.el.getElement('.cont'));
+    $('prev').addEvent('click', function() {
+      carousel.toPrevious();
+    });
+    $('next').addEvent('click', function() {
+      c('!');
+      carousel.toNext();
+    });
+
   }
 
 });
@@ -844,23 +864,22 @@ Ngn.sd.BlockBFont = new Class({
   fontSettingsDialogOptions: function() {
     return {
       width: 350,
-      savePosition: true,
       onChangeFont: function(font) {
-        this.data.fontFamily = font;
-        this.updateCufonStyles();
+        this.data.font.fontFamily = font;
+        this.updateCufon();
       }.bind(this),
       onChangeSize: function(size) {
-        this.data.fontSize = size;
-        this.updateCufonStyles();
+        this.data.font.fontSize = size;
+        this.updateCufon();
       }.bind(this),
       onChangeColor: function(color) {
-        this.data.color = color;
-        this.updateCufonStyles();
+        this.data.font.color = color;
+        this.updateCufon();
       }.bind(this),
       onCancelClose: function() {
         if (this.data.font) {
           this.resetData();
-          this.updateCufonStyles();
+          this.updateCufon();
         } else {
           this.styleEl().set('html', this.data.html);
         }
@@ -870,43 +889,24 @@ Ngn.sd.BlockBFont = new Class({
   directChangeFontStyleProps: function() {
     return ['font-size', 'font-family', 'color'];
   },
-  replaceCufon: function() {
-    this.updateCufon();
-  },
-  cufonInitialized: false,
-  updateFont: function() {
-    this.updateCufon();
-    /*
-    if (!this.cufonInitialized) {
-      this.updateCufon();
-      return;
-    }
-    this.updateCufon(true);
-    */
-  },
-  updateCufon: function(refrash) {
-    //this._updateFont();
+  updateFont: function() {},
+  updateCufon: function() {
+    this._updateFont();
     Ngn.sd.BlockBFont.html[this.id()] = this.data.html;
     this.loadFont(function() {
-      this.updateCufonStyles(refrash);
+      Cufon.set('fontFamily', this.data.font.fontFamily); // Так-то куфон подхватывает шрифт из стилей, но где-то в другом месте (в диалоге, например) он может быть определен через set(). Так что нужно переопределять и тут
+      Cufon.replace(this.styleEl());
       Ngn.loading(false);
     }.bind(this));
-    this.cufonInitialized = true;
-  },
-  updateCufonStyles: function(refrash) {
-    Cufon.set('font-family1', this.data.font.fontFamilyCufon);
-    Cufon.set('font-size', this.data.font.fontSize);
-    Cufon.set('color', this.data.font.color);
-    refrash ? Cufon.refresh(this.styleEl()) : Cufon.replace(this.styleEl());
   },
   loadFont: function(onLoad) {
-    if (!this.data.font || !this.data.font.fontFamilyCufon) return;
+    if (!this.data.font || !this.data.font.fontFamily) return;
     Ngn.loading(true);
-    Ngn.sd.loadFont(this.data.font.fontFamilyCufon, onLoad);
+    Ngn.sd.loadFont(this.data.font.fontFamily, onLoad);
   },
   replaceContent: function() {
     this.parent();
-    this.replaceCufon();
+    this.updateCufon();
   },
   initControls: function() {
     this.parent();
@@ -1303,8 +1303,9 @@ Ngn.sd.blockTypes = [
       type: 'font'
     },
     editDialogOptions: {
+      width: 300,
       dialogClass: 'dialog elNoPadding',
-      vResize: true
+      vResize: Ngn.Dialog.VResize.Textarea
     }
   },
   {
@@ -1526,7 +1527,7 @@ Ngn.sd.OrderBarItem = new Class({
 
 Ngn.sd.updateOrderBar = function(orderedBlocks) {
   $('orderBar').set('html', '');
-  for (var i=0; i<orderedBlocks.length; i++) {
+  for (var i = 0; i < orderedBlocks.length; i++) {
     if (Ngn.sd.blocks[orderedBlocks[i].id]) new Ngn.sd.OrderBarItem(orderedBlocks[i].id);
   }
 };

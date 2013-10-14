@@ -207,7 +207,11 @@ class SdPageBlockEditFormAbstract extends Form {
       ]
     ];
     parent::__construct($fields[$this->item['data']['type']]);
-    UploadTemp::extendFormOptions($this, "/{$this->req->param(0)}/json_updateImage/{$this->req->param(2)}");
+    if ($this->item['data']['type'] == 'gallery') {
+      UploadTemp::extendFormOptions($this, "/{$this->req->param(0)}/json_updateImages/{$this->req->param(2)}");
+    } else {
+      UploadTemp::extendFormOptions($this, "/{$this->req->param(0)}/json_updateImage/{$this->req->param(2)}");
+    }
   }
 
 }

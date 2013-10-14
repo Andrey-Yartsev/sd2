@@ -12,7 +12,6 @@ class SvgItem extends ArrayAccesseble {
         if (preg_match('/class="(\w+)"/m', $path, $m2)) {
           if (!in_array($m2[1], $this->r['classes'])) $this->r['classes'][] = $m2[1];
         }
-
         $this->r['paths'][] = $path;
       }
     }

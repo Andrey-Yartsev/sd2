@@ -2,6 +2,6 @@
 
 class SdCufonSettingsForm extends SdFontSettingsFormBase {
 
-  protected $fontField = 'fontFamilyCufon';
+  protected $fontFieldType = 'fontFamilyCufon';
 
 }

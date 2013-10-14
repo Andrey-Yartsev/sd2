@@ -87,7 +87,6 @@ class SdPageBlockItems extends SdContainerItems {
     $r = [];
     foreach (parent::getItems() as $v) {
       $item = SdPageBlockItem::factory($v)->prepareHtml($this->ownPageId);
-      //prr([$item['id'], $this->ownPageId, $item->isShow($this->ownPageId)]);
       if ($item->isShow($this->ownPageId)) $r[] = $item->r;
     }
     return $r;
