@@ -12,7 +12,7 @@ class CtrlSdSvg extends CtrlCommon {
 
   function action_ajax_browse() {
     $d['items'] = [];
-    foreach (self::getFiles() as $file) $d['items'][] = (new SvgItem($file));
+    foreach (self::getFiles() as $file) $d['items'][] = new SvgItem($file);
     Tt()->tpl('svg/browse', array_merge($this->req->r, $d));
   }
 

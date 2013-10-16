@@ -795,7 +795,7 @@ Ngn.sd.BlockBSvg = new Class({
   editDialogOptions: function() {
     return {
       onChangeSvg: function(value) {
-        this.el.getElement('.cont').set('html', Ngn.sd.itemTpl('svgSelect', value)); // 'svgSelect' -> 'svgItems'
+        this.el.getElement('.cont').set('html', '<img src="/sd/svg/' + value + '.svg">');
       }.bind(this),
       onChangeColor: function(color) {
         this.setColor(color);
@@ -889,7 +889,8 @@ Ngn.sd.BlockBFont = new Class({
   directChangeFontStyleProps: function() {
     return ['font-size', 'font-family', 'color'];
   },
-  updateFont: function() {},
+  updateFont: function() {
+  },
   updateCufon: function() {
     this._updateFont();
     Ngn.sd.BlockBFont.html[this.id()] = this.data.html;
@@ -1492,7 +1493,7 @@ Ngn.sd.UserPanel = new Class({
     Ngn.sd.buildBlockBtns(blockUserTypes, eBlocksPanel);
     new Ngn.HidebleBar.V(eBlocksPanel);
   }
-});
+});//
 
 Ngn.sd.buildBlockBtns = function(blockTypes, eCont) {
   blockTypes.each(function(data) {
@@ -1500,6 +1501,7 @@ Ngn.sd.buildBlockBtns = function(blockTypes, eCont) {
       'class': 'btnBlock move type_' + data.data.type,
       title: data.title
     }).inject(eCont);
+    //new Element('div.openBtnsGroupBar').inject(btn, 'after');
     btn.addEvent('mousedown', function(event) {
       event.stop();
       new Ngn.sd.BlockPreview(Ngn.sd.elBlock().inject(document.body).setPosition(btn.getPosition()), { data: data.data }, event);
