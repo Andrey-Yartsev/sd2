@@ -90,7 +90,6 @@ use SdItemsCtrl;
     $items = $this->items()->getItemsFF();
     $ids = array_flip($this->req['ids']);
     foreach ($items as &$item) {
-      //prr($item['id']);
       $item['orderKey'] = $ids[$item['id']];
     }
     $this->items()->replace(Arr::sortByOrderKey($items, 'orderKey'));
