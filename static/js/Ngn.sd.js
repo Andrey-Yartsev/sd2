@@ -78,6 +78,7 @@ Ngn.sd.Font = new Class({
   },
 
   initFont: function() {
+    if (!this.data.font) this.data.font = {};
     this.updateFont();
     new Ngn.Btn(Ngn.btn2('Настройки шрифта', 'font').inject(this.eBtns), function() {
       new Ngn.sd.FontSettingsDialog($merge({
@@ -189,6 +190,7 @@ Ngn.sd.buildStyles = function() {
 };
 
 Ngn.sd.directChangeStyleProperies = '(width|height|left|top|margin|padding)';
+Ngn.sd.directChangeStyleValues = 'rotate';
 
 Element.implement({
   sdSetStyle: function(property, value, subSelector) {
@@ -222,7 +224,7 @@ Element.implement({
       }
     }
     if (!value) return;
-    if (!subSelector && property.test(new RegExp(Ngn.sd.directChangeStyleProperies, 'i'))) {
+    if (!subSelector && (property.test(new RegExp(Ngn.sd.directChangeStyleProperies, 'i')) || value.test(new RegExp(Ngn.sd.directChangeStyleValues, 'i')))) {
       if (!this.hasClass('dynamicStyles')) this.addClass('dynamicStyles');
       this.style[property] = value;
     }
@@ -392,7 +394,6 @@ Ngn.sd.TranslateDragEvents = new Class({
 Ngn.sd.BlockDraggableProgress = {};
 
 Ngn.sd.BlockDraggable = new Class({
-
   Implements: [Ngn.sd.TranslateDragEvents],
 
   name: 'default',
@@ -459,10 +460,10 @@ Ngn.sd.BlockRotate = new Class({
   onStart: function(el, e) {
     this.parent(el, e);
     this.startY = e.event.pageY;
+    this.startRotate = this.block.data.rotate;
   },
   onDrag: function(el, e) {
-    this.curRotate = this.block.data.rotate - (this.startY - e.event.pageY);
-    this.block.rotate(this.curRotate);
+    this.block.rotate(this.startRotate - (this.startY - e.event.pageY) * 2);
   }
 
 });
@@ -503,10 +504,12 @@ Ngn.sd.BlockB = new Class({
   updateContent: function() {
   },
   rotate: function(deg) {
-    var eCont = this.el.getElement('.cont');
-    eCont.sdSetStyle('transform', 'rotate(' + deg + 'deg)');
-    eCont.sdSetStyle('-ms-transform', 'rotate(' + deg + 'deg)');
-    eCont.sdSetStyle('-webkit-transform', 'rotate(' + deg + 'deg)');
+    this._rotate(this.el.getElement('.cont'), deg);
+  },
+  _rotate: function(el, deg) {
+    el.sdSetStyle('transform', 'rotate(' + deg + 'deg)');
+    el.sdSetStyle('-ms-transform', 'rotate(' + deg + 'deg)');
+    el.sdSetStyle('-webkit-transform', 'rotate(' + deg + 'deg)');
     this.data.rotate = deg;
   },
   initCopyCloneBtn: function() {
@@ -746,7 +749,7 @@ Ngn.sd.BlockBMenu = new Class({
     this.updateLinkSelectedColor();
   },
   updateLinkSelectedColor: function() {
-    if (!this.data.font.linkSelectedColor) return;
+    if (!this.data.font || !this.data.font.linkSelectedColor) return;
     this.styleEl().sdSetStyle('color', this.data.font.linkSelectedColor, 'a.sel');
   }
 });
@@ -781,7 +784,6 @@ Ngn.sd.BlockBGallery = new Class({
       carousel.toPrevious();
     });
     $('next').addEvent('click', function() {
-      c('!');
       carousel.toNext();
     });
 
@@ -813,6 +815,10 @@ Ngn.sd.BlockBSvg = new Class({
 
   resizeContentEl: function(size) {
     this._resizeEl(this.el.getElement('img'), size);
+  },
+
+  rotate: function(deg) {
+    this._rotate(this.el.getElement('img'), deg);
   },
 
   _setColor: function(color, n) {
@@ -1835,7 +1841,9 @@ Ngn.Form.El.FontFamilyCufon = new Class({
 });
 
 Ngn.sd.itemTpl = function(k, v) {
-  return Elements.from(Ngn.tpls[k])[0].getElement('div.item[data-name=' + v + ']').get('html')
+  var el = Elements.from(Ngn.tpls[k])[0].getElement('div.item[data-name=' + v + ']');
+  if (!el) throw new Error('Element "' + v + '" not found');
+  return el.get('html');
 };
 
 Ngn.Form.El.SvgSelect = new Class({
@@ -1846,6 +1854,7 @@ Ngn.Form.El.SvgSelect = new Class({
   },
   setValue: function(value) {
     this.parent(value);
+    if (!value) return;
     this.eSelectDialog.set('html', Ngn.sd.itemTpl('svgSelect', value));
   }
 });
@@ -1854,7 +1863,7 @@ Ngn.sd.SvgSelectDialog = new Class({
   Extends: Ngn.sd.SelectDialog,
   name: 'svg',
   options: {
-    message: /*Ngn.tpls.svgUploadForm + */Ngn.tpls.svgSelect,
+    message: /* Ngn.tpls.svgUploadForm + */Ngn.tpls.svgSelect,
     title: 'Выбор векторной картинки'
   },
   init: function() {
