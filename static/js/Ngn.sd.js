@@ -1574,7 +1574,7 @@ Ngn.sd.buildPanel = function() {
           onComplete: function() {
             Ngn.loading(false);
           }
-        }).post({data: Ngn.frm.toObj(fieldSet.eContainer)});
+        }).post({data: Ngn.Frm.toObj(fieldSet.eContainer)});
       });
       var hidebleBar = new Ngn.HidebleBar.V(ePages);
       hidebleBar.eHandlerShow.set('title', 'Показать');
