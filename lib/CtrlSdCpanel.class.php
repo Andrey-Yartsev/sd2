@@ -4,8 +4,8 @@ class CtrlSdCpanel extends CtrlCommon {
   use SdPersonalCtrl;
 
   protected function init() {
-    Sflm::flm('css')->addLib('sdEdit');
-    Sflm::flm('js')->addLib('sdEdit');
+    Sflm::frontend('css')->addLib('sdEdit');
+    Sflm::frontend('js')->addLib('sdEdit');
   }
 
   function action_default() {

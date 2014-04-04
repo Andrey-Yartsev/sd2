@@ -1,8 +1,8 @@
 <?php
 
-Sflm::$frontend = 'default';
-Sflm::flm('js')->addLib('sdEdit');
-Sflm::flm('js')->code();
+Sflm::setFrontend('default');
+Sflm::frontend('js')->addLib('sdEdit');
+Sflm::frontend('js')->code();
 return;
 (new PmLocalServer([
   'title' => 'Sample',

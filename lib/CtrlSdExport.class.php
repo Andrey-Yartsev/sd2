@@ -4,9 +4,9 @@ class CtrlSdExport extends CtrlCommon {
 
   function action_json_default() {
     Sflm::resetFrontend('sdSite');
-    //Sflm::flm('css')->addLib('sdSite');
-    //Sflm::flm('js')->addLib('sdSite');
-    //die2(Sflm::flm('css')->getTags());
+    //Sflm::frontend('css')->addLib('sdSite');
+    //Sflm::frontend('js')->addLib('sdSite');
+    //die2(Sflm::frontend('css')->getTags());
     $t = Tt()->getTpl('export', [
       'sfl'  => 'sdSite',
       'html' => $this->req['html']
