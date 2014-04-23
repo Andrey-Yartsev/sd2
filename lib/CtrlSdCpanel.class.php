@@ -6,6 +6,7 @@ class CtrlSdCpanel extends CtrlCommon {
   protected function init() {
     Sflm::frontend('css')->addLib('sdEdit');
     Sflm::frontend('js')->addLib('sdEdit');
+    Sflm::frontend('js')->addObject('Ngn.Dialog.RequestForm');
   }
 
   function action_default() {
@@ -23,9 +24,10 @@ class CtrlSdCpanel extends CtrlCommon {
         return;
       }
     }
-    $this->json['project'] = SdCore::getProject();
+    //$this->json['project'] = SdCore::getProject();
+    $this->json['project'] = ['title' => 'dummy'];
     //$this->json['blockUserTypes'] = $this->getUserTypes($this->json['project']['package']['id']);
-    $this->json['blockUserTypes'] = $this->getUserTypes(312);
+    //$this->json['blockUserTypes'] = $this->getUserTypes(312);
     $this->json['layout'] = SdCore::getLayout($this->req['ownPageId']);
     $this->json['pageTitle'] = Config::getVar("sd/pages")['name'][$this->req['ownPageId'] - 1];
   }
