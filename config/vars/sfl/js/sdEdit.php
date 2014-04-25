@@ -10,5 +10,6 @@ return [
   //'Ngn.Dialog.RequestForm',
   'sd/js/sflm/Ngn.sd.js',
   'sd/js/sflm/plugins/text.js',
+  'sd/js/sflm/plugins/pages.js',
   //'m/js/edit.js',
 ];

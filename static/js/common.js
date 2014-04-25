@@ -22,6 +22,7 @@ Ngn.sd.loadFont = function(font, onLoad) {
 };
 
 Ngn.sd.initFullBodyHeight = function() {
+  return;
   var isFullHeight = null;
   var fullBodyHeight = function() {
     if (window.getScrollSize().y > window.getSize().y) {

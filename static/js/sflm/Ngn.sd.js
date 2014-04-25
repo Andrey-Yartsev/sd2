@@ -530,13 +530,16 @@ Ngn.sd.BlockB = new Class({
     }
   },
   initCopyBtn: function() {
-    new Ngn.Btn(Ngn.btn2('Копировать', 'copy').inject(this.eBtns, 'top'), function() {
+    /*
+    // temporarily disabled
+    new Ngn.Btn(Ngn.btn2('Клонировать', 'copy').inject(this.eBtns, 'top'), function() {
       var data = Object.clone(this._data);
       data.data.position.x += 50;
       data.data.position.y += 50;
       delete data.id;
       Ngn.sd.block(Ngn.sd.elBlock().inject(this.container()), data).save(true);
     }.bind(this));
+     */
   },
   initCloneBtn: function() {
     new Ngn.Btn(Ngn.btn2('Клонировать', 'copy').inject(this.eBtns, 'top'), function() {
