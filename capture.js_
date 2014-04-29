@@ -1,0 +1,40 @@
+if (!require('system').args[1]) throw new Error('arg #1 is required');
+var domain = require('system').args[1];
+var fs = require('fs');
+var page = require('webpage').create();
+var url = 'http://' + domain + '/cpanel';
+
+/*
+ page.viewportSize = { width: 900, height : 600 };
+ page.open(url, function() {
+ page.render('/home/user/ngn-env/sd/static/watch/' + domain + '.png');
+ console.log('Yes');
+ phantom.exit();
+ });
+ */
+
+var casper = require('casper').create();
+casper.start(url, function() {
+});
+casper.on('page.error', function(msg, trace) {
+  console.trace('^^^: ' + msg);
+});
+casper.evaluate(function() {
+});
+casper.then(function() {
+  casper.waitForSelector('.id_1 a.edit', function() {
+    casper.click('.id_1 a.edit');
+    //casper.wait(1, function() {
+      //console.log('55555');
+      /*
+       casper.capture('../static/capture/text_edit.png', {
+       top: 0,
+       left: 0,
+       width: 950,
+       height: 600
+       });
+       */
+    //});
+  });
+});
+casper.run();

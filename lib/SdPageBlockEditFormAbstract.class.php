@@ -33,7 +33,7 @@ class SdPageBlockEditFormAbstract extends Form {
     $fields = [
       'text'    => [
         [
-          'type' => 'wisiwigSimple2',
+          'type' => 'wisiwigSimpleLinks',
           'name' => 'text'
         ]
       ],

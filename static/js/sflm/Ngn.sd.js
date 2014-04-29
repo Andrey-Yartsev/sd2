@@ -632,7 +632,7 @@ Ngn.sd.BlockB = new Class({
   editAction: function() {
     Ngn.sd.previewSwitch(true);
     var cls = this.editDialogClass();
-    new cls($merge($merge({
+    var options = $merge($merge({
       url: this.ctrl + '/json_edit/' + this._data.id + '?ownPageId=' + Ngn.sd.ownPageId,
       dialogClass: 'settingsDialog dialog',
       title: 'Редактирование (ID ' + this._data.id + ')',
@@ -646,7 +646,8 @@ Ngn.sd.BlockB = new Class({
       onSubmitSuccess: function() {
         this.reload();
       }.bind(this)
-    }, Ngn.sd.getBlockType(this.data.type).editDialogOptions || {}), this.editDialogOptions()))
+    }, Ngn.sd.getBlockType(this.data.type).editDialogOptions || {}), this.editDialogOptions());
+    new cls(options);
   },
   editDialogClass: function() {
     return Ngn.Dialog.RequestForm;

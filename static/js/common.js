@@ -6,7 +6,7 @@ Ngn.positionDiff = function(pos1, pos2, offset) {
   }
 };
 
-Ngn.sd = {};
+if (!Ngn.sd) Ngn.sd = {};
 
 Ngn.sd.loadedFonts = {};
 Ngn.sd.loadFont = function(font, onLoad) {
