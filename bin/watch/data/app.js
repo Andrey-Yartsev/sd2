@@ -1,5 +1,10 @@
 var app = module.exports = require('appjs');
 
+
+var fs = require('fs');
+
+//fs.write('C:/123', '123');
+
 app.serveFilesFrom(__dirname + '/content');
 
 var menubar = app.createMenu([
