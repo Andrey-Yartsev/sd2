@@ -1,5 +1,6 @@
 <?php
 
+//require dirname(dirname(__DIR__)).'/ngn/vendors/ratchet/vendor/autoload.php';
 require dirname(dirname(__DIR__)).'/ratchet/vendor/autoload.php';
 
 use Ratchet\MessageComponentInterface;
@@ -25,6 +26,7 @@ class SdWssServer implements MessageComponentInterface {
   }
 
   function onMessage(ConnectionInterface $from, $msg) {
+    print getBacktrace(false);
     $this->log("New message received: $msg");
     print_r(count($this->clients));
     foreach ($this->clients as $client) {

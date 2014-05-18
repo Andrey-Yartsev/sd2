@@ -24,7 +24,7 @@
   var Ngn = {};
   console.log('Init');
   $('capture').set('src', '/i/img/empty.png');
-  Ngn.webSockerReconnect = function(host, port, events, attempt) {
+  Ngn.webSocketReconnect = function(host, port, events, attempt) {
     if (!attempt) attempt = 0;
     var ws = new WebSocket('ws://' + host + ':' + port + '/ws/');
     var _events = Object.clone(events);
@@ -32,12 +32,12 @@
       if (attempt > 5) return;
       (function() {
         console.log('Reconnecting...');
-        Ngn.webSockerReconnect(host, port, events, attempt + 1);
+        Ngn.webSocketReconnect(host, port, events, attempt + 1);
       }).delay(5000);
     };
     for (i in _events) ws[i] = _events[i];
   };
-  Ngn.webSockerReconnect('<?= SITE_DOMAIN ?>', 9000, {
+  Ngn.webSocketReconnect('<?= SITE_DOMAIN ?>', 9000, {
     onmessage: function(e) {
       if (e.data.test(/domain:.*/)) {
         var domain = e.data.match(/domain:(.*)/)[1];
