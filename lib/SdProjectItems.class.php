@@ -26,9 +26,9 @@ class SdProjectItems extends DdItems {
 
   function create(array $data) {
     $data = $this->_create($data);
-    (new PmLocalServer($data))->a_createProject();
-    (new PmLocalProject($data))->updateConstant('site', 'SITE_TITLE', $data['title']);
-    $this->created($data['id']);
+    //(new PmLocalServer($data))->a_createProject();
+    //(new PmLocalProject($data))->updateConstant('site', 'SITE_TITLE', $data['title']);
+    //$this->created($data['id']);
     return $data['id'];
   }
 
@@ -38,7 +38,7 @@ class SdProjectItems extends DdItems {
     $newData = ['title' => $curData['title'].' (копия)'];
     $this->addCreateData($newId, $newData);
     parent::update($newId, $newData);
-    (new PmLocalProject($curData))->copy($newData['name'], $newData['domain']);     // копируем проект
+    (new PmLocalProject($curData))->copy($newData['name'], $newData['domain']); // копируем проект
     $this->created($newId);
     return $newId;
   }
@@ -55,6 +55,7 @@ class SdProjectItems extends DdItems {
   }
 
   function delete($id) {
+    die2($this->getItem($id));
     try {
       (new PmLocalProject(['name' => $this->getItem($id)['name']]))->a_delete();
     } catch (Exception $e) {}
