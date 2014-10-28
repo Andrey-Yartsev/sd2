@@ -3,9 +3,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title><?= SITE_TITLE ?></title>
-  <?= Sflm::frontend('css')->getTags() ?>
+  {sflm}
   <? if ($d['sfl'] != 'sdSite') { ?>
   <script src="/i/js/tiny_mce/tiny_mce.js" type="text/javascript"></script>
   <? } ?>
-  <?= Sflm::frontend('js')->getTags() ?>
 </head>

@@ -13,3 +13,12 @@ setConstant('DB_USER', 'root');
 setConstant('DB_PASS', 'ypyfjipdtl');
 setConstant('DB_LOGGING', false);
 setConstant('DB_NAME', 'sitedraw');
+
+Sflm::$debugPaths = [
+  'js' => [
+    'sd/js/Ngn.sd.js',
+    'sd/js/plugins/text.js',
+    'sd/js/plugins/pages.js'
+  ]
+];
+Sflm::$debugUrl = 'http://localhost:8888';

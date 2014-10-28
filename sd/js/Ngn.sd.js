@@ -1277,6 +1277,7 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
   Ngn.sd.ownPageId = ownPageId;
   Ngn.loading(true);
   Ngn.sd.blockContainers = {};
+  if (Ngn.sd.pagesSet) Ngn.sd.pagesSet.setActive(ownPageId);
   new Ngn.Request.JSON({
     url: '/cpanel/json_get?ownPageId=' + ownPageId,
     onComplete: function(data) {
@@ -1305,6 +1306,7 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
       Ngn.sd.updateLayoutContentHeight();
       Ngn.sd.updateOrderBar(data.items.pageBlock);
       Ngn.sd.setPageTitle(ownPageId);
+      window.location = window.location.href.replace(/#pg\d+/, '') + '#pg' + ownPageId;
       Ngn.initTips('.btn,.btnBlock,.logo,.smIcons,.dragBox');
       Ngn.loading(false);
       window.fireEvent('resize');
@@ -1355,13 +1357,19 @@ Ngn.sd.PagesSet = new Class({
         n: this.esRows[i].retrieve('n')
       });
     }
+  },
+  setActive: function(n) {
+  for (var i = 0; i < this.esRows.length; i++) {
+    this.esRows[i].removeClass('active');
   }
+  this.esRows[n-1].addClass('active');
+}
+
 });
 
 Ngn.sd.pages = {};
 
 Ngn.sd.setPageTitle = function(n) {
-  return;
   if (Ngn.sd.pages[n]) $('pageTitle').set('html', Ngn.sd.pages[n]);
 };
 
@@ -1416,7 +1424,8 @@ Ngn.sd.updateOrderBar = function(orderedBlocks) {
 };
 
 Ngn.sd.buildPanel = function() {
-  Ngn.sd.loadData(1);
+  var pg = window.location.hash.match(/#pg(\d+)/);
+  Ngn.sd.loadData(pg ? pg[1] : 1);
   Ngn.sd.ePanel = new Element('div', {'class': 'cont'}).inject($('panel'));
   new Element('a', { 'class': 'logo', href: 'http://sitedraw.ru', target: '_blank', title: 'Перейти на сайт sitedraw.ru' }).inject(Ngn.sd.ePanel);
   new Element('div', { 'class': 'tit', html: 'Блоки' }).inject(Ngn.sd.ePanel);
@@ -1576,6 +1585,7 @@ Ngn.sd.previewSwitch = function(flag) {
 };
 
 Ngn.sd.updateLayoutContentHeight = function() {
+  return;
   var y = 0;
   for (var i in Ngn.sd.blockContainers) y += Ngn.sd.blockContainers[i].el.getSize().y;
   $('layout').getElement('.lCont').sdSetStyle('min-height', (y + 6) + 'px');

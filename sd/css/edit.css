@@ -91,14 +91,11 @@ border-bottom-right-radius: 7px;
 padding: 10px;
 padding-top: 5px;
 }
-.dropRightMenu .fieldSet .bbtns a {
+.dropRightMenu .fieldSet .bottomBtns a {
 color: #ccc !important;
 }
-.dropRightMenu .fieldSet .rowElement a {
-margin-right: 0px;
-margin-left: 0px;
-}
-.dropRightMenu .fieldSet .bbtns a:hover {
+
+.dropRightMenu .fieldSet .bottomBtns a:hover {
 color: #fff !important;
 }
 .dropRightMenu .fieldSet input {

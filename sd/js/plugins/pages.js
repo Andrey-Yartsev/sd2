@@ -38,14 +38,14 @@ Ngn.sd.PagesPanel = new Class({
       ],
       data: data
     });
-    new Ngn.Btn(Ngn.btn1('Сохранить', 'ok').inject(fieldSet.eContainer.getElement('.bbtns'), 'bottom'), function() {
+    new Ngn.Btn(Ngn.btn1('Сохранить', 'btn ok').inject(fieldSet.eContainer.getElement('.bottomBtns'), 'bottom'), function() {
       Ngn.loading(true);
       new Ngn.Request.JSON({
         url: '/pages/json_update',
         onComplete: function() {
           Ngn.loading(false);
         }
-      }).post({data: Ngn.Frm.toObj(fieldSet.eContainer)});
+      }).post({data: Ngn.Frm.toObj(Ngn.sd.pagesSet.eContainer)});
     });
     var hidebleBar = new Ngn.HidebleBar.V(ePages);
     hidebleBar.eHandlerShow.set('title', 'Показать');

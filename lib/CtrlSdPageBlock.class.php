@@ -7,8 +7,12 @@ use SdItemsCtrl;
     return $this->req['id'];
   }
 
+  protected function getCurrentOwnPageId() {
+    return $this->req['ownPageId'] ? : SdCore::defaultOwnPageId;
+  }
+
   protected function items() {
-    return new SdPageBlockItems($this->req['ownPageId'] ? : SdCore::defaultOwnPageId);
+    return new SdPageBlockItems($this->getCurrentOwnPageId());
   }
 
   function action_json_edit() {
@@ -22,7 +26,7 @@ use SdItemsCtrl;
     $d = [
       'data' => [
         'type'        => 'image',
-        'ownPageId'   => 1,
+        'ownPageId'   => $this->getCurrentOwnPageId(),
         'dateUpdate'  => time(),
         'containerId' => (new SdBlockContainerItems(SdCore::defaultOwnPageId))->getItems()[0]['id'],
         'position'    => [
@@ -37,7 +41,7 @@ use SdItemsCtrl;
     ];
     $id = $items->create($d);
     $pageId = SdCore::defaultOwnPageId;
-    $file = Dir::make(UPLOAD_PATH."/$name/$type/$pageId")."/$id.jpg";
+    $file = Dir::make(UPLOAD_PATH."/$name/$type")."/$id.jpg";
     copy($this->req->files['file']['tmp_name'], $file);
     $this->json = $items->getItemF($id);
   }
