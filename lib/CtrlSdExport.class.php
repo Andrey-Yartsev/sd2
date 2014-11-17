@@ -12,7 +12,7 @@ class CtrlSdExport extends CtrlCommon {
     $t = preg_replace('/"(\/u\/[^"]+)"/', '"http://'.SITE_DOMAIN.'$1"', $t);
     $t = preg_replace('/\((\/u\/[^)]+)\)/', '(http://'.SITE_DOMAIN.'$1)', $t);
     file_put_contents(WEBROOT_PATH.'/'.$this->req->param(1).'.html', $t);
-    file_put_contents(SITE_PATH.'/html', $this->req['html']);
+    file_put_contents(PROJECT_PATH.'/html', $this->req['html']);
   }
 
 }
