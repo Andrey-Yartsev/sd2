@@ -13,7 +13,7 @@ casper.then(function() {
     casper.click('.id_1 a.edit');
     // casper.waitForSelector('#text_dialog', function() {
       console.log('55555');
-      casper.capture('../static/capture/text_edit.png', {
+      casper.capture('../sd/capture/text_edit.png', {
         top: 0,
         left: 0,
         width: 950,

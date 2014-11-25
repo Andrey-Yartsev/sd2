@@ -6,7 +6,7 @@ function sys($s) {
 }
 
 $d = __DIR__;
-$jsFolder = "$d/static/js/fonts";
+$jsFolder = "$d/sd/js/fonts";
 $fontsFolder = "$d/fonts";
 foreach (glob("$jsFolder/*") as $v) unlink($v);
 foreach (glob($fontsFolder.'/*.{ttf,otf,pfm,vfb}', GLOB_BRACE) as $v) {
