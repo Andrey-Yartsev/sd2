@@ -9,7 +9,17 @@ trait ItemsCtrl {
 
   function action_json_create() {
     $items = $this->items();
-    $id = $items->create($this->req['data']);
+    $id = $items->create([
+      'data' => [
+        'type'        => 'text',
+        'position'    => [
+          'x' => 123,
+          'y' => 54
+        ],
+        'ownPageId'   => 1,
+        'containerId' => 'head'
+      ]
+    ]);
     $this->json = $items->getItemF($id);
   }
 
