@@ -89,7 +89,7 @@ Ngn.sd.Font = new Class({
 
   initFont: function() {
     if (!this.data.font) this.data.font = {};
-    this.btnFontSettings = new Ngn.Btn(Ngn.btn2('Настройки шрифта', 'font').inject(this.eBtns), function() {
+    this.btnFontSettings = new Ngn.Btn(Ngn.Btn.btn2('Настройки шрифта', 'font').inject(this.eBtns), function() {
       new Ngn.sd.FontSettingsDialog($merge({
         dialogClass: 'settingsDialog compactFields dialog',
         id: this.finalData().data.type + this.id(),
@@ -532,7 +532,7 @@ Ngn.sd.BlockB = new Class({
   initCopyBtn: function() {
     /*
     // temporarily disabled
-    new Ngn.Btn(Ngn.btn2('Клонировать', 'copy').inject(this.eBtns, 'top'), function() {
+    new Ngn.Btn(Ngn.Btn.btn2('Клонировать', 'copy').inject(this.eBtns, 'top'), function() {
       var data = Object.clone(this._data);
       data.data.position.x += 50;
       data.data.position.y += 50;
@@ -542,7 +542,7 @@ Ngn.sd.BlockB = new Class({
      */
   },
   initCloneBtn: function() {
-    new Ngn.Btn(Ngn.btn2('Клонировать', 'copy').inject(this.eBtns, 'top'), function() {
+    new Ngn.Btn(Ngn.Btn.btn2('Клонировать', 'copy').inject(this.eBtns, 'top'), function() {
       var data = {
         data: {
           position: {
@@ -574,7 +574,7 @@ Ngn.sd.BlockB = new Class({
     }.bind(this));
   },
   initDeleteBtn: function() {
-    new Ngn.Btn(Ngn.btn2('Удалить', 'delete').inject(this.eBtns, 'top'), function() {
+    new Ngn.Btn(Ngn.Btn.btn2('Удалить', 'delete').inject(this.eBtns, 'top'), function() {
       if (!Ngn.confirm()) return;
       this.loading(true);
       new Ngn.Request.JSON({
@@ -587,7 +587,7 @@ Ngn.sd.BlockB = new Class({
     }.bind(this));
   },
   initBlockScopeBtn: function() {
-    Ngn.btn2Flag(this.global(), {
+    Ngn.Btn.btn2Flag(this.global(), {
       title: 'Блок глобальный. Нажмите, что бы сделать локальным',
       cls: 'global',
       url: '/pageBlock/ajax_updateGlobal/' + this._data.id + '/0'
@@ -599,7 +599,7 @@ Ngn.sd.BlockB = new Class({
   },
   initTextScopeBtn: function() {
     if (Ngn.sd.getBlockType(this.finalData().data.type).separateContent) {
-      Ngn.btn2Flag(this.data.separateContent, {
+      Ngn.Btn.btn2Flag(this.data.separateContent, {
         title: 'Блок имеет отдельный текст для каждого раздела. Сделать общий текст для всех разделов',
         cls: 'dynamic',
         url: '/pageBlock/ajax_updateSeparateContent/' + this._data.id + '/0',
@@ -614,7 +614,7 @@ Ngn.sd.BlockB = new Class({
   },
   initEditBtn: function() {
     if (this.finalData().data.type != 'image') {
-      new Ngn.Btn(Ngn.btn2('Редактировать', 'edit').inject(this.eBtns, 'top'), this.editAction.bind(this));
+      new Ngn.Btn(Ngn.Btn.btn2('Редактировать', 'edit').inject(this.eBtns, 'top'), this.editAction.bind(this));
     }
   },
   initBtns: function() {
@@ -884,7 +884,7 @@ Ngn.sd.BlockBBlog = new Class({
 
   initBtns: function() {
     this.parent();
-    new Ngn.Btn(Ngn.btn2('Настройки блога', 'settings').inject(this.eBtns, 'top'), function() {
+    new Ngn.Btn(Ngn.Btn.btn2('Настройки блога', 'settings').inject(this.eBtns, 'top'), function() {
       new Ngn.Dialog.RequestForm({
         url: '/blogSettings',
         dialogClass: 'settingsDialog compactFields dialog',
@@ -1072,7 +1072,7 @@ Ngn.sd.ContainerAbstract = new Class({
     this.eBtns = new Element('div', {'class': 'btnSet'}).inject(this.el);
     new Element('div', { 'class': 'ctrlTitle', html: this.id() + ':' }).inject(this.eBtns);
     this.initDrag();
-    this.btns.deleteBg = new Ngn.Btn(Ngn.btn2('Удалить фон', 'delete').inject(this.eBtns), function() {
+    this.btns.deleteBg = new Ngn.Btn(Ngn.Btn.btn2('Удалить фон', 'delete').inject(this.eBtns), function() {
       if (!Ngn.confirm()) return;
       this.loading(true);
       new Ngn.Request.JSON({
@@ -1083,7 +1083,7 @@ Ngn.sd.ContainerAbstract = new Class({
         }.bind(this)
       }).send();
     }.bind(this));
-    new Ngn.Btn(Ngn.btn2('Настройки фона', 'bgSettings').inject(this.eBtns), function() {
+    new Ngn.Btn(Ngn.Btn.btn2('Настройки фона', 'bgSettings').inject(this.eBtns), function() {
       new Ngn.Dialog.RequestForm({
         dialogClass: 'settingsDialog compactFields dialog',
         width: 450,
@@ -1093,7 +1093,7 @@ Ngn.sd.ContainerAbstract = new Class({
         }.bind(this)
       });
     }.bind(this));
-    new Ngn.Btn(Ngn.btn2('Задать фон', 'image').inject(this.eBtns), null, {
+    new Ngn.Btn(Ngn.Btn.btn2('Задать фон', 'image').inject(this.eBtns), null, {
       fileUpload: {
         url: this.ctrl + '/json_uploadBg/' + this.id(),
         onRequest: function() {
@@ -1445,7 +1445,7 @@ Ngn.sd.buildPanel = function() {
     }
   });
   /*
-   new Ngn.Btn(Ngn.btn2('Загрузить шрифт', 'icon btn lrg list').inject(Ngn.sd.ePanel), null, {
+   new Ngn.Btn(Ngn.Btn.btn2('Загрузить шрифт', 'icon btn lrg list').inject(Ngn.sd.ePanel), null, {
    fileUpload: {
    url: '/pageBlock/json_createImage',
    onRequest: function() {
@@ -1494,7 +1494,7 @@ Ngn.sd.buildPanel = function() {
 };
 
 Ngn.sd.fbtn = function(a, b) {
-  var btn = Ngn.btn2(a, 'icon btn lrg ' + b);
+  var btn = Ngn.Btn.btn2(a, 'icon btn lrg ' + b);
   new Element('div', {'class': 'featureBtnWrapper'}).grab(btn).inject(Ngn.sd.ePanel);
   return btn;
 };
