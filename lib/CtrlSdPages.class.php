@@ -7,7 +7,7 @@ class CtrlSdPages extends CtrlCommon {
   }
 
   protected function action_json_update() {
-    SiteConfig::updateVar("sd/pages", $this->req['data'], true);
+    ProjectConfig::updateVar("sd/pages", $this->req['data'], true);
   }
 
 }

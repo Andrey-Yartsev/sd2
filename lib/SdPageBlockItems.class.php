@@ -20,7 +20,7 @@ class SdPageBlockItems extends SdContainerItems {
     foreach ($items as $k => $item) if ($item['data']['ownPageId'] == $this->ownPageId) unset($items[$k]);
     $items = array_values($items);
     $items = array_merge($items, $_items);
-    SiteConfig::updateVar($this->name, $items, true);
+    ProjectConfig::updateVar($this->name, $items, true);
   }
 
   function updateContent($id, $content, $replace = false) {
