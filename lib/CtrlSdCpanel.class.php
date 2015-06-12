@@ -1,12 +1,13 @@
 <?php
 
-class CtrlSdCpanel extends CtrlCommon {
+class CtrlSdCpanel extends CtrlBase {
   use SdPersonalCtrl;
 
   protected function init() {
     Sflm::frontend('css')->addLib('sdEdit');
     Sflm::frontend('js')->addLib('sdEdit');
     Sflm::frontend('js')->addClass('Ngn.Dialog.RequestForm');
+
   }
 
   function action_default() {

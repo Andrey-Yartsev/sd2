@@ -1,5 +1,4 @@
 Ngn.sd.setMinHeight = function(parent, offset, min) {
-  c([parent, offset, min]);
   if (!offset) offset = 0;
   if (!min) min = 0;
   var max = 0;

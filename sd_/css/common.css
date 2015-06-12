@@ -1,0 +1,105 @@
+/*body, html, */
+html{
+height: 100%;
+}
+/*
+body {
+height: 100%;
+}
+*/
+.body, .layout, .lCont {
+height: 100%;
+}
+#layout, .container {
+position: relative;
+}
+.id_layout1 .container {
+min-height: 100px;
+box-sizing: border-box;
+background-repeat: no-repeat;
+background-position: top center;
+position: relative;
+margin: 0 auto;
+width: 100%;
+}
+.lCont {
+background-repeat: no-repeat;
+background-position: top center;
+position: relative;
+margin: 0 auto;
+width: 600px;
+box-sizing: border-box;
+}
+.type_blockContainer.id_footer {
+position: absolute;
+bottom: 0px;
+}
+
+.block {
+width: 200px;
+height: 70px;
+position: absolute;
+}
+
+/* ------- конкретные типы блоков ------------ */
+
+.block.type_menu a {
+/*display: inline-block;*/
+display: block;
+float: left;
+}
+.block.type_feedback textarea, .block.type_feedback input[type=text] {
+width: 95%;
+}
+.block.type_feedback textarea {
+height: 50px;
+}
+.block.type_feedback .element {
+margin-bottom: 10px;
+}
+.block.type_feedback .label {
+margin-bottom: 3px;
+}
+.block.type_blog {
+height: auto;
+}
+.block.type_blog .f_dateCreate {
+font-style: italic;
+text-align: right;
+}
+
+
+.block.type_button .btn {
+width: 150px;
+height: 50px;
+}
+.block.type_button .btn span {
+padding: 0px;
+line-height: 1em;
+}
+/* ------- конец конкретных типов блоков ------------ */
+
+/*--------------лейауты--------------*/
+.id_layout1.inner .mainContent .container {
+float: left;
+height: 100%;
+}
+.id_layout1.inner .mainContent .id_contentLeft {
+width: 30%;
+}
+.id_layout1.inner .mainContent .id_content {
+width: 70%;
+}
+
+
+/*--------------бордюры--------------*/
+.layout .container {
+border: 1px dashed #F05030;
+}
+.lCont {
+border: 3px dotted #F05030;
+}
+
+.menu a.sel {
+font-weight: bold;
+}
