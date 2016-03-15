@@ -12,11 +12,11 @@ use SdItemsCtrl;
   }
 
   protected function items() {
-    return new SdPageBlockItems($this->getCurrentOwnPageId());
+    return new SdPageBlockItems($this->req->param(1));
   }
 
   function action_json_edit() {
-    return $this->jsonFormActionUpdate(SdFormFactory::edit($this->req->param(2), $this->items()));
+    return $this->jsonFormActionUpdate(SdFormFactory::edit($this->req->param(3) , $this->items()));
   }
 
   function uploadCreate($type) {
@@ -93,9 +93,13 @@ use SdItemsCtrl;
   function action_ajax_updateOrder() {
     $items = $this->items()->getItemsFF();
     $ids = array_flip($this->req['ids']);
+    //print_r($items);
     foreach ($items as &$item) {
       $item['orderKey'] = $ids[$item['id']];
     }
+    //print_r($items);
+   // die2(Arr::sortByOrderKey($items, 'orderKey'));
+
     $this->items()->replace(Arr::sortByOrderKey($items, 'orderKey'));
   }
 

@@ -1,1 +1,1 @@
-Ngn.sd.baseUrl = 'http://<?= SITE_DOMAIN ?>';
+Ngn.toObj('Ngn.sd.baseUrl', 'http://<?= SITE_DOMAIN ?>');

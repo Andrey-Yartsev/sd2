@@ -3,6 +3,10 @@
 trait SdItemsCtrl {
 use ItemsCtrl;
 
+  protected function getParamActionN() {
+    return 2;
+  }
+
   function action_json_uploadBg() {
     $items = $this->items();
     $id = $this->req->param(2);
@@ -34,11 +38,11 @@ use ItemsCtrl;
   }
 
   function action_json_cufonSettings() {
-    return $this->jsonFormActionUpdate(new SdCufonSettingsForm($this->req->param(2), $this->items()));
+    return $this->jsonFormActionUpdate(new SdCufonSettingsForm($this->req->param(3), $this->items()));
   }
 
   function action_json_fontSettings() {
-    return $this->jsonFormActionUpdate(SdFormFactory::fontSettings($this->req->param(2), $this->items()));
+    return $this->jsonFormActionUpdate(SdFormFactory::fontSettings($this->req->param(3), $this->items()));
   }
 
 }

@@ -4,17 +4,21 @@ class SdPageBlockItem extends ArrayAccesseble {
 
   /**
    * @param array $item
+   * @param $bannerId
    * @return SdPageBlockItem
    */
-  static function factory(array $item) {
+  static function factory(array $item, $bannerId) {
     $class = ucfirst('SdPageBlockItem'.ucfirst($item['data']['type']));
     $class = class_exists($class) ? $class : 'SdPageBlockItem';
-    return new $class($item);
+    return new $class($item, $bannerId);
   }
 
-  function __construct(array $item) {
+  protected $bannerId;
+
+  function __construct(array $item, $bannerId) {
     Arr::checkEmpty($item, 'data');
     Arr::checkEmpty($item['data'], 'type');
+    $this->bannerId = $bannerId;
     $this->r = $item;
   }
 
@@ -43,6 +47,7 @@ class SdPageBlockItem extends ArrayAccesseble {
   protected function html(array $tplData) {
     $tplData['id'] = $this->r['id'];
     $tplData['data'] = $this->r['data'];
+    $tplData['bannerId'] = $this->bannerId;
     return Tt()->getTpl("pb/{$this->r['data']['type']}", $tplData);
   }
 

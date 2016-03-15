@@ -2,12 +2,12 @@
 
 class SdPageBlockItems extends SdContainerItems {
 
-  public $ownPageId;
+  protected $ownPageId = 1, $bannerId;
 
-  function __construct($ownPageId = SdCore::defaultOwnPageId) {
-    Misc::checkEmpty($ownPageId);
-    $this->ownPageId = $ownPageId;
-    parent::__construct("pageBlocks");
+  function __construct($bannerId) {
+    Misc::checkEmpty($bannerId);
+    $this->bannerId = $bannerId;
+    parent::__construct("pageBlocks/$bannerId");
   }
 
   function update($id, array $data) {
@@ -16,11 +16,10 @@ class SdPageBlockItems extends SdContainerItems {
   }
 
   function replace(array $_items) {
-    $items = $this->getItems();
-    foreach ($items as $k => $item) if ($item['data']['ownPageId'] == $this->ownPageId) unset($items[$k]);
-    $items = array_values($items);
-    $items = array_merge($items, $_items);
-    ProjectConfig::updateVar($this->name, $items, true);
+    //$items = $this->getItems();
+    //$items = array_values($items);
+    //$items = array_merge($items, $_items);
+    ProjectConfig::updateVar($this->name, $_items, true);
   }
 
   function updateContent($id, $content, $replace = false) {
@@ -28,7 +27,7 @@ class SdPageBlockItems extends SdContainerItems {
     $_content = $item['content'];
     if ($item->hasSeparateContent()) {
       if ($replace) $_content = [];
-      $_content[$this->ownPageId] = $content;
+      $_content[111] = $content;
     } else {
       $_content = $content;
     }
@@ -76,7 +75,7 @@ class SdPageBlockItems extends SdContainerItems {
 
   function getItem($id) {
     if (($item = parent::getItem($id)) === false) throw new EmptyException("id=$id");
-    return SdPageBlockItem::factory($item);
+    return SdPageBlockItem::factory($item, $this->bannerId);
   }
 
   function getItemD($id) {
@@ -86,7 +85,7 @@ class SdPageBlockItems extends SdContainerItems {
   function getItemsF() {
     $r = [];
     foreach (parent::getItems() as $v) {
-      $item = SdPageBlockItem::factory($v)->prepareHtml($this->ownPageId);
+      $item = SdPageBlockItem::factory($v, $this->bannerId)->prepareHtml($this->ownPageId);
       if ($item->isShow($this->ownPageId)) $r[] = $item->r;
     }
     return $r;

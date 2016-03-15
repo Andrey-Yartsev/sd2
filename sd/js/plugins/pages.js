@@ -57,4 +57,5 @@ Ngn.sd.PagesPanel = new Class({
 
 });
 
-new Ngn.sd.PagesPanel();
+
+//new Ngn.sd.PagesPanel();

@@ -94,10 +94,6 @@ width: 70%;
 
 /*--------------бордюры--------------*/
 .layout .container {
-border: 1px dashed #F05030;
-}
-.lCont {
-border: 3px dotted #F05030;
 }
 
 .menu a.sel {

@@ -3,34 +3,81 @@
 class CtrlSdCpanel extends CtrlBase {
   use SdPersonalCtrl;
 
+  protected function getParamActionN() {
+    return 2;
+  }
+
   protected function init() {
     Sflm::frontend('css')->addLib('sdEdit');
     Sflm::frontend('js')->addLib('sdEdit');
     Sflm::frontend('js')->addClass('Ngn.Dialog.RequestForm');
-
+    Sflm::frontend('js')->addPath('sd/js/Ngn.sd.js');
+    Sflm::frontend('js')->addPath('sd/js/plugins/font.js');
+    $this->d['bannerId'] = Misc::checkEmpty($this->req->param(1));
   }
 
   function action_default() {
-    //die2((new SdPageBlockItems)->getItem(17)->isShow(1));
-    //if (!Auth::check()) $this->d['tpl'] = 'auth/login';
-    //else $this->d['tpl'] = 'inner';
     $this->d['tpl'] = 'inner';
+  }
+
+  static function getSize($bannerId) {
+    $bannerSettings = Config::getVar('bannerSettings/'.$bannerId);
+    $r = [];
+    list($r['w'], $r['h']) = explode(' x ', $bannerSettings['size']);
+    return $r;
   }
 
   function action_json_get() {
     foreach (['layout', 'layoutContent', 'blockContainer', 'pageBlock'] as $v) {
-      $this->json['items'][$v] = (new RouterManager(['req' => new Req(['uri' => "/$v/json_getItems?ownPageId={$this->req['ownPageId']}"])]))->router()->dispatch()->controller->json;
+      $this->json['items'][$v] = (new RouterManager([ //
+        'req' => new Req([ //
+          'uri' => "/$v/{$this->d['bannerId']}/json_getItems" //
+        ]) //
+      ]))->router()->dispatch()->controller->json;
       if (!empty($this->json['items'][$v]['error'])) {
         $this->json['error'] = $this->json['items'][$v]['error'];
         return;
       }
     }
-    //$this->json['project'] = SdCore::getProject();
     $this->json['project'] = ['title' => 'dummy'];
-    //$this->json['blockUserTypes'] = $this->getUserTypes($this->json['project']['package']['id']);
-    //$this->json['blockUserTypes'] = $this->getUserTypes(312);
     $this->json['layout'] = SdCore::getLayout($this->req['ownPageId']);
     $this->json['pageTitle'] = Config::getVar("sd/pages")['name'][$this->req['ownPageId'] - 1];
+    $this->json['bannerSettings']['size'] = CtrlSdCpanel::getSize($this->d['bannerId']);
+  }
+
+  static $sizes = [
+    [125, 125], //
+    [160, 600], //
+    [200, 200], //
+    [250, 250], //
+    [300, 250], //
+    [300, 600], //
+    [336, 280], //
+    [468, 60], //
+    [728, 90], //
+    [1200, 628], //
+    [900, 471], //
+    [1024, 536] //
+  ];
+
+  function action_json_settings() {
+    $options = [];
+    foreach (self::$sizes as $v) {
+      $options[$v[0].' x '.$v[1]] = $v[0].' x '.$v[1];
+    }
+    $form = new ConfigForm('bannerSettings/'.$this->d['bannerId'], [[
+      'title' => 'Размер',
+      'name' => 'size',
+      'type' => 'select',
+      'options' => $options
+    ]]);
+    if ($form->update()) {
+      $data = $form->getData();
+      list($this->json['w'], $this->json['h']) = explode(' x ', $data['size']);
+      return null;
+    }
+    $this->json['title'] = 'Настройки баннера';
+    return $form;
   }
 
   protected function getUserTypes($package) {
@@ -86,40 +133,6 @@ class CtrlSdCpanel extends CtrlBase {
     }));
   }
 
-  protected function addStat($t) {
-    return $t;
-    /*
-    $statId = SdCore::getProject()['statId'];
-    $trackCode = <<<CODE
-<script type="text/javascript">
-  var _paq = _paq || [];
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://stat.sitedraw.ru//";
-    _paq.push(['setTrackerUrl', u+'piwik.php']);
-    _paq.push(['setSiteId', $statId]);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
-    g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-  })();
 
-</script>
-<noscript><p><img src="http://stat.sitedraw.ru/piwik.php?idsite=$statId" style="border:0" alt="" /></p></noscript>
-CODE;
-    return str_replace('</body>', $trackCode.'</body>', $t);
-    */
-  }
-
-  function action_ajax_exportPhp() {
-  }
-
-  function action_json_uploadFontForm() {
-
-  }
-
-  function action_json_uploadFont() {
-    //ucfirst($this->req['name']);
-    //$this->req->files['file']['tmp_name'];
-  }
 
 }

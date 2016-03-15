@@ -9,17 +9,7 @@ trait ItemsCtrl {
 
   function action_json_create() {
     $items = $this->items();
-    $id = $items->create([
-      'data' => [
-        'type'        => 'text',
-        'position'    => [
-          'x' => 123,
-          'y' => 54
-        ],
-        'ownPageId'   => 1,
-        'containerId' => 'head'
-      ]
-    ]);
+    $id = $items->create($this->req['data']);
     $this->json = $items->getItemF($id);
   }
 
@@ -40,13 +30,13 @@ trait ItemsCtrl {
   }
 
   function action_json_getItem() {
-    $item = $this->items()->getItemF($this->req->param(2));
+    $item = $this->items()->getItemF($this->req->param(3));
     foreach ($item as &$v) if (is_array($v) and !count($v)) $v = (object)$v;
     $this->json = $item;
   }
 
   function action_json_delete() {
-    $this->items()->delete($this->req->param(2));
+    $this->items()->delete($this->req->param(3));
   }
 
 }
