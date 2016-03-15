@@ -10,6 +10,16 @@ class SdPageBlockItems extends SdContainerItems {
     parent::__construct("pageBlocks/$bannerId");
   }
 
+  function create(array $data) {
+    // Делаем orderKey минимальным чтобы блок встал сверху
+    $minOrderKey = 0;
+    foreach ($this->getItems() as $v) {
+      if ($v['orderKey'] < $minOrderKey) $minOrderKey--;
+    }
+    $data['orderKey'] = $minOrderKey;
+    return parent::create($data);
+  }
+
   function update($id, array $data) {
     $this->itemSubKey = 'data';
     parent::update($id, $data);

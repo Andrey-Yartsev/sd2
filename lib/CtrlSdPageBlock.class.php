@@ -40,7 +40,6 @@ use SdItemsCtrl;
       ]
     ];
     $id = $items->create($d);
-    $pageId = SdCore::defaultOwnPageId;
     $file = Dir::make(UPLOAD_PATH."/$name/$type")."/$id.jpg";
     copy($this->req->files['file']['tmp_name'], $file);
     $this->json = $items->getItemF($id);

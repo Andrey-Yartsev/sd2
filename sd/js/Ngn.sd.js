@@ -427,14 +427,13 @@ Ngn.sd.BlockAbstract = new Class({
         this.setData(data);
         if (create) this.initElement(this.el);
         this.updateElement();
-        //if (create) {
-          // block creation event
-        console.debug('!!!+++');
-        Ngn.sd.initLayersPanel();
-        //}
+        this.creationEvent();
         this.loading(false);
       }.bind(this)
     }).post(this.getDataForSave(create));
+  },
+  creationEvent: function() {
+    Ngn.sd.initLayersPanel();
   },
   replaceContent: function() {
     if (!this._data.html) return;
@@ -444,8 +443,6 @@ Ngn.sd.BlockAbstract = new Class({
     });
   }
 });
-
-Ngn.toObj();
 
 Ngn.sd.BlockPreview = new Class({
   Extends: Ngn.sd.BlockAbstract,
@@ -1691,8 +1688,8 @@ Ngn.sd.buildPanel = function() {
         Ngn.Request.Iface.loading(true);
       }.bind(this),
       onComplete: function(v) {
-        // v.html = v.html.replace(/src="([^"]+)"/g, 'src="$1?' + Math.random(1000) + '"');
-        Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.blockContainers[v.data.containerId].el), v);
+        var block = Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.blockContainers[v.data.containerId].el), v);
+        block.creationEvent();
         Ngn.Request.Iface.loading(false);
       }.bind(this)
     }
