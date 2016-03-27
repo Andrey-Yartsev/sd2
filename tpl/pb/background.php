@@ -1,2 +1,2 @@
-<img src="https://zukul.com/public/uploads/bannerTemplate/<?= $d['data']['backgroundId'] ?>.jpg" />
+<img src="http://zukul.com/public/uploads/bannerTemplate/<?= $d['data']['backgroundId'] ?>.jpg" />
 

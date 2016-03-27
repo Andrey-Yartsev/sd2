@@ -154,7 +154,7 @@ class CtrlSdCpanel extends CtrlBase {
     $bannerSizeId = $db->selectCell("SELECT id FROM bannerSize WHERE width=? AND height=?", $size['w'], $size['h']);
     $r = $db->select("SELECT * FROM bannerTemplate WHERE bannerSizeId=?d", $bannerSizeId);
     foreach ($r as $v) {
-      print "<img src='https://zukul.com/public/uploads/bannerTemplate/{$v['filename']}' data-id='{$v['id']}'>\n";
+      print "<img src='http://zukul.com/public/uploads/bannerTemplate/{$v['filename']}' data-id='{$v['id']}'>\n";
     }
   }
 
@@ -168,14 +168,14 @@ class CtrlSdCpanel extends CtrlBase {
   function action_ajax_buttonSelect() {
     $db = new Db('developer', 'K3fo83Gf2a', 's0.toasterbridge.com', 'zukul');
     foreach ($db->select("SELECT * FROM bannerButton") as $v) {
-      print "<img src='https://zukul.com/public/uploads/bannerButton/{$v['filename']}'>\n";
+      print "<img src= 'http://zukul.com/public/uploads/bannerButton/{$v['filename']}'>\n";
     }
   }
 
   function action_ajax_clipartSelect() {
     $db = new Db('developer', 'K3fo83Gf2a', 's0.toasterbridge.com', 'zukul');
     foreach ($db->select("SELECT * FROM bannerButton") as $v) {
-      print "<img src='https://zukul.com/public/uploads/bannerImage/{$v['filename']}'>\n";
+      print "<img src='http://zukul.com/public/uploads/bannerImage/{$v['filename']}'>\n";
     }
   }
 

@@ -591,7 +591,7 @@ Ngn.sd.BlockB = new Class({
   }, // предназначено для изменения стилей внутренних элементов из данных блока
   updateOrder: function(orderKey) {
     if (orderKey !== undefined) this._data.orderKey = orderKey;
-    this.el.setStyle('z-index', -this._data.orderKey);
+    this.el.setStyle('z-index', -this._data.orderKey + 100);
   },
   updateContent: function() {
   },
@@ -1849,6 +1849,22 @@ Ngn.sd.addBannerButton = function(buttonUrl) {
   }).send();
 };
 
+Ngn.sd.CreateFromTemplateDialog = new Class({
+  Extends: Ngn.Dialog,
+  options: {
+    id: 'template',
+    title: 'Create from template',
+    okText: 'Create',
+    width: 400,
+    height: 300,
+    url: '/cpanel/' + Ngn.sd.bannerId + '/ajax_buttonSelect',
+    onRequest: function() {
+    },
+    ok: function() {
+    }.bind(this)
+  }
+});
+
 Ngn.sd.buildPanel = function() {
   var pg = window.location.hash.match(/#pg(\d+)/);
   Ngn.sd.ePanel = new Element('div', {'class': 'cont'}).inject($('panel'));
@@ -1901,6 +1917,10 @@ Ngn.sd.buildPanel = function() {
 
   new Ngn.Btn(Ngn.sd.fbtn('Add clipart', 'image'), function() {
     new Ngn.sd.ClipartInsertDialog();
+  });
+
+  new Ngn.Btn(Ngn.sd.fbtn('Create from template', 'image'), function() {
+    new Ngn.sd.CreateFromTemplateDialog();
   });
 
   /*
