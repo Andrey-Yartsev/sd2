@@ -184,14 +184,14 @@ class CtrlSdCpanel extends CtrlBase {
     $data['data']['buttonUrl'] = $this->req->rq('buttonUrl');
     list($imageSize['w'],$imageSize['h']) = getimagesize($data['data']['buttonUrl']);
     $bannerSize = self::getSize($this->d['bannerId']);
-    if ($imageSize['w'] > $bannerSize['w'] - 20) {
-      $imageSize['w'] = $imageSize['w'] / 2 - 20;
-      $imageSize['h'] = $imageSize['h'] / 2 - 20;
-    }
-    if ($imageSize['h'] > $bannerSize['h'] - 20) {
-      $imageSize['w'] = $imageSize['w'] / 2 - 20;
-      $imageSize['h'] = $imageSize['h'] / 2 - 20;
-    }
+//    if ($imageSize['w'] > $bannerSize['w'] - 20) {
+//      $imageSize['w'] = $imageSize['w'] / 2 - 20;
+//      $imageSize['h'] = $imageSize['h'] / 2 - 20;
+//    }
+//    if ($imageSize['h'] > $bannerSize['h'] - 20) {
+//      $imageSize['w'] = $imageSize['w'] / 2 - 20;
+//      $imageSize['h'] = $imageSize['h'] / 2 - 20;
+//    }
     $data['data']['size'] = $imageSize;
     $data['data']['position'] = [
       'x' => $bannerSize['w'] - $imageSize['w'] - 10,

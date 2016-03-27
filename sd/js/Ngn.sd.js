@@ -528,8 +528,8 @@ Ngn.sd.BlockResize = new Class({
 
   onDrag: function(el, e) {
     this.block.resize({
-      y: e.event.pageY - this.offset.y,
-      x: e.event.pageX - this.offset.x
+      w: e.event.pageX - this.offset.x,
+      h: e.event.pageY - this.offset.y
     });
   }
 
@@ -581,6 +581,7 @@ Ngn.sd.BlockB = new Class({
   init: function() {
     Ngn.sd.blocks[this._data.id] = this;
     this.el.sdSetPosition(this.data.position);
+    this.updateOrder();
     this.initControls();
     this.initFont();
     this.replaceContent();
@@ -588,6 +589,10 @@ Ngn.sd.BlockB = new Class({
     this.updateSize();
     // Ngn.sd.setMinHeight(eContainer); // @ BANNER MAKER
   }, // предназначено для изменения стилей внутренних элементов из данных блока
+  updateOrder: function(orderKey) {
+    if (orderKey !== undefined) this._data.orderKey = orderKey;
+    this.el.setStyle('z-index', -this._data.orderKey);
+  },
   updateContent: function() {
   },
   rotate: function(deg) {
@@ -1033,8 +1038,8 @@ Ngn.sd.BlockBButton = new Class({
   defaultData: function() {
     return {
       size: {
-        x: 150,
-        y: 40
+        w: 150,
+        h: 40
       }
     };
   },
@@ -1634,7 +1639,7 @@ Ngn.sd.initLayersPanel = function() {
     if (item.data.type == 'image' || item.data.type == 'background' || item.data.type == 'button') {
       title = '<span class="ico">' + //
       item.html + '</span>' + //
-        // item.id + ' ' + //
+       // item.id + ' ' + //
       Ngn.String.ucfirst(item.data.type);
     } else if (item.data.type == 'font') {
       title = '<span class="ico">' + //
@@ -1713,7 +1718,7 @@ Ngn.sd.initLayersPanel = function() {
         return element.get('data-id');
       });
       for (var i = 0; i < ids.length; i++) {
-        Ngn.sd.blocks[ids[i]]._data.orderKey = i;
+        Ngn.sd.blocks[ids[i]].updateOrder(i);
       }
       new Ngn.Request({
         url: '/pageBlock/' + Ngn.sd.bannerId + '/json_updateOrder'
@@ -1785,7 +1790,7 @@ Ngn.sd.changeBannerBackground = function(backgroundId) {
   new Ngn.Request.JSON({
     url: '/cpanel/' + Ngn.sd.bannerId + '/json_createBackgroundBlock/' + backgroundId,
     onComplete: function() {
-      window.location.reload();
+      Ngn.sd.reinit();
     }
   }).send();
 };
@@ -1839,7 +1844,7 @@ Ngn.sd.addBannerButton = function(buttonUrl) {
   new Ngn.Request.JSON({
     url: '/cpanel/' + Ngn.sd.bannerId + '/json_createButtonBlock?buttonUrl=' + buttonUrl,
     onComplete: function() {
-      window.location.reload();
+      Ngn.sd.reinit();
     }
   }).send();
 };
@@ -2177,6 +2182,10 @@ Ngn.sd.init = function(bannerId) {
   if (window.location.hash == '#preview') {
     Ngn.sd.previewSwitch();
   }
+};
+
+Ngn.sd.reinit = function() {
+  Ngn.sd.init(Ngn.sd.bannerId);
 };
 
 Ngn.sd.updateContainerHeight = function(eContainer) {
