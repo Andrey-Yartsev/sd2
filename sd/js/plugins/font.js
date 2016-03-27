@@ -1,7 +1,7 @@
 if (!Ngn.sd.blockTypes) Ngn.sd.blockTypes = [];
 
 Ngn.sd.blockTypes.push({
-  title: 'Шрифт',
+  title: 'Font',
   data: {
     type: 'font'
   },

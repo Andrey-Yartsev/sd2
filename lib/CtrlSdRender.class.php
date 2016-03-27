@@ -14,7 +14,7 @@ class CtrlSdRender extends CtrlCommon {
 
   static function renderStitic($bannerId) {
     Dir::make('/home/user/ngn-env/projects/bmaker/u/banner/static');
-    system('phantomjs /home/user/ngn-env/sd/phantomjs/genStatic.js '.$bannerId);
+    system('phantomjs '.SD_PATH.'/phantomjs/genStatic.js '.$bannerId);
     $path = 'banner/static/'.$bannerId.'.png';
     $file = UPLOAD_PATH.'/'.$path;
     $src = imagecreatefrompng($file);

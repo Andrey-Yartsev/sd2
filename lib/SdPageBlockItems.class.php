@@ -11,12 +11,27 @@ class SdPageBlockItems extends SdContainerItems {
   }
 
   function create(array $data) {
-    // Делаем orderKey минимальным чтобы блок встал сверху
-    $minOrderKey = 0;
-    foreach ($this->getItems() as $v) {
-      if ($v['orderKey'] < $minOrderKey) $minOrderKey--;
+    if ($data['data']['type'] == 'background') {
+      $items = $this->getItems();
+      // Удаляем все существующие блоки бэкграундов
+      foreach ($items as $v) {
+        if ($v['data']['type'] == 'background') {
+          $this->delete($v['id']);
+        }
+      }
+      // Делаем orderKey максимальным чтобы блок встал сверху
+      $orderKey = 0;
+      foreach ($items as $v) {
+        if ($v['orderKey'] >= $orderKey) $orderKey++;
+      }
+    } else {
+      // Делаем orderKey минимальным чтобы блок встал сверху
+      $orderKey = 0;
+      foreach ($this->getItems() as $v) {
+        if ($v['orderKey'] <= $orderKey) $orderKey--;
+      }
     }
-    $data['orderKey'] = $minOrderKey;
+    $data['orderKey'] = $orderKey;
     return parent::create($data);
   }
 

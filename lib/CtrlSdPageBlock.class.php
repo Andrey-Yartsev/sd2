@@ -19,6 +19,19 @@ use SdItemsCtrl;
     return $this->jsonFormActionUpdate(SdFormFactory::edit($this->req->param(3) , $this->items()));
   }
 
+  static function protoData($type) {
+    return ['data' => [
+      'type'        => $type,
+      'ownPageId'   => SdCore::defaultOwnPageId,
+      'dateUpdate'  => time(),
+      'containerId' => (new SdBlockContainerItems(SdCore::defaultOwnPageId))->getItems()[0]['id'],
+      'position'    => [
+        'x' => 0,
+        'y' => 0
+      ]
+    ]];
+  }
+
   function uploadCreate($type) {
     $items = $this->items();
     $name = $items->name;
@@ -89,16 +102,12 @@ use SdItemsCtrl;
     $this->items()->updateSeparateContent($this->req->param(2), $this->req->params[3]);
   }
 
-  function action_ajax_updateOrder() {
+  function action_json_updateOrder() {
     $items = $this->items()->getItemsFF();
     $ids = array_flip($this->req['ids']);
-    //print_r($items);
     foreach ($items as &$item) {
       $item['orderKey'] = $ids[$item['id']];
     }
-    //print_r($items);
-   // die2(Arr::sortByOrderKey($items, 'orderKey'));
-
     $this->items()->replace(Arr::sortByOrderKey($items, 'orderKey'));
   }
 

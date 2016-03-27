@@ -7,7 +7,7 @@ class SdCufonSettingsForm extends SdFontSettingsFormBase {
   protected function getInitFields() {
     return Arr::injectAfter(parent::getInitFields(), 1, [
       [
-        'title' => 'Тень',
+        'title' => 'Shadow',
         'type'  => 'boolCheckbox',
         'name'  => 'shadow'
       ],

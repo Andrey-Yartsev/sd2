@@ -2,7 +2,7 @@
 
 class FieldEFontFamilyCufon extends FieldEDialogSelect {
 
-  static $title = 'Шрифт';
+  static $title = 'Font';
 
   protected function defineOptions() {
     $options['options'] = Html::defaultOption();

@@ -6,7 +6,7 @@ class SdFontSettingsFormBase extends Form {
 
   protected function getInitFields() {
     return array_merge(Fields::defaults(['fontSize', 'color']), [[
-      'title' => 'Шрифт',
+      'title' => 'Font',
       'type'  => $this->fontFieldType,
       'name'  => 'fontFamily'
     ]]);
@@ -17,7 +17,7 @@ class SdFontSettingsFormBase extends Form {
     $this->id = $id;
     $item = $this->items->getItemD($this->id);
     if (!empty($item['font'])) $this->defaultData = $item['font'];
-    $this->options['title'] = "Настройки шрифта контейнера «{$this->id}»";
+    $this->options['title'] = "Font Settings";
     $this->options['filterEmpties'] = true;
     parent::__construct($this->getInitFields());
   }

@@ -57,13 +57,32 @@
   #layers {
     position: absolute;
     top: 0;
-    right: 150px;
+    right: 200px;
     z-index: 2000;
+  }
+  #layers .item {
+    position: relative;
+  }
+  #layers .btns {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 30px;
+    padding-left: 15px;
+    width: 70px;
+  }
+  #layers .btns .smIcons {
+    margin-top: 7px;
+  }
+  #layers .btns .smIcons.dummy {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
   }
   #layers .cont {
     position: fixed;
     padding: 10px 0;
-    width: 150px;
+    width: 200px;
     background: #AEAA9F url(/sd/img/panelBg.png) repeat-y top left;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     border-bottom-left-radius: 7px;
@@ -107,4 +126,34 @@
     overflow: hidden;
     height: 100%;
   }
+
+  /* -- background, button -- dialogs */
+  #background_message,
+  #button_message {
+    padding: 10px;
+  }
+  #background_message img,
+  #button_message img{
+    cursor: pointer;
+    display: block;
+    float: left;
+    margin: 0 1px 2px 0;
+    padding: 2px;
+    border: 1px solid #fff;
+  }
+  #background_message img:hover,
+  #button_message img:hover {
+    border: 1px solid #ccc;
+  }
+  #background_message img.selected,
+  #button_message img.selected{
+    background: #bfdeff;
+    border-color: #555;
+  }
+
+  #button_message img {
+    max-width: 100px;
+    max-height: 50px;
+  }
+
 </style>

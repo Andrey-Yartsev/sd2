@@ -39,7 +39,7 @@ class SdPageBlockEditFormAbstract extends Form {
       ],
       'font'    => [
         [
-          'type' => 'textareaTypo',
+          'type' => 'textarea',
           'name' => 'text'
         ],
       ],
