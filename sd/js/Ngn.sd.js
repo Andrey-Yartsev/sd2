@@ -1740,14 +1740,22 @@ Ngn.sd.BackgroundInsertDialog = new Class({
       this.initImages();
     },
     ok: function() {
-      Ngn.sd.changeBannerBackground(Ngn.sd.selectedBackgroundId);
+      Ngn.sd.changeBannerBackground(Ngn.sd.selectedBackgroundUrl);
     }.bind(this)
   },
   initialize: function(options) {
     var w = Ngn.sd.data.bannerSettings.size.w.toInt();
-    if (w < 200) w = w * 3; else if (w < 400) w = w * 2;
+    if (w < 200) {
+      w = w * 3;
+    } else if (w < 400) {
+      w = w * 2;
+    }
     var h = Ngn.sd.data.bannerSettings.size.h.toInt();
-    if (w < 200) h = h * 3; else if (h < 400) h = h * 2;
+    if (h < 200) {
+      //h = h * 2;
+    } else if (h < 400) {
+      //h = h * 2;
+    }
     this.options.width = w + 56;
     this.options.height = h + 30;
     this.options.url = '/cpanel/' + Ngn.sd.bannerId + '/ajax_backgroundSelect';
@@ -1769,7 +1777,7 @@ Ngn.sd.BackgroundInsertDialog = new Class({
   },
   select: function(el) {
     this.removeClass();
-    Ngn.sd.selectedBackgroundId = el.get('data-id');
+    Ngn.sd.selectedBackgroundUrl = el.get('src');
     el.addClass('selected');
   }
 });
@@ -1786,9 +1794,9 @@ Ngn.sd.BlockBClipart = new Class({
   Extends: Ngn.sd.BlockBImage
 });
 
-Ngn.sd.changeBannerBackground = function(backgroundId) {
+Ngn.sd.changeBannerBackground = function(backgroundUrl) {
   new Ngn.Request.JSON({
-    url: '/cpanel/' + Ngn.sd.bannerId + '/json_createBackgroundBlock/' + backgroundId,
+    url: '/cpanel/' + Ngn.sd.bannerId + '/json_createBackgroundBlock?backgroundUrl=' + backgroundUrl,
     onComplete: function() {
       Ngn.sd.reinit();
     }

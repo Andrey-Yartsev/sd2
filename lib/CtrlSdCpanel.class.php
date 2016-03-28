@@ -154,13 +154,13 @@ class CtrlSdCpanel extends CtrlBase {
     $bannerSizeId = $db->selectCell("SELECT id FROM bannerSize WHERE width=? AND height=?", $size['w'], $size['h']);
     $r = $db->select("SELECT * FROM bannerTemplate WHERE bannerSizeId=?d", $bannerSizeId);
     foreach ($r as $v) {
-      print "<img src='http://zukul.com/public/uploads/bannerTemplate/{$v['filename']}' data-id='{$v['id']}'>\n";
+      print "<img src='http://zukul.com/public/uploads/bannerTemplate/{$v['filename']}'>\n";
     }
   }
 
   function action_json_createBackgroundBlock() {
     $data = CtrlSdPageBlock::protoData('background');
-    $data['data']['backgroundId'] = $this->req->param(3);
+    $data['data']['backgroundUrl'] = $this->req->rq('backgroundUrl');
     $data['data']['size'] = self::getSize($this->d['bannerId']);
     (new SdPageBlockItems($this->d['bannerId']))->create($data);
   }
