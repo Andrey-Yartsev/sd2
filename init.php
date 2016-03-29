@@ -7,5 +7,5 @@ O::replaceInjection('DefaultRouter', 'SdRouter');
 Sflm::$version = 9;
 Sflm::$absBasePaths['sd'] = __DIR__.'/sd';
 
-setConstant('DB_NAME', 'sitedraw');
+setConstant('DB_NAME', 'bannerCreator');
 require NGN_ENV_PATH.'/config/database.php'; // default server config
