@@ -3,7 +3,7 @@
 return [
   'noDb'         => true,
   'vhostAliases' => [
-    '/sd/' => '{ngnEnvPath}/sd/sd/'
+    '/sd/' => '{ngnEnvPath}/bc-prod/sd/'
   ],
-  'afterCmdTttt' => 'php {runPath}/run.php site {name} sd/install'
+  'afterCmdTttt' => 'php {runPath}/run.php site {name} bc-prod/install'
 ];
