@@ -1607,7 +1607,7 @@ Ngn.sd.initLayersPanel = function() {
       'data-type': item.data.type
     });
     new Element('div', {
-      'class': 'tit',
+      'class': 'title',
       html: title
     }).inject(eItem);
     var eBtns = new Element('div', {
@@ -1845,7 +1845,7 @@ Ngn.sd.buildPanel = function() {
       }
     });
   });
-  new Ngn.Btn(Ngn.sd.fbtn('Create banner from template', 'add'), function() {
+  new Ngn.Btn(Ngn.sd.fbtn('Create from template', 'add'), function() {
     new Ngn.sd.CreateFromTemplateDialog();
   });
   //new Ngn.Btn(Ngn.sd.fbtn('Clone this banner', 'copy'), function() {
@@ -1905,8 +1905,11 @@ Ngn.sd.buildPanel = function() {
   Ngn.sd.bindKeys();
 };
 
-Ngn.sd.fbtn = function(a, b) {
-  var btn = Ngn.Btn.btn2(a, 'icon btn lrg ' + b);
+Ngn.sd.fbtn = function(title, cls) {
+  var btn = new Element('a', {
+    'class': 'panelBtn ' + cls,
+    html: title
+  });
   new Element('div', {'class': 'featureBtnWrapper'}).grab(btn).inject(Ngn.sd.ePanel);
   return btn;
 };
