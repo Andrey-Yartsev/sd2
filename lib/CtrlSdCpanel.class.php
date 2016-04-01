@@ -8,6 +8,10 @@ class CtrlSdCpanel extends CtrlBase {
   }
 
   protected function init() {
+    if (!Auth::get('id')) {
+      $this->redirect('/auth');
+      return;
+    }
     Sflm::frontend('css')->addLib('sdEdit');
     Sflm::frontend('js')->addLib('sdEdit');
     Sflm::frontend('js')->addClass('Ngn.Dialog.RequestForm');
@@ -20,30 +24,50 @@ class CtrlSdCpanel extends CtrlBase {
     $this->d['tpl'] = 'inner';
   }
 
-  static function getSize($bannerId) {
-    $bannerSettings = Config::getVar('bannerSettings/'.$bannerId);
-    $r = [];
-    list($r['w'], $r['h']) = explode(' x ', $bannerSettings['size']);
-    return $r;
-  }
-
   function action_json_get() {
-    foreach (['layout', 'layoutContent', 'blockContainer', 'pageBlock'] as $v) {
-      $this->json['items'][$v] = (new RouterManager([ //
-        'req' => new Req([ //
-          'uri' => "/$v/{$this->d['bannerId']}/json_getItems" //
-        ]) //
-      ]))->router()->dispatch()->controller->json;
-      if (!empty($this->json['items'][$v]['error'])) {
-        $this->json['error'] = $this->json['items'][$v]['error'];
-        return;
-      }
+    $this->json['items'] = [
+      'blockContainer' => [
+        [
+          'id'     => 'content',
+          'blocks' => true,
+          'global' => false
+        ]
+      ],
+      'layout'         => [
+        [
+          'id'         => 'layout1',
+          'parent'     => 'layout',
+          'bgSettings' => [
+            'repeat' => 'no-repeat'
+          ]
+        ],
+        [
+          'id'     => 'layout2',
+          'parent' => 'layout1'
+        ]
+      ],
+      'layoutContent'  => [
+        [
+          'id'   => 'layout',
+          'type' => 'layoutContent',
+          'font' => ['fontSize' => '24px']
+        ]
+      ]
+    ];
+    $this->json['items']['pageBlock'] = (new RouterManager([ //
+      'req' => new Req([ //
+        'uri' => "/pageBlock/{$this->d['bannerId']}/json_getItems" //
+      ]) //
+    ]))->router()->dispatch()->controller->json;
+    if (!empty($this->json['items']['pageBlock']['error'])) {
+      $this->json['error'] = $this->json['items']['pageBlock']['error'];
+      return;
     }
     $this->json['bannerSizes'] = self::getSizes();
     $this->json['project'] = ['title' => 'dummy'];
     $this->json['layout'] = SdCore::getLayout($this->req['ownPageId']);
     $this->json['pageTitle'] = Config::getVar("sd/pages")['name'][$this->req['ownPageId'] - 1];
-    $this->json['bannerSettings']['size'] = CtrlSdCpanel::getSize($this->d['bannerId']);
+    $this->json['bannerSettings']['size'] = BcCore::getSize($this->d['bannerId']);
   }
 
   static $sizes = [
@@ -149,8 +173,8 @@ class CtrlSdCpanel extends CtrlBase {
   }
 
   function action_ajax_backgroundSelect() {
-    $db = new Db('developer', 'K3fo83Gf2a', 's0.toasterbridge.com', 'zukul');
-    $size = CtrlSdCpanel::getSize($this->d['bannerId']);
+    $db = BcCore::zukulDb();
+    $size = BcCore::getSize($this->d['bannerId']);
     $bannerSizeId = $db->selectCell("SELECT id FROM bannerSize WHERE width=? AND height=?", $size['w'], $size['h']);
     $r = $db->select("SELECT * FROM bannerTemplate WHERE bannerSizeId=?d", $bannerSizeId);
     foreach ($r as $v) {
@@ -161,20 +185,19 @@ class CtrlSdCpanel extends CtrlBase {
   function action_json_createBackgroundBlock() {
     $data = CtrlSdPageBlock::protoData('background');
     $data['data']['backgroundUrl'] = $this->req->rq('backgroundUrl');
-    $data['data']['size'] = self::getSize($this->d['bannerId']);
+    $data['data']['size'] = BcCore::getSize($this->d['bannerId']);
     (new SdPageBlockItems($this->d['bannerId']))->create($data);
   }
 
   function action_ajax_buttonSelect() {
-    $db = new Db('developer', 'K3fo83Gf2a', 's0.toasterbridge.com', 'zukul');
-    foreach ($db->select("SELECT * FROM bannerButton") as $v) {
+    foreach (BcCore::zukulDb()->select("SELECT * FROM bannerButton") as $v) {
       print "<img src= 'http://zukul.com/public/uploads/bannerButton/{$v['filename']}'>\n";
     }
   }
 
   function action_ajax_clipartSelect() {
-    $db = new Db('developer', 'K3fo83Gf2a', 's0.toasterbridge.com', 'zukul');
-    foreach ($db->select("SELECT * FROM bannerButton") as $v) {
+    $ids = implode(', ', db()->ids('bcBannerButtonBroken'));
+    foreach (BcCore::zukulDb()->select("SELECT * FROM bannerButton WHERE id NOT IN ($ids)") as $v) {
       print "<img src='http://zukul.com/public/uploads/bannerImage/{$v['filename']}'>\n";
     }
   }
@@ -182,8 +205,8 @@ class CtrlSdCpanel extends CtrlBase {
   function action_json_createButtonBlock() {
     $data = CtrlSdPageBlock::protoData('button');
     $data['data']['buttonUrl'] = $this->req->rq('buttonUrl');
-    list($imageSize['w'],$imageSize['h']) = getimagesize($data['data']['buttonUrl']);
-    $bannerSize = self::getSize($this->d['bannerId']);
+    list($imageSize['w'], $imageSize['h']) = getimagesize($data['data']['buttonUrl']);
+    $bannerSize = BcCore::getSize($this->d['bannerId']);
 //    if ($imageSize['w'] > $bannerSize['w'] - 20) {
 //      $imageSize['w'] = $imageSize['w'] / 2 - 20;
 //      $imageSize['h'] = $imageSize['h'] / 2 - 20;

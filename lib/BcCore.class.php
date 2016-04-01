@@ -3,18 +3,29 @@
 class BcCore {
 
   static function createBanner($size) {
-    // id calculating
-    $max = 0;
-    foreach (glob(PROJECT_PATH.'/config/vars/bannerSettings/*') as $file) {
-      $id = Misc::removeSuffix('.php', basename($file));
-      if ($id > $max) $max = $id;
-    }
-    $id = $max + 1;
-    ProjectConfig::updateVar('bannerSettings/'.$id, [
-      'size' => $size
-    ], true);
-    //
-    return $id;
+    return db()->insert('bcBanners', [
+      'size' => $size,
+      'userId' => BcCore::user()['id']
+    ]);
+  }
+
+  static function user() {
+    $id = Misc::checkEmpty(Auth::get('id'));
+    return [
+      'id' => $id
+    ];
+  }
+
+  static function zukulDb() {
+    return new Db('developer', 'K3fo83Gf2a', 's0.toasterbridge.com', 'zukul');
+  }
+
+  static protected $size;
+
+  static function getSize($bannerId) {
+    if (isset(self::$size)) return self::$size;
+    list($r['w'], $r['h']) = explode(' x ', db()->selectCell("SELECT size FROM bcBanners WHERE id=?d", $bannerId));
+    return self::$size = $r;
   }
 
 }

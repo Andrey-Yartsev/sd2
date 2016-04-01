@@ -1,1 +1,1 @@
-<?= nl2br($d['text']) ?>
+<?= nl2br($d['data']['font']['text']) ?>

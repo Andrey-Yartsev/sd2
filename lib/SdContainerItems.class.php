@@ -1,10 +1,6 @@
 <?php
 
-class SdContainerItems extends ConfigItems {
-
-  function __construct($name) {
-    parent::__construct("sd/$name");
-  }
+class SdContainerItems extends DbItems {
 
   function getItemF($id) {
     return $this->getItem($id);

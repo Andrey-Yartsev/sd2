@@ -10,6 +10,7 @@ class SdPageBlockItem extends ArrayAccesseble {
   static function factory(array $item, $bannerId) {
     $class = ucfirst('SdPageBlockItem'.ucfirst($item['data']['type']));
     $class = class_exists($class) ? $class : 'SdPageBlockItem';
+    if (gettype($item['content']) == 'string') $item['content'] = [];
     return new $class($item, $bannerId);
   }
 
@@ -68,13 +69,8 @@ class SdPageBlockItem extends ArrayAccesseble {
     return $this->isGlobal();
   }
 
-  function getContainer() {
-    return (new SdBlockContainerItems($this->r['data']['ownPageId']))->getItem($this->r['data']['containerId']);
-  }
-
   function isGlobal() {
-    if (isset($this->r['data']['global'])) return $this->r['data']['global'];
-    else return $this->getContainer()['global'];
+    return true;
   }
 
 }

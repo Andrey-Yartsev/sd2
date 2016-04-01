@@ -15,8 +15,8 @@ class SdFontSettingsFormBase extends Form {
   function __construct($id, SdContainerItems $items) {
     $this->items = $items;
     $this->id = $id;
-    $item = $this->items->getItemD($this->id);
-    if (!empty($item['font'])) $this->defaultData = $item['font'];
+    $item = $this->items->getItem($this->id);
+    if (!empty($item['data']['font'])) $this->defaultData = $item['data']['font'];
     $this->options['title'] = "Font Settings";
     $this->options['filterEmpties'] = true;
     parent::__construct($this->getInitFields());

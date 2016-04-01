@@ -67,28 +67,6 @@ Ngn.sd.setMinHeight = function(parent, offset, min) {
 
 Ngn.sd.Font = new Class({
 
-  _updateLinkColor: function(color, over) {
-    if (!color) return;
-    if (this.styleEl().get('data-type') && this.styleEl().get('data-id')) {
-      var el = this.styleEl();
-    } else {
-      var parents = this.styleEl().getParents('.sdEl').filter(function(v) {
-        return over ? v.retrieve('obj').linkOverColor() : v.retrieve('obj').linkColor();
-      });
-      if (parents.length > 0) var el = parents[0]; else throw new Error('no parents');
-    }
-    var selector = '.type_' + el.get('data-type') + '.id_' + el.get('data-id');
-    Ngn.sd.addStyle(selector + ' .cont a' + (over ? ':hover' : ''), 'color', color);
-  },
-
-  updateLinkColor: function() {
-    this._updateLinkColor(this.linkColor());
-  },
-
-  updateLinkOverColor: function() {
-    this._updateLinkColor(this.linkOverColor(), true);
-  },
-
   directChangeFontStyleProps: function() {
     return [];
   },
@@ -105,8 +83,6 @@ Ngn.sd.Font = new Class({
       }
       if (Ngn.Arr.inn(prop, s)) this.styleEl().sdSetStyle(prop, this.data.font[i]);
     }
-    this.updateLinkColor();
-    this.updateLinkOverColor();
     this.updateBtnFontSettings();
   },
 
@@ -389,7 +365,7 @@ Ngn.sd.BlockAbstract = new Class({
   container: function() {
     var eContainer = this._container();
     if (!eContainer && this.eLastContainer) return this.eLastContainer;
-    if (!eContainer.hasClass('container')) throw new Error('Block has no container');
+    //if (!eContainer.hasClass('container')) throw new Error('Block has no container');
     return this.eLastContainer = eContainer;
   },
   inject: function(eContainer) {
@@ -405,10 +381,8 @@ Ngn.sd.BlockAbstract = new Class({
     this.el.sdSetPosition(this.data.position);
   },
   getDataForSave: function(create) {
-    var eContainer = this.container();
     this.data = Object.merge(this.data, {
-      ownPageId: Ngn.sd.ownPageId,
-      containerId: eContainer.retrieve('data').id
+      ownPageId: Ngn.sd.ownPageId
     });
     this.loading(true);
     // this._data.data - исходные изменяемые данные
@@ -431,7 +405,10 @@ Ngn.sd.BlockAbstract = new Class({
       url: this.ctrl + '/json_' + (create ? 'create' : 'update') + '?ownPageId=' + Ngn.sd.ownPageId,
       onComplete: function(data) {
         this.setData(data);
-        if (create) this.initElement(this.el);
+        if (create) {
+          Ngn.sd.blocks[this._data.id] = this;
+          this.initElement(this.el);
+        }
         this.updateElement();
         this.creationEvent();
         this.loading(false);
@@ -464,7 +441,6 @@ Ngn.sd.BlockPreview = new Class({
     this.el.destroy();
   }
 });
-
 
 Ngn.sd.TranslateDragEvents = new Class({
 
@@ -579,7 +555,7 @@ Ngn.sd.BlockB = new Class({
     //this.updateContainerHeight();
   },
   init: function() {
-    Ngn.sd.blocks[this._data.id] = this;
+    if (this._data.id) Ngn.sd.blocks[this._data.id] = this;
     this.el.sdSetPosition(this.data.position);
     this.updateOrder();
     this.initControls();
@@ -587,8 +563,18 @@ Ngn.sd.BlockB = new Class({
     this.replaceContent();
     this.updateContent();
     this.updateSize();
-    // Ngn.sd.setMinHeight(eContainer); // @ BANNER MAKER
+    // Ngn.sd.setMinHeight(eContainer); 
   }, // предназначено для изменения стилей внутренних элементов из данных блока
+  setToTheTop: function() {
+    var minOrderKey = 1;
+    for (var i in Ngn.sd.blocks) {
+      if (Ngn.sd.blocks[i]._data.orderKey < minOrderKey) {
+        minOrderKey = Ngn.sd.blocks[i]._data.orderKey;
+      }
+    }
+    this.updateOrder(minOrderKey - 1);
+    return this;
+  },
   updateOrder: function(orderKey) {
     if (orderKey !== undefined) this._data.orderKey = orderKey;
     this.el.setStyle('z-index', -this._data.orderKey + 100);
@@ -624,7 +610,7 @@ Ngn.sd.BlockB = new Class({
      */
   },
   initCloneBtn: function() {
-    return; // @ BANNER MAKER
+    return;
     new Ngn.Btn(Ngn.Btn.btn2('Клонировать', 'copy').inject(this.eBtns, 'top'), function() {
       var data = {
         data: {
@@ -632,7 +618,6 @@ Ngn.sd.BlockB = new Class({
             x: this._data.data.position.x + 20,
             y: this._data.data.position.y + 20
           },
-          containerId: this.data.containerId,
           type: 'clone',
           refId: this._data.id,
           size: this._data.data.size
@@ -676,7 +661,7 @@ Ngn.sd.BlockB = new Class({
     }.bind(this));
   },
   initBlockScopeBtn: function() {
-    return; // @ BANNER MAKER
+    return;
     Ngn.Btn.flag2(this.global(), {
       title: 'Блок глобальный. Нажмите, что бы сделать локальным',
       cls: 'global',
@@ -752,7 +737,7 @@ Ngn.sd.BlockB = new Class({
   initDrag: function() {
     //this.eDrag = Elements.from('<a class="btn control drag dragBox2" data-move="1" title="Передвинуть блок"></a>')[0].inject(this.eBtns, 'top');
     this.drag = new Ngn.sd.BlockDrag(this);
-//    return; // @ BANNER MAKER
+//    return; 
   },
   updateSize: function() {
     if (!this.finalData().data.size) return;
@@ -1076,34 +1061,19 @@ Ngn.sd.BlockDragAbstract = new Class({
   create: false,
   getDragOptions: function() {
     return {
-      droppables: '#layout .container',
-      onStart: function(eBlock) {
-        this.start(eBlock);
-      }.bind(this),
-      onDrop: function(eBlock, eContainer) {
-        this.drop(eBlock, eContainer);
-      }.bind(this),
-      onEnter: function(eBlock, eContainer) {
-        //if (!$('layout').hasClass('preview')) eContainer.sdSetStyle('border-color', '#000');
-      },
-      onLeave: function(eBlock, eContainer) {
-        //if (!$('layout').hasClass('preview')) eContainer.sdSetStyle('border-color', '#F00');
-      }
+      onDrop: function(eBlock, eContainer, event) {
+        this.drop(eBlock);
+      }.bind(this)
     };
   },
-  drop: function(eBlock, eContainer) {
-    if (!eContainer) {
-      this.cancel();
-      return;
-    }
+  drop: function(eBlock) {
     window.fireEvent('resize');
-    this.block.inject(eContainer);
+    this.block.setPosition({
+      x: eBlock.getStyle('left').toInt(),
+      y: eBlock.getStyle('top').toInt()
+    });
     this.block.updateContainerHeight();
     this.block.save(this.create);
-  },
-  start: function(eBlock) {
-  },
-  cancel: function() {
   }
 });
 
@@ -1117,7 +1087,6 @@ Ngn.sd.BlockDragNew = new Class({
     this.block.delete();
   }
 });
-
 
 Ngn.sd.blockDraggin = false;
 
@@ -1329,7 +1298,7 @@ Ngn.sd.Layout = new Class({
     cls: false
   },
   initControls: function() {
-  }, // @ BANNER MAKER
+  },
   getEl: function() {
     if (!this.data.parent) throw new Error('parent not defined in ' + this.id() + ' layout');
     if (!$(this.data.parent)) throw new Error(this.data.parent + ' not found');
@@ -1353,7 +1322,7 @@ Ngn.sd.LayoutContent = new Class({
     return '#000';
   },
   initControls: function() {
-  } // @ BANNER MAKER
+  }
 });
 
 if (!Ngn.sd.blockTypes) Ngn.sd.blockTypes = [];
@@ -1407,7 +1376,8 @@ Ngn.sd.initPageTitle = document.getElement('head title').get('text');
 Ngn.sd.loadData = function(ownPageId, onComplete) {
   onComplete = onComplete || function() {
   };
-  if ($('layout1')) $('layout1').dispose();
+  //if () $('layout1').dispose();
+  $('layout1').set('html', '');
   Ngn.sd.ownPageId = ownPageId;
   Ngn.Request.Iface.loading(true);
   Ngn.sd.blockContainers = {};
@@ -1418,43 +1388,40 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
       var v, i;
       document.getElement('head title').set('html', data.pageTitle + ' - ' + Ngn.sd.initPageTitle);
       if (data.blockUserTypes) Ngn.sd.initUserTypes(data.blockUserTypes);
-      for (i = 0; i < data.items.layout.length; i++) {
-        new Ngn.sd.Layout(data.items.layout[i], {
-          cls: i == 0 ? data.layout : ''
-        });
-      }
-      for (i = 0; i < data.items.layoutContent.length; i++) {
-        Ngn.sd.layoutContent = new Ngn.sd.LayoutContent(data.items.layoutContent[i]);
-      }
-      for (i = 0; i < data.items.blockContainer.length; i++) {
-        v = data.items.blockContainer[i];
-        Ngn.sd.blockContainers[v.id] = new Ngn.sd.BlockContainer(v);
-      }
+      //for (i = 0; i < data.items.layout.length; i++) {
+      //  new Ngn.sd.Layout(data.items.layout[i], {
+      //    cls: i == 0 ? data.layout : ''
+      //  });
+      //}
+      //for (i = 0; i < data.items.layoutContent.length; i++) {
+      //  Ngn.sd.layoutContent = new Ngn.sd.LayoutContent(data.items.layoutContent[i]);
+      //}
+      //for (i = 0; i < data.items.blockContainer.length; i++) {
+      //  v = data.items.blockContainer[i];
+      //  Ngn.sd.blockContainers[v.id] = new Ngn.sd.BlockContainer(v);
+      //}
+
+      Ngn.sd.eLayoutContent = new Element('div', {
+        'class': 'lCont sdEl'
+      }).inject('layout1');
       Ngn.sd.blocks = {};
       for (i = data.items.pageBlock.length - 1; i >= 0; i--) {
         v = data.items.pageBlock[i];
-        if (Ngn.sd.blockContainers[v.data.containerId]) {
-          Ngn.sd.blocks[v.id] = Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.blockContainers[v.data.containerId].el), v);
-        }
+        Ngn.sd.blocks[v.id] = Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.eLayoutContent), v);
       }
-      // @ BANNER MAKER
-      Ngn.sd.eContentOverlayBorder = new Element('div', {'class': 'contentOverlayBorder'}).inject(Ngn.sd.blockContainers.content.el, 'top');
+
+      Ngn.sd.eContentOverlayBorder = new Element('div', {'class': 'contentOverlayBorder'}).inject(Ngn.sd.eLayoutContent, 'top');
       new Element('div', {'class': 'contentOverlay contentOverlayLeft'}). //
-        inject(Ngn.sd.blockContainers.content.el, 'top');
+        inject(Ngn.sd.eLayoutContent, 'top');
       new Element('div', {'class': 'contentOverlay contentOverlayTop'}). //
-        inject(Ngn.sd.blockContainers.content.el, 'top');
+        inject(Ngn.sd.eLayoutContent, 'top');
       Ngn.sd.eContentOverlayRight = new Element('div', {'class': 'contentOverlay contentOverlayRight'}). //
-        inject(Ngn.sd.blockContainers.content.el, 'top');
+        inject(Ngn.sd.eLayoutContent, 'top');
       Ngn.sd.eContentOverlayBottom = new Element('div', {'class': 'contentOverlay contentOverlayBottom'}). //
-        inject(Ngn.sd.blockContainers.content.el, 'top');
+        inject(Ngn.sd.eLayoutContent, 'top');
 
-      // Set banner sizes
       Ngn.sd.data = data;
-
-      // Set banner size
       Ngn.sd.setBannerSize(data.bannerSettings.size);
-
-      // @ BANNER MAKER
       Ngn.sd.updateLayoutContentHeight();
       Ngn.sd.updateOrderBar(data.items.pageBlock);
       Ngn.sd.setPageTitle(ownPageId);
@@ -1490,7 +1457,6 @@ Ngn.sd.PageBlocksShift = new Class({
     new Ngn.Request.JSON({
       url: '/pageBlock/' + Ngn.sd.bannerId + '/json_updateOrder'
     }).post({
-        containerId: Ngn.sd.blocks[id].data.containerId,
         ids: ids
       });
   }
@@ -1540,20 +1506,6 @@ Ngn.sd.UserPanel = new Class({
   }
 });
 
-Ngn.sd.buildBlockBtns = function(blockTypes, eCont) {
-  blockTypes.each(function(data) {
-    var btn = new Element('div', {
-      'class': 'btnBlock move type_' + data.data.type,
-      title: data.title
-    }).inject(eCont);
-    //new Element('div.openBtnsGroupBar').inject(btn, 'after');
-    btn.addEvent('mousedown', function(event) {
-      event.stop();
-      new Ngn.sd.BlockPreview(Ngn.sd.elBlock().inject(document.body).setPosition(btn.getPosition()), {data: data.data}, event);
-    });
-  });
-}
-
 Ngn.sd.OrderBarItem = new Class({
 
   initialize: function(id) {
@@ -1589,12 +1541,12 @@ Ngn.sd.animation.exists = function() {
 Ngn.sd.setBannerSize = function(size) {
   document.title = size.w + 'x' + size.h;
   Ngn.sd.bannerSize = size;
-  Ngn.sd.layoutContent.el.setStyle('width', size.w + 'px');
+  Ngn.sd.eLayoutContent.setStyle('width', size.w + 'px');
   Ngn.sd.eContentOverlayBottom.setStyle('width', size.w + 'px');
   Ngn.sd.eContentOverlayBottom.setStyle('top', size.h + 'px');
   Ngn.sd.eContentOverlayRight.setStyle('left', size.w + 'px');
-  Ngn.sd.blockContainers.content.el.setStyle('min-height', 'auto');
-  Ngn.sd.blockContainers.content.el.setStyle('height', size.h + 'px');
+  Ngn.sd.eLayoutContent.setStyle('min-height', 'auto');
+  Ngn.sd.eLayoutContent.setStyle('height', size.h + 'px');
   Ngn.sd.eContentOverlayBorder.setStyle('height', size.h + 'px');
 };
 Ngn.sd.animation.framesCount = function() {
@@ -1639,7 +1591,7 @@ Ngn.sd.initLayersPanel = function() {
     if (item.data.type == 'image' || item.data.type == 'background' || item.data.type == 'button') {
       title = '<span class="ico">' + //
       item.html + '</span>' + //
-       // item.id + ' ' + //
+        // item.id + ' ' + //
       Ngn.String.ucfirst(item.data.type);
     } else if (item.data.type == 'font') {
       title = '<span class="ico">' + //
@@ -1687,7 +1639,6 @@ Ngn.sd.initLayersPanel = function() {
   //Ngn.sd.LayersSortables = new Class({
   //  Extends: Sortables,
   //  start: function(event, element) {
-  //    console.debug(event.target.getParent());
   //    if (event.target.getParent().get('data-type') == 'background') {
   //      return;
   //    }
@@ -1708,13 +1659,10 @@ Ngn.sd.initLayersPanel = function() {
         if (ePrevLayer) {
           Ngn.sd.blocks[id].el.inject( //
             Ngn.sd.blocks[ePrevLayer.get('data-id')].el, 'after');
-        } else {
-          // Ngn.sd.blocks[id].el.inject( //
-          // Ngn.sd.blocks[ePrevLayer.get('data-id')].el, 'after');
         }
       }
       // request
-      var ids = this.serialize(0, function(element, index) {
+      var ids = this.serialize(0, function(element) {
         return element.get('data-id');
       });
       for (var i = 0; i < ids.length; i++) {
@@ -1723,7 +1671,6 @@ Ngn.sd.initLayersPanel = function() {
       new Ngn.Request({
         url: '/pageBlock/' + Ngn.sd.bannerId + '/json_updateOrder'
       }).post({
-          containerId: Ngn.sd.blocks[eMovingLayer.get('data-id')].data.containerId,
           ids: ids
         });
     }
@@ -1881,16 +1828,14 @@ Ngn.sd.buildPanel = function() {
     href: '#', //target: '_blank',
     title: '...'
   }).inject(Ngn.sd.ePanel);
+
   new Element('div', {
-    'class': 'tit',
-    html: 'Blocks'
-  }).inject(Ngn.sd.ePanel);
-  Ngn.sd.buildBlockBtns(Ngn.sd.blockTypes, Ngn.sd.ePanel);
-  new Element('div', {
-    'class': 'tit',
-    html: ''
+    'class': 'tit'
   }).inject(Ngn.sd.ePanel);
 
+  new Ngn.Btn(Ngn.sd.fbtn('Your banners', 'list'), function() {
+    window.location = '/list';
+  });
   new Ngn.Btn(Ngn.sd.fbtn('New banner', 'add'), function() {
     new Ngn.Dialog.RequestForm({
       url: '/newBanner',
@@ -1900,7 +1845,23 @@ Ngn.sd.buildPanel = function() {
       }
     });
   });
-
+  new Ngn.Btn(Ngn.sd.fbtn('Create banner from template', 'add'), function() {
+    new Ngn.sd.CreateFromTemplateDialog();
+  });
+  //new Ngn.Btn(Ngn.sd.fbtn('Clone this banner', 'copy'), function() {
+  //  alert('not realized yet');
+  //});
+  new Ngn.Btn(Ngn.sd.fbtn('Add text', 'news'), function() {
+    var data = Ngn.sd.getBlockType('font');
+    data.data.position = {
+      x: 0,
+      y: 0
+    };
+    Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.eLayoutContent), {
+      data: data.data,
+      html: ''
+    }).setToTheTop().save(true);
+  });
   new Ngn.Btn(Ngn.sd.fbtn('Add image', 'image'), null, {
     fileUpload: {
       url: '/pageBlock/' + Ngn.sd.bannerId + '/json_createImage',
@@ -1908,62 +1869,21 @@ Ngn.sd.buildPanel = function() {
         Ngn.Request.Iface.loading(true);
       }.bind(this),
       onComplete: function(v) {
-        var block = Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.blockContainers[v.data.containerId].el), v);
+        var block = Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.eLayoutContent), v);
         block.creationEvent();
         Ngn.Request.Iface.loading(false);
       }.bind(this)
     }
   });
-
   new Ngn.Btn(Ngn.sd.fbtn('Add background', 'image'), function() {
     new Ngn.sd.BackgroundInsertDialog();
   });
-
   new Ngn.Btn(Ngn.sd.fbtn('Add button', 'image'), function() {
     new Ngn.sd.ButtonInsertDialog();
   });
-
   new Ngn.Btn(Ngn.sd.fbtn('Add clipart', 'image'), function() {
     new Ngn.sd.ClipartInsertDialog();
   });
-
-  new Ngn.Btn(Ngn.sd.fbtn('Create from template', 'image'), function() {
-    new Ngn.sd.CreateFromTemplateDialog();
-  });
-
-  /*
-   new Ngn.Btn(Ngn.Btn.btn2('Загрузить шрифт', 'icon btn lrg list').inject(Ngn.sd.ePanel), null, {
-   fileUpload: {
-   url: '/pageBlock/json_createImage',
-   onRequest: function() {
-   Ngn.Request.Iface.loading(true);
-   }.bind(this),
-   onComplete: function(v) {
-   Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.blockContainers[v.data.containerId].el), v);
-   Ngn.Request.Iface.loading(false);
-   }.bind(this)
-   }
-   });
-   */
-  //Ngn.sd.btnPreview = new Ngn.Btn(Ngn.sd.fbtn('Предпросмотр (Shift + P)', 'preview'), function() {
-  //  Ngn.sd.previewSwitch();
-  //});
-  /*
-   Ngn.sd.btnSelect = new Ngn.Btn(Ngn.sd.fbtn('Выделить', 'select2'), function() {
-   }, {
-   usePushed: true
-   });
-   */
-
-  /*
-   Ngn.sd.btnFullscreen = new Ngn.Btn(Ngn.sd.fbtn('Во весь экран (Shift + F)', 'select'), function() {
-   var el = document.documentElement, rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen;
-   rfs.call(el);
-   }, {
-   usePushed: true
-   });
-   */
-
   new Ngn.Btn(Ngn.sd.fbtn('Settings', 'settings'), function() {
     new Ngn.Dialog.RequestForm({
       url: '/cpanel/' + Ngn.sd.bannerId + '/json_settings',
@@ -2217,7 +2137,7 @@ Ngn.sd.reinit = function() {
 };
 
 Ngn.sd.updateContainerHeight = function(eContainer) {
-  return; // @ BANNER MAKER
+  return;
   Ngn.sd.setMinHeight(eContainer, 0, Ngn.sd.minContainerHeight);
   Ngn.sd.updateLayoutContentHeight();
 };

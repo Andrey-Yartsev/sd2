@@ -2,12 +2,16 @@
 
 class SdPageBlockItems extends SdContainerItems {
 
+  public $name;
+
   protected $ownPageId = 1, $bannerId;
 
   function __construct($bannerId) {
     Misc::checkEmpty($bannerId);
     $this->bannerId = $bannerId;
-    parent::__construct("pageBlocks/$bannerId");
+    $this->name = 'sd/pageBlocks/'.$bannerId;
+    parent::__construct('bcBlocks');
+    $this->cond->addF('bannerId', $this->bannerId);
   }
 
   function create(array $data) {
@@ -31,20 +35,16 @@ class SdPageBlockItems extends SdContainerItems {
         if ($v['orderKey'] <= $orderKey) $orderKey--;
       }
     }
+    //$data['userId'] = $this->userId;
+    $data['bannerId'] = $this->bannerId;
     $data['orderKey'] = $orderKey;
     return parent::create($data);
   }
 
   function update($id, array $data) {
-    $this->itemSubKey = 'data';
-    parent::update($id, $data);
-  }
-
-  function replace(array $_items) {
-    //$items = $this->getItems();
-    //$items = array_values($items);
-    //$items = array_merge($items, $_items);
-    ProjectConfig::updateVar($this->name, $_items, true);
+    $item = $this->getItem($id);
+    $item['data'] = array_merge($item['data'], $data);
+    parent::update($id, $item->r);
   }
 
   function updateContent($id, $content, $replace = false) {

@@ -9,6 +9,11 @@
   <? } ?>
 </head>
 <style>
+
+  #layout1 {
+    margin-top: 100px;
+
+  }
   .contentOverlay {
     position: absolute;
     z-index: 200;
@@ -154,6 +159,11 @@
   #button_message img {
     max-width: 100px;
     max-height: 50px;
+  }
+
+  /*------loginForm--------*/
+  .loginForm {
+    padding: 50px;
   }
 
 </style>

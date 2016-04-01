@@ -12,6 +12,11 @@ class SdFormFactory {
     return new $class($id, $items);
   }
 
+  /**
+   * @param $id
+   * @param SdContainerItems $items
+   * @return SdFontSettingsFormBase
+   */
   static function fontSettings($id, SdContainerItems $items) {
     $item = $items->getItemD($id);
     if (isset($item['type'])) {
@@ -22,6 +27,13 @@ class SdFormFactory {
       $class = 'SdFontSettingsForm';
     }
     return new $class($id, $items);
+  }
+
+  static function contentAndFontSettings($id, SdContainerItems $items) {
+    $contentForm = self::edit($id, $items);
+    $fontSettingsForm = self::fontSettings($id, $items);
+    $form = new Form(array_merge($fontSettingsForm->fields, $contentForm->fields));
+    return $form;
   }
 
 }

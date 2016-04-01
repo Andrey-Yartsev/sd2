@@ -18,7 +18,7 @@ class CtrlSdRender extends CtrlCommon {
     $path = 'banner/static/'.$bannerId.'.png';
     $file = UPLOAD_PATH.'/'.$path;
     $src = imagecreatefrompng($file);
-    $size = CtrlSdCpanel::getSize($bannerId);
+    $size = BcCore::getSize($bannerId);
     $src = imagecrop($src, [
       'width'  => $size['w'],
       'height' => $size['h'],
@@ -41,7 +41,7 @@ class CtrlSdRender extends CtrlCommon {
     Dir::make($tempFolder);
     system('phantomjs '.$sdPath.'/phantomjs/genAnimated.js '. //
       PROJECT_KEY.' '.SITE_DOMAIN.' '.$this->bannerId.' '.$framesCount);
-    $size = CtrlSdCpanel::getSize($this->bannerId);
+    $size = BcCore::getSize($this->bannerId);
     $x = 1300 / 2 - $size['w'] / 2;
     foreach (glob($tempFolder.'/*') as $file) {
       $src = imagecreatefrompng($file);

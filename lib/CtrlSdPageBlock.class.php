@@ -16,7 +16,7 @@ use SdItemsCtrl;
   }
 
   function action_json_edit() {
-    return $this->jsonFormActionUpdate(SdFormFactory::edit($this->req->param(3) , $this->items()));
+    return $this->jsonFormActionUpdate(SdFormFactory::edit($this->req->param(3), $this->items()));
   }
 
   static function protoData($type) {
@@ -24,7 +24,6 @@ use SdItemsCtrl;
       'type'        => $type,
       'ownPageId'   => SdCore::defaultOwnPageId,
       'dateUpdate'  => time(),
-      'containerId' => (new SdBlockContainerItems(SdCore::defaultOwnPageId))->getItems()[0]['id'],
       'position'    => [
         'x' => 0,
         'y' => 0
@@ -36,19 +35,27 @@ use SdItemsCtrl;
     $items = $this->items();
     $name = $items->name;
     $size = getimagesize($this->req->files['file']['tmp_name']);
+    $maxWidth = BcCore::getSize($this->req->param(1))['w'] * 2;
+    if ($size[0] > $maxWidth) {
+      $w = $maxWidth;
+      $a = $size[0] / $size[1];
+      $h = $w / $a;
+      (new Image)->resizeAndSave($this->req->files['file']['tmp_name'], $this->req->files['file']['tmp_name'], $w, $h);
+      $size[0] = $maxWidth;
+      $size[1] = $h;
+    }
     $d = [
       'data' => [
         'type'        => 'image',
         'ownPageId'   => $this->getCurrentOwnPageId(),
         'dateUpdate'  => time(),
-        'containerId' => (new SdBlockContainerItems(SdCore::defaultOwnPageId))->getItems()[0]['id'],
         'position'    => [
-          'x' => 50,
-          'y' => 50
+          'x' => 0,
+          'y' => 0
         ],
         'size'        => [
-          'x' => $size[0],
-          'y' => $size[1]
+          'w' => $size[0],
+          'h' => $size[1]
         ]
       ]
     ];
@@ -65,8 +72,8 @@ use SdItemsCtrl;
     $items->update($id, [
       'dateUpdate' => time(),
       'size' => [
-        'x' => $size[0],
-        'y' => $size[1]
+        'w' => $size[0],
+        'h' => $size[1]
       ]
     ]);
     $file = Dir::make(UPLOAD_PATH."/{$items->name}/$type").'/'.$id.'.jpg';
@@ -103,12 +110,9 @@ use SdItemsCtrl;
   }
 
   function action_json_updateOrder() {
-    $items = $this->items()->getItemsFF();
-    $ids = array_flip($this->req['ids']);
-    foreach ($items as &$item) {
-      $item['orderKey'] = $ids[$item['id']];
+    foreach (array_flip($this->req['ids']) as $blockId => $orderKey) {
+      db()->query("UPDATE bcBlocks SET orderKey=?d WHERE id=?d", $orderKey, $blockId);
     }
-    $this->items()->replace(Arr::sortByOrderKey($items, 'orderKey'));
   }
 
 }
