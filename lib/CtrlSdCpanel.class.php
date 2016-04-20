@@ -8,16 +8,18 @@ class CtrlSdCpanel extends CtrlBase {
   }
 
   protected function init() {
-    if (!Auth::get('id')) {
+    if (!Auth::get('id') and $this->req['renderKey'] != Config::getVar('sd/renderKey')) {
       $this->redirect('/auth');
       return;
     }
+  }
+
+  protected function afterInit() {
+    $this->d['bannerId'] = Misc::checkEmpty($this->req->param(1));
     Sflm::frontend('css')->addLib('sdEdit');
     Sflm::frontend('js')->addLib('sdEdit');
     Sflm::frontend('js')->addClass('Ngn.Dialog.RequestForm');
     Sflm::frontend('js')->addPath('sd/js/Ngn.sd.js');
-    Sflm::frontend('js')->addPath('sd/js/plugins/font.js');
-    $this->d['bannerId'] = Misc::checkEmpty($this->req->param(1));
   }
 
   function action_default() {
@@ -66,24 +68,10 @@ class CtrlSdCpanel extends CtrlBase {
     $this->json['bannerSizes'] = self::getSizes();
     $this->json['project'] = ['title' => 'dummy'];
     $this->json['layout'] = SdCore::getLayout($this->req['ownPageId']);
-    $this->json['pageTitle'] = Config::getVar("sd/pages")['name'][$this->req['ownPageId'] - 1];
     $this->json['bannerSettings']['size'] = BcCore::getSize($this->d['bannerId']);
   }
 
-  static $sizes = [
-    [125, 125], //
-    [160, 600], //
-    [200, 200], //
-    [250, 250], //
-    [300, 250], //
-    [300, 600], //
-    [336, 280], //
-    [468, 60], //
-    [728, 90], //
-    [1200, 628], //
-    [900, 471], //
-    [1024, 536] //
-  ];
+  static $sizes;
 
   static function getSizes() {
     $r = [];
@@ -102,7 +90,7 @@ class CtrlSdCpanel extends CtrlBase {
   }
 
   function action_json_settings() {
-    $form = new ConfigForm('bannerSettings/'.$this->d['bannerId'], [
+    $form = new Form([
       [
         'title'   => 'Banner Size',
         'name'    => 'size',
@@ -110,8 +98,9 @@ class CtrlSdCpanel extends CtrlBase {
         'options' => self::getSizeOptions()
       ]
     ]);
-    if ($form->update()) {
+    if ($form->isSubmittedAndValid()) {
       $data = $form->getData();
+      db()->update('bcBanners', $this->d['bannerId'], ['size' => $data['size']]);
       list($this->json['w'], $this->json['h']) = explode(' x ', $data['size']);
       return null;
     }
@@ -224,3 +213,5 @@ class CtrlSdCpanel extends CtrlBase {
   }
 
 }
+
+CtrlSdCpanel::$sizes = Config::getVar('sd/sizes', false, false);

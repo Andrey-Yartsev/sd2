@@ -124,9 +124,15 @@ Ngn.sd.Font = new Class({
   },
 
   _fontSettingsAction: function() {
-    new Ngn.sd.FontSettingsDialog(Object.merge({
+    if (Ngn.sd.openedPropDialog) Ngn.sd.openedPropDialog.close();
+    Ngn.sd.openedPropDialog = new Ngn.sd.FontSettingsDialog(Object.merge({
+      onClose: function() {
+        Ngn.sd.openedPropDialog = false;
+      },
       dialogClass: 'settingsDialog compactFields dialog',
       id: this.finalData().data.type + this.id(),
+      baseZIndex: 210,
+      force: false,
       url: this.ctrl + '/' + this.fontSettingsAction + '/' + this.id(),
       onSubmitSuccess: function() {
         this.reload();
@@ -166,6 +172,10 @@ Ngn.sd.Font = new Class({
 
 Ngn.sd.FontSettingsDialog = new Class({
   Extends: Ngn.Dialog.RequestForm,
+
+  options: {
+    useFx: false
+  },
 
   formInit: function() {
     var obj = this;
@@ -883,7 +893,6 @@ Ngn.sd.BlockBGallery = new Class({
     $('next').addEvent('click', function() {
       carousel.toNext();
     });
-
   }
 
 });
@@ -1373,6 +1382,21 @@ Ngn.sd.initUserTypes = function(types) {
 
 Ngn.sd.initPageTitle = document.getElement('head title').get('text');
 
+Ngn.getParam = function(val) {
+  var result = "Not found",
+    tmp = [];
+  location.search
+    //.replace ( "?", "" )
+    // this is better, there might be a question mark inside
+    .substr(1)
+    .split("&")
+    .forEach(function (item) {
+      tmp = item.split("=");
+      if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
+    });
+  return result;
+};
+
 Ngn.sd.loadData = function(ownPageId, onComplete) {
   onComplete = onComplete || function() {
   };
@@ -1383,7 +1407,7 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
   Ngn.sd.blockContainers = {};
   if (Ngn.sd.pagesSet) Ngn.sd.pagesSet.setActive(ownPageId);
   new Ngn.Request.JSON({
-    url: '/cpanel/' + Ngn.sd.bannerId + '/json_get/?ownPageId=' + ownPageId,
+    url: '/cpanel/' + Ngn.sd.bannerId + '/json_get/?renderKey=' + Ngn.getParam('renderKey'),
     onComplete: function(data) {
       var v, i;
       document.getElement('head title').set('html', data.pageTitle + ' - ' + Ngn.sd.initPageTitle);
@@ -1558,19 +1582,6 @@ Ngn.sd.animation.framesCount = function() {
   }
   return count;
 };
-Ngn.sd.render = function() {
-  var url;
-  if (Ngn.sd.animation.exists()) {
-    url = '/render/' + Ngn.sd.bannerId + '/ajax_animated/' + Ngn.sd.animation.framesCount();
-  } else {
-    url = '/render/' + Ngn.sd.bannerId;
-  }
-  new Ngn.Dialog.HtmlPage({
-    url: url,
-    title: 'Render',
-    width: Ngn.sd.bannerSize.w.toInt() + 30
-  });
-};
 
 Ngn.sd.sortBySubKey = function(obj, key1, key2) {
   var r = [];
@@ -1586,6 +1597,13 @@ Ngn.sd.initLayersPanel = function() {
   var title;
   var item;
   var sortedBlocks = Ngn.sd.sortBySubKey(Ngn.sd.blocks, '_data', 'orderKey');
+  new Element('div', {
+    html: 'Layers',
+    'class': 'lTitle'
+  }).inject(Ngn.sd.eLayers);
+  var eLayers = new Element('div', {
+    'class': 'layers'
+  }).inject(Ngn.sd.eLayers);
   for (var i = 0; i < sortedBlocks.length; i++) {
     item = sortedBlocks[i]._data;
     if (item.data.type == 'image' || item.data.type == 'background' || item.data.type == 'button') {
@@ -1594,10 +1612,11 @@ Ngn.sd.initLayersPanel = function() {
         // item.id + ' ' + //
       Ngn.String.ucfirst(item.data.type);
     } else if (item.data.type == 'font') {
+      var text = item.html.replace(/<br \/>/g, " ").substring(0, 10);
       title = '<span class="ico">' + //
-      '<img src="/sd/img/font.png"></span>' + //
+      '<img src="/sd/img/font.png?v3"></span>' + //
         // item.id + ' ' + //
-      item.html.replace(/<br \/>/g, " ").substring(0, 10);
+      (text ? text : 'empty')
     } else {
       throw new Error('Unsupported layer type "' + item.data.type + '"');
     }
@@ -1616,16 +1635,9 @@ Ngn.sd.initLayersPanel = function() {
     if (Ngn.sd.blocks[item.id].finalData().data.type == 'font') {
       new Ngn.Btn( //
         Ngn.Btn.btn2('Edit', 'edit').inject(eBtns), //
-        Ngn.sd.blocks[item.id].editAction.bind(Ngn.sd.blocks[item.id]) //
-      );
-      new Ngn.Btn( //
-        Ngn.Btn.btn2('Font Settings', 'font').inject(eBtns), //
         Ngn.sd.blocks[item.id]._fontSettingsAction.bind(Ngn.sd.blocks[item.id]) //
       );
     } else {
-      new Element('a', {
-        'class': 'smIcons dummy'
-      }).inject(eBtns);
       new Element('a', {
         'class': 'smIcons dummy'
       }).inject(eBtns);
@@ -1634,18 +1646,12 @@ Ngn.sd.initLayersPanel = function() {
       Ngn.Btn.btn2('Delete', 'delete').inject(eBtns), //
       Ngn.sd.blocks[item.id].deleteAction.bind(Ngn.sd.blocks[item.id]) //
     );
-    eItem.inject(Ngn.sd.eLayers);
+    eItem.inject(eLayers);
   }
-  //Ngn.sd.LayersSortables = new Class({
-  //  Extends: Sortables,
-  //  start: function(event, element) {
-  //    if (event.target.getParent().get('data-type') == 'background') {
-  //      return;
-  //    }
-  //    this.parent(event, element);
-  //  }
-  //});
-  new Sortables(Ngn.sd.eLayers, {
+  new Sortables(eLayers, {
+    onStart: function(eMovingLayer) {
+      eMovingLayer.addClass('drag');
+    },
     onComplete: function(eMovingLayer) {
       eMovingLayer.removeClass('drag');
       var ePrevLayer;
@@ -1677,70 +1683,6 @@ Ngn.sd.initLayersPanel = function() {
   });
 };
 
-Ngn.sd.BackgroundInsertDialog = new Class({
-  Extends: Ngn.Dialog,
-  options: {
-    id: 'background',
-    title: 'Insert background',
-    okText: 'Insert',
-    onRequest: function() {
-      this.initImages();
-    },
-    ok: function() {
-      Ngn.sd.changeBannerBackground(Ngn.sd.selectedBackgroundUrl);
-    }.bind(this)
-  },
-  initialize: function(options) {
-    var w = Ngn.sd.data.bannerSettings.size.w.toInt();
-    if (w < 200) {
-      w = w * 3;
-    } else if (w < 400) {
-      w = w * 2;
-    }
-    var h = Ngn.sd.data.bannerSettings.size.h.toInt();
-    if (h < 200) {
-      //h = h * 2;
-    } else if (h < 400) {
-      //h = h * 2;
-    }
-    this.options.width = w + 56;
-    this.options.height = h + 30;
-    this.options.url = '/cpanel/' + Ngn.sd.bannerId + '/ajax_backgroundSelect';
-    this.parent(options);
-  },
-  removeClass: function() {
-    this.images.each(function(el) {
-      el.removeClass('selected');
-    });
-  },
-  initImages: function() {
-    this.images = this.message.getElements('img');
-    this.select(this.images[0]);
-    this.images.each(function(el) {
-      el.addEvent('click', function() {
-        this.select(el);
-      }.bind(this));
-    }.bind(this));
-  },
-  select: function(el) {
-    this.removeClass();
-    Ngn.sd.selectedBackgroundUrl = el.get('src');
-    el.addClass('selected');
-  }
-});
-
-Ngn.sd.BlockBBackground = new Class({
-  Extends: Ngn.sd.BlockBImage
-});
-
-Ngn.sd.BlockBButton = new Class({
-  Extends: Ngn.sd.BlockBImage
-});
-
-Ngn.sd.BlockBClipart = new Class({
-  Extends: Ngn.sd.BlockBImage
-});
-
 Ngn.sd.changeBannerBackground = function(backgroundUrl) {
   new Ngn.Request.JSON({
     url: '/cpanel/' + Ngn.sd.bannerId + '/json_createBackgroundBlock?backgroundUrl=' + backgroundUrl,
@@ -1750,76 +1692,6 @@ Ngn.sd.changeBannerBackground = function(backgroundUrl) {
   }).send();
 };
 
-Ngn.sd.ButtonInsertDialog = new Class({
-  Extends: Ngn.Dialog,
-  options: {
-    id: 'button',
-    title: 'Insert button',
-    okText: 'Insert',
-    width: 400,
-    height: 300,
-    url: '/cpanel/' + Ngn.sd.bannerId + '/ajax_buttonSelect',
-    onRequest: function() {
-      this.initImages();
-    },
-    ok: function() {
-      Ngn.sd.addBannerButton(Ngn.sd.selectedButtonUrl);
-    }.bind(this)
-  },
-  removeClass: function() {
-    this.images.each(function(el) {
-      el.removeClass('selected');
-    });
-  },
-  initImages: function() {
-    this.images = this.message.getElements('img');
-    this.select(this.images[0]);
-    this.images.each(function(el) {
-      el.addEvent('click', function() {
-        this.select(el);
-      }.bind(this));
-    }.bind(this));
-  },
-  select: function(el) {
-    this.removeClass();
-    Ngn.sd.selectedButtonUrl = el.get('src');
-    el.addClass('selected');
-  }
-});
-
-Ngn.sd.ClipartInsertDialog = new Class({
-  Extends: Ngn.sd.ButtonInsertDialog,
-  options: {
-    title: 'Insert clipart',
-    url: '/cpanel/' + Ngn.sd.bannerId + '/ajax_clipartSelect',
-  }
-});
-
-Ngn.sd.addBannerButton = function(buttonUrl) {
-  new Ngn.Request.JSON({
-    url: '/cpanel/' + Ngn.sd.bannerId + '/json_createButtonBlock?buttonUrl=' + buttonUrl,
-    onComplete: function() {
-      Ngn.sd.reinit();
-    }
-  }).send();
-};
-
-Ngn.sd.CreateFromTemplateDialog = new Class({
-  Extends: Ngn.Dialog,
-  options: {
-    id: 'template',
-    title: 'Create from template',
-    okText: 'Create',
-    width: 400,
-    height: 300,
-    url: '/cpanel/' + Ngn.sd.bannerId + '/ajax_buttonSelect',
-    onRequest: function() {
-    },
-    ok: function() {
-    }.bind(this)
-  }
-});
-
 Ngn.sd.buildPanel = function() {
   var pg = window.location.hash.match(/#pg(\d+)/);
   Ngn.sd.ePanel = new Element('div', {'class': 'cont'}).inject($('panel'));
@@ -1828,89 +1700,37 @@ Ngn.sd.buildPanel = function() {
     href: '#', //target: '_blank',
     title: '...'
   }).inject(Ngn.sd.ePanel);
+  Ngn.sd.eFeatureBtns = new Element('div', {
+    'class': 'featureBtns'
+  }).inject(Ngn.sd.ePanel);
+  //new Element('div', {'class': 'clear'}).inject(Ngn.sd.ePanel);
+
 
   new Element('div', {
     'class': 'tit'
   }).inject(Ngn.sd.ePanel);
 
-  new Ngn.Btn(Ngn.sd.fbtn('Your banners', 'list'), function() {
-    window.location = '/list';
-  });
-  new Ngn.Btn(Ngn.sd.fbtn('New banner', 'add'), function() {
-    new Ngn.Dialog.RequestForm({
-      url: '/newBanner',
-      width: 200,
-      onSubmitSuccess: function(r) {
-        window.location = '/cpanel/' + r.id;
-      }
-    });
-  });
-  new Ngn.Btn(Ngn.sd.fbtn('Create from template', 'add'), function() {
-    new Ngn.sd.CreateFromTemplateDialog();
-  });
-  //new Ngn.Btn(Ngn.sd.fbtn('Clone this banner', 'copy'), function() {
-  //  alert('not realized yet');
-  //});
-  new Ngn.Btn(Ngn.sd.fbtn('Add text', 'news'), function() {
-    var data = Ngn.sd.getBlockType('font');
-    data.data.position = {
-      x: 0,
-      y: 0
-    };
-    Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.eLayoutContent), {
-      data: data.data,
-      html: ''
-    }).setToTheTop().save(true);
-  });
-  new Ngn.Btn(Ngn.sd.fbtn('Add image', 'image'), null, {
-    fileUpload: {
-      url: '/pageBlock/' + Ngn.sd.bannerId + '/json_createImage',
-      onRequest: function() {
-        Ngn.Request.Iface.loading(true);
-      }.bind(this),
-      onComplete: function(v) {
-        var block = Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.eLayoutContent), v);
-        block.creationEvent();
-        Ngn.Request.Iface.loading(false);
-      }.bind(this)
-    }
-  });
-  new Ngn.Btn(Ngn.sd.fbtn('Add background', 'image'), function() {
-    new Ngn.sd.BackgroundInsertDialog();
-  });
-  new Ngn.Btn(Ngn.sd.fbtn('Add button', 'image'), function() {
-    new Ngn.sd.ButtonInsertDialog();
-  });
-  new Ngn.Btn(Ngn.sd.fbtn('Add clipart', 'image'), function() {
-    new Ngn.sd.ClipartInsertDialog();
-  });
-  new Ngn.Btn(Ngn.sd.fbtn('Settings', 'settings'), function() {
-    new Ngn.Dialog.RequestForm({
-      url: '/cpanel/' + Ngn.sd.bannerId + '/json_settings',
-      width: 250,
-      onSubmitSuccess: function(r) {
-        Ngn.sd.setBannerSize(r);
-      }
-    });
-  });
-  new Ngn.Btn(Ngn.sd.fbtn('Render', 'link'), function() {
-    Ngn.sd.render();
-  });
-  new Element('div', {'class': 'clear'}).inject(Ngn.sd.ePanel);
+  //===================
+  document.getElement('.profileBar').inject(Ngn.sd.ePanel);
+  //===================
+
   // -- layers control
   Ngn.sd.eLayers = new Element('div', {'class': 'cont'}).inject($('layers'));
   Ngn.sd.loadData(pg ? pg[1] : 1, function(data) {
     Ngn.sd.initLayersPanel();
   });
   Ngn.sd.bindKeys();
+
+
+  window.fireEvent('sdPanelComplete');
 };
 
 Ngn.sd.fbtn = function(title, cls) {
   var btn = new Element('a', {
     'class': 'panelBtn ' + cls,
-    html: title
+    html: '<i></i><div>' + title + '</div>'
   });
-  new Element('div', {'class': 'featureBtnWrapper'}).grab(btn).inject(Ngn.sd.ePanel);
+  new Element('div', {'class': 'featureBtnWrapper'}).grab(btn).inject(Ngn.sd.eFeatureBtns);
   return btn;
 };
 

@@ -18,21 +18,25 @@ if (!args[4]) {
   console.log('Frames count (param #4) is not defined');
   phantom.exit();
 }
+if (!args[5]) {
+  console.log('Render key (param #5) is not defined');
+  phantom.exit();
+}
 
 var projectName = args[1];
 var domain = args[2];
 var bannerId = args[3];
 var framesCount = args[4];
+var renderKey = args[5];
 
 page.viewportSize = {
   width: 1300,
   height: 900
 };
 
-page.open('http://' + domain + '/cpanel/' + bannerId + '#preview', function() {
+page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview', function() {
   var n = 1;
   var make = function() {
-    console.log('capture ' + n);
     page.render('/home/user/ngn-env/projects/' + projectName + '/u/banner/animated/temp/' + bannerId + '/' + n + '.png');
     n++;
     window.setTimeout(function() {

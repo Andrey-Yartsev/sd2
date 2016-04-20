@@ -15,6 +15,30 @@ use SdItemsCtrl;
     return new SdPageBlockItems($this->req->param(1));
   }
 
+  static function boolValue($v) {
+    if (is_string($v) and (bool)$v != $v) {
+      // значит это слово 'false' / 'true'
+      return (bool)$v;
+    } else {
+      return (bool)$v;
+    }
+  }
+
+  function action_json_update() {
+    $items = $this->items();
+    $data = $this->req['data'];
+    if (isset($this->req['data']['font']['shadow'])) {
+
+      $data['font']['shadow'] = self::boolValue($this->req['font']['shadow']);
+      //die2($this->req['font']);
+    }
+    if (isset($this->req['data']['font']['blink'])) {
+      $data['font']['blink'] = self::boolValue($this->req['font']['blink']);
+    }
+    $items->update($this->updateReqId(), $data);
+    $this->json = $items->getItemF($this->updateReqId());
+  }
+
   function action_json_edit() {
     return $this->jsonFormActionUpdate(SdFormFactory::edit($this->req->param(3), $this->items()));
   }

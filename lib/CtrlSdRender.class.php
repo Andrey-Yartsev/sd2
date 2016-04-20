@@ -14,7 +14,7 @@ class CtrlSdRender extends CtrlCommon {
 
   static function renderStitic($bannerId) {
     Dir::make(UPLOAD_PATH.'/banner/static');
-    system('phantomjs '.SD_PATH.'/phantomjs/genStatic.js '.PROJECT_KEY.' '.SITE_DOMAIN.' '.$bannerId);
+    system('phantomjs '.SD_PATH.'/phantomjs/genStatic.js '.PROJECT_KEY.' '.SITE_DOMAIN.' '.$bannerId.' '.Config::getVar('sd/renderKey'));
     $path = 'banner/static/'.$bannerId.'.png';
     $file = UPLOAD_PATH.'/'.$path;
     $src = imagecreatefrompng($file);
@@ -39,8 +39,10 @@ class CtrlSdRender extends CtrlCommon {
     $framesCount = $this->req->param(3);
     $tempFolder = UPLOAD_PATH.'/banner/animated/temp/'.$this->bannerId;
     Dir::make($tempFolder);
+//    die2('phantomjs '.$sdPath.'/phantomjs/genAnimated.js '. //
+//      PROJECT_KEY.' '.SITE_DOMAIN.' '.$this->bannerId.' '.$framesCount.' '.Config::getVar('sd/renderKey'));
     system('phantomjs '.$sdPath.'/phantomjs/genAnimated.js '. //
-      PROJECT_KEY.' '.SITE_DOMAIN.' '.$this->bannerId.' '.$framesCount);
+      PROJECT_KEY.' '.SITE_DOMAIN.' '.$this->bannerId.' '.$framesCount.' '.Config::getVar('sd/renderKey'));
     $size = BcCore::getSize($this->bannerId);
     $x = 1300 / 2 - $size['w'] / 2;
     foreach (glob($tempFolder.'/*') as $file) {

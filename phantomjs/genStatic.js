@@ -14,17 +14,22 @@ if (!args[3]) {
   console.log('Banner ID (param #3) is not defined');
   phantom.exit();
 }
+if (!args[4]) {
+  console.log('Render key (param #4) is not defined');
+  phantom.exit();
+}
 
 var projectName = args[1];
 var domain = args[2];
 var bannerId = args[3];
+var renderKey = args[4];
 
 page.viewportSize = {
   width: 1300,
   height: 900
 };
 
-page.open('http://' + domain + '/cpanel/' + bannerId + '#preview', function() {
+page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview', function() {
   window.setTimeout(function () {
     page.render('/home/user/ngn-env/projects/' + projectName + '/u/banner/static/' + bannerId + '.png');
     phantom.exit();

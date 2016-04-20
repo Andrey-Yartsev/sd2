@@ -17,7 +17,7 @@ class BcCore {
   }
 
   static function zukulDb() {
-    return new Db('developer', 'K3fo83Gf2a', 's0.toasterbridge.com', 'zukul');
+    return new Db('developer', 'aK211foDyBXwf2', 's0.toasterbridge.com', 'zukul');
   }
 
   static protected $size;
