@@ -6,7 +6,7 @@ class SdPageBlockItems extends SdContainerItems {
 
   protected $ownPageId = 1, $bannerId;
 
-  function __construct($bannerId) {
+  function __construct($bannerId, $userId) {
     Misc::checkEmpty($bannerId);
     $this->bannerId = $bannerId;
     $this->name = 'sd/pageBlocks/'.$bannerId;
@@ -35,7 +35,7 @@ class SdPageBlockItems extends SdContainerItems {
         if ($v['orderKey'] <= $orderKey) $orderKey--;
       }
     }
-    //$data['userId'] = $this->userId;
+    $data['userId'] = Auth::get('id');
     $data['bannerId'] = $this->bannerId;
     $data['orderKey'] = $orderKey;
     return parent::create($data);
