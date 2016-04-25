@@ -23,7 +23,5 @@
 <div id="orderBar"></div>
 
 <script>
-  window.addEvent('domready', function() {
-    Ngn.sd.init(<?= $d['bannerId'] ?>);
-  });
+  Ngn.sd.init(<?= $d['bannerId'] ?>);
 </script>

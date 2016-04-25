@@ -1,3 +1,9 @@
+Ngn.sd.blockTypes.push({
+  title: 'Font',
+  data: {
+    type: 'font'
+  }
+});
 window.addEvent('sdPanelComplete', function() {
   new Ngn.Btn(Ngn.sd.fbtn('Add text', 'text'), function() {
     var data = Ngn.sd.getBlockType('font');

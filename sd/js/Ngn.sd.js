@@ -1697,7 +1697,7 @@ Ngn.sd.buildPanel = function() {
   Ngn.sd.ePanel = new Element('div', {'class': 'cont'}).inject($('panel'));
   new Element('a', {
     'class': 'logo',
-    href: '#', //target: '_blank',
+    href: '/', //target: '_blank',
     title: '...'
   }).inject(Ngn.sd.ePanel);
   Ngn.sd.eFeatureBtns = new Element('div', {
