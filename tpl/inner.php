@@ -23,5 +23,6 @@
 <div id="orderBar"></div>
 
 <script>
+  Ngn.renderKey = '<?= Config::getVar('sd/renderKey') ?>';
   Ngn.sd.init(<?= $d['bannerId'] ?>);
 </script>

@@ -6,7 +6,7 @@ class SdPageBlockItems extends SdContainerItems {
 
   protected $ownPageId = 1, $bannerId;
 
-  function __construct($bannerId, $userId) {
+  function __construct($bannerId) {
     Misc::checkEmpty($bannerId);
     $this->bannerId = $bannerId;
     $this->name = 'sd/pageBlocks/'.$bannerId;
