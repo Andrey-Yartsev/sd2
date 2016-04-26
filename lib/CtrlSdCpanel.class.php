@@ -9,7 +9,7 @@ class CtrlSdCpanel extends CtrlBase {
 
   protected function init() {
     if (!Auth::get('id') and $this->req['renderKey'] != Config::getVar('sd/renderKey')) {
-      $this->redirect('/auth');
+      $this->redirect('/');
       return;
     }
   }
