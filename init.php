@@ -7,4 +7,7 @@ O::replaceInjection('DefaultRouter', 'SdRouter');
 Sflm::$version = 9;
 Sflm::$absBasePaths['sd'] = __DIR__.'/sd';
 
-require NGN_ENV_PATH.'/config/database.php'; // default server config
+if (file_exists(NGN_ENV_PATH.'/config/database.php')) {
+  // default server config
+  require NGN_ENV_PATH.'/config/database.php';
+}
