@@ -1,7 +1,6 @@
 var page = require('webpage').create();
 var system = require('system');
 var args = system.args;
-var config = require('config');
 
 if (!args[1]) {
   console.log('Project name (param #1) is not defined');
@@ -24,7 +23,7 @@ if (!args[5]) {
   phantom.exit();
 }
 if (!args[6]) {
-  console.log('ngnEnvPath (param #6) is not defined');
+  console.log('projectPath (param #6) is not defined');
   phantom.exit();
 }
 
@@ -33,7 +32,7 @@ var domain = args[2];
 var bannerId = args[3];
 var framesCount = args[4];
 var renderKey = args[5];
-var ngnEnvPath = args[6];
+var projectPath = args[6];
 
 page.viewportSize = {
   width: 1300,
@@ -43,7 +42,7 @@ page.viewportSize = {
 page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview', function() {
   var n = 1;
   var make = function() {
-    page.render(config.ngnEnvPath + '/projects/' + projectName + '/u/banner/animated/temp/' + bannerId + '/' + n + '.png');
+    page.render(projectPath + '/u/banner/animated/temp/' + bannerId + '/' + n + '.png');
     n++;
     window.setTimeout(function() {
       if (n - 1 == framesCount) {
