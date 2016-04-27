@@ -1424,7 +1424,6 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
       //  v = data.items.blockContainer[i];
       //  Ngn.sd.blockContainers[v.id] = new Ngn.sd.BlockContainer(v);
       //}
-
       Ngn.sd.eLayoutContent = new Element('div', {
         'class': 'lCont sdEl'
       }).inject('layout1');

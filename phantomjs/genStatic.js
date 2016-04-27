@@ -18,11 +18,16 @@ if (!args[4]) {
   console.log('Render key (param #4) is not defined');
   phantom.exit();
 }
+if (!args[5]) {
+  console.log('ngnEnvPath (param #5) is not defined');
+  phantom.exit();
+}
 
 var projectName = args[1];
 var domain = args[2];
 var bannerId = args[3];
 var renderKey = args[4];
+var ngnEnvPath = args[5];
 
 page.viewportSize = {
   width: 1300,
@@ -31,7 +36,7 @@ page.viewportSize = {
 
 page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview', function() {
   window.setTimeout(function () {
-    page.render('/home/user/ngn-env/projects/' + projectName + '/u/banner/static/' + bannerId + '.png');
+    page.render(ngnEnvPath + '/projects/' + projectName + '/u/banner/static/' + bannerId + '.png');
     phantom.exit();
   }, 100);
 });
