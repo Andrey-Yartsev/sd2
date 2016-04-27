@@ -38,5 +38,5 @@ page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey
   window.setTimeout(function () {
     page.render(ngnEnvPath + '/projects/' + projectName + '/u/banner/static/' + bannerId + '.png');
     phantom.exit();
-  }, 100);
+  }, 500);
 });
