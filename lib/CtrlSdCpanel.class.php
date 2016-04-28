@@ -167,7 +167,7 @@ class CtrlSdCpanel extends CtrlBase {
     $bannerSizeId = $db->selectCell("SELECT id FROM bannerSize WHERE width=? AND height=?", $size['w'], $size['h']);
     $r = $db->select("SELECT * FROM bannerTemplate WHERE bannerSizeId=?d", $bannerSizeId);
     foreach ($r as $v) {
-      print "<img src='http://zukul.com/public/uploads/bannerTemplate/{$v['filename']}'>\n";
+      print "<img src='/u/bcImagesCache/bannerTemplate/{$v['filename']}'>\n";
     }
   }
 
@@ -180,7 +180,7 @@ class CtrlSdCpanel extends CtrlBase {
 
   function action_ajax_buttonSelect() {
     foreach (BcCore::zukulDb()->select("SELECT * FROM bannerButton") as $v) {
-      print "<img src= 'http://zukul.com/public/uploads/bannerButton/{$v['filename']}'>\n";
+      print "<img src='/u/bcImagesCache/bannerButton/{$v['filename']}'>\n";
     }
   }
 
@@ -189,14 +189,19 @@ class CtrlSdCpanel extends CtrlBase {
     foreach (BcCore::zukulDb()->select("SELECT * FROM bannerImage
  -- WHERE id NOT IN ()
  ") as $v) {
-      print "<img src='http://zukul.com/public/uploads/bannerImage/{$v['filename']}'>\n";
+      print "<img src='/u/bcImagesCache/bannerImage/{$v['filename']}'>\n";
     }
   }
 
   function action_json_createButtonBlock() {
     $data = CtrlSdPageBlock::protoData('button');
     $data['data']['buttonUrl'] = $this->req->rq('buttonUrl');
-    list($imageSize['w'], $imageSize['h']) = getimagesize($data['data']['buttonUrl']);
+    if (Misc::hasPrefix('/u/', $data['data']['buttonUrl'])) {
+      $file = WEBROOT_PATH.$data['data']['buttonUrl'];
+    }  else {
+      $file = $data['data']['buttonUrl'];
+    }
+    list($imageSize['w'], $imageSize['h']) = getimagesize($file);
     $bannerSize = BcCore::getSize($this->d['bannerId']);
 //    if ($imageSize['w'] > $bannerSize['w'] - 20) {
 //      $imageSize['w'] = $imageSize['w'] / 2 - 20;

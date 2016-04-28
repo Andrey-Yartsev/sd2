@@ -1400,7 +1400,6 @@ Ngn.getParam = function(val) {
 Ngn.sd.loadData = function(ownPageId, onComplete) {
   onComplete = onComplete || function() {
   };
-  //if () $('layout1').dispose();
   $('layout1').set('html', '');
   Ngn.sd.ownPageId = ownPageId;
   Ngn.Request.Iface.loading(true);
