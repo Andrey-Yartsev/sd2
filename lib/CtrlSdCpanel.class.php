@@ -185,8 +185,10 @@ class CtrlSdCpanel extends CtrlBase {
   }
 
   function action_ajax_clipartSelect() {
-    $ids = implode(', ', db()->ids('bcBannerButtonBroken'));
-    foreach (BcCore::zukulDb()->select("SELECT * FROM bannerButton WHERE id NOT IN ($ids)") as $v) {
+    //$ids = implode(', ', db()->ids('bcBannerButtonBroken'));
+    foreach (BcCore::zukulDb()->select("SELECT * FROM bannerImage
+ -- WHERE id NOT IN ()
+ ") as $v) {
       print "<img src='http://zukul.com/public/uploads/bannerImage/{$v['filename']}'>\n";
     }
   }
