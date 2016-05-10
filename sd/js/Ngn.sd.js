@@ -1858,6 +1858,7 @@ Ngn.sd.SelectDialog = new Class({
   }
 });
 
+// @requiresBefore s2/js/common/tpl?name=fontSelect&controller=/font/ajax_browse
 Ngn.sd.FontSelectDialog = new Class({
   Extends: Ngn.sd.SelectDialog,
   name: 'font',
