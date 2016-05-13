@@ -73,4 +73,8 @@ class SdPageBlockItem extends ArrayAccesseble {
     return true;
   }
 
+  function hasAnimation() {
+    return !empty($this->r['data']['font']['blink']);
+  }
+
 }

@@ -122,4 +122,13 @@ class SdPageBlockItems extends SdContainerItems {
     });
   }
 
+  function hasAnimation() {
+    foreach (parent::getItems() as $v) {
+      if (SdPageBlockItem::factory($v, $this->bannerId)->hasAnimation()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }
