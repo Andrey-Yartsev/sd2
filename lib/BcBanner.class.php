@@ -4,10 +4,10 @@ class BcBanner extends ArrayAccesseble {
 
   function __construct(array $data) {
     if ((new SdPageBlockItems($data['id']))->hasAnimation()) {
-      if (file_exists(UPLOAD_PATH.'/banner/animated/'.$data['id'].'.gif')) {
-        $data['directLink'] = '/'.UPLOAD_DIR.'/banner/animated/'.$data['id'].'.gif';
+      if (file_exists(UPLOAD_PATH.'/banner/animated/result/'.$data['id'].'.gif')) {
+        $data['directLink'] = '/'.UPLOAD_DIR.'/banner/animated/result/'.$data['id'].'.gif';
         $data['downloadLink'] = '/list/download/'.$data['id'];
-        $data['downloadFile'] = UPLOAD_PATH.'/banner/animated/'.$data['id'].'.gif';
+        $data['downloadFile'] = UPLOAD_PATH.'/banner/animated/result/'.$data['id'].'.gif';
       }
     }
     else {
