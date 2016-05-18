@@ -1,12 +1,6 @@
 Ngn.sd.render = function() {
-  var url;
-  if (Ngn.sd.animation.exists()) {
-    url = '/render/' + Ngn.sd.bannerId + '/ajax_animated/' + Ngn.sd.animation.framesCount();
-  } else {
-    url = '/render/' + Ngn.sd.bannerId;
-  }
   new Ngn.Dialog.HtmlPage({
-    url: url,
+    url: url = '/render/' + Ngn.sd.bannerId,
     title: 'Render',
     width: Ngn.sd.bannerSize.w.toInt() + 30
   });

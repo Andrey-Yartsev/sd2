@@ -20,6 +20,7 @@ Ngn.sd.ButtonInsertDialog = new Class({
     width: 400,
     height: 300,
     url: '/cpanel/' + Ngn.sd.bannerId + '/ajax_buttonSelect',
+    dialogClass: 'dialog-images',
     onRequest: function() {
       this.initImages();
     },

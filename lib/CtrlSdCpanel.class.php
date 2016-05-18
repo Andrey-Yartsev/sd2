@@ -14,8 +14,14 @@ class CtrlSdCpanel extends CtrlBase {
     }
   }
 
+  protected $banner;
+
   protected function afterInit() {
     $this->d['bannerId'] = Misc::checkEmpty($this->req->param(1));
+
+    //die2((new SdPageBlockItems($this->d['bannerId']))->getItems());
+
+    $this->banner = db()->getRow('bcBanners', $this->d['bannerId']);
     Sflm::frontend('css')->addLib('sdEdit');
     Sflm::frontend('js')->addLib('sdEdit');
     Sflm::frontend('js')->addClass('Ngn.Dialog.RequestForm');
@@ -67,8 +73,13 @@ class CtrlSdCpanel extends CtrlBase {
     }
     $this->json['bannerSizes'] = self::getSizes();
     $this->json['project'] = ['title' => 'dummy'];
+    $this->json['pageTitle'] = $this->editPageTitle();
     $this->json['layout'] = SdCore::getLayout($this->req['ownPageId']);
     $this->json['bannerSettings']['size'] = BcCore::getSize($this->d['bannerId']);
+  }
+
+  protected function editPageTitle() {
+    return implode('x', BcCore::getSize($this->d['bannerId']));
   }
 
   static $sizes;
@@ -175,6 +186,9 @@ class CtrlSdCpanel extends CtrlBase {
     $data = CtrlSdPageBlock::protoData('background');
     $data['data']['backgroundUrl'] = $this->req->rq('backgroundUrl');
     $data['data']['size'] = BcCore::getSize($this->d['bannerId']);
+    $data['data']['subType'] = 'image';
+    $data['data']['bottom'] = true;
+    $data['data']['single'] = true;
     (new SdPageBlockItems($this->d['bannerId']))->create($data);
   }
 
@@ -193,30 +207,35 @@ class CtrlSdCpanel extends CtrlBase {
     }
   }
 
-  function action_json_createButtonBlock() {
-    $data = CtrlSdPageBlock::protoData('button');
-    $data['data']['buttonUrl'] = $this->req->rq('buttonUrl');
-    if (Misc::hasPrefix('/u/', $data['data']['buttonUrl'])) {
-      $file = WEBROOT_PATH.$data['data']['buttonUrl'];
-    }  else {
-      $file = $data['data']['buttonUrl'];
+  protected function createImageBlock($type) {
+    $data = CtrlSdPageBlock::protoData($type);
+    $data['data']['subType'] = 'image';
+    $data['data']['imageUrl'] = $this->req->rq('url');
+    if (Misc::hasPrefix('/u/', $data['data']['imageUrl'])) {
+      $file = WEBROOT_PATH.$data['data']['imageUrl'];
+    }
+    elseif (Misc::hasPrefix('/m/', $data['data']['imageUrl'])) {
+      $file = WEBROOT_PATH.$data['data']['imageUrl'];
+    }
+    else {
+      $file = $data['data']['imageUrl'];
     }
     list($imageSize['w'], $imageSize['h']) = getimagesize($file);
     $bannerSize = BcCore::getSize($this->d['bannerId']);
-//    if ($imageSize['w'] > $bannerSize['w'] - 20) {
-//      $imageSize['w'] = $imageSize['w'] / 2 - 20;
-//      $imageSize['h'] = $imageSize['h'] / 2 - 20;
-//    }
-//    if ($imageSize['h'] > $bannerSize['h'] - 20) {
-//      $imageSize['w'] = $imageSize['w'] / 2 - 20;
-//      $imageSize['h'] = $imageSize['h'] / 2 - 20;
-//    }
     $data['data']['size'] = $imageSize;
     $data['data']['position'] = [
       'x' => $bannerSize['w'] - $imageSize['w'] - 10,
       'y' => $bannerSize['h'] - $imageSize['h'] - 10
     ];
     (new SdPageBlockItems($this->d['bannerId']))->create($data);
+  }
+
+  function action_json_createButtonBlock() {
+    $this->createImageBlock('button');
+  }
+
+  function action_json_createClipartBlock() {
+    $this->createImageBlock('clipart');
   }
 
 }

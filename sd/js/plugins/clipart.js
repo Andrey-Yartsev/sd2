@@ -1,8 +1,16 @@
+Ngn.sd.BlockBClipart = new Class({
+  Extends: Ngn.sd.BlockBImage
+});
+
 Ngn.sd.ClipartInsertDialog = new Class({
-  Extends: Ngn.sd.ButtonInsertDialog,
+  Extends: Ngn.sd.ImageInsertDialog,
   options: {
     title: 'Insert clipart',
-    url: '/cpanel/' + Ngn.sd.bannerId + '/ajax_clipartSelect',
+    url: '/cpanel/' + Ngn.sd.bannerId + '/ajax_clipartSelect'
+  },
+
+  createImageUrl: function(url) {
+    return '/cpanel/' + Ngn.sd.bannerId + '/json_createClipartBlock?url=' + url
   }
 });
 

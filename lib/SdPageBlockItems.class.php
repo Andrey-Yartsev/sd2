@@ -15,14 +15,15 @@ class SdPageBlockItems extends SdContainerItems {
   }
 
   function create(array $data) {
-    if ($data['data']['type'] == 'background') {
-      $items = $this->getItems();
-      // Удаляем все существующие блоки бэкграундов
+    $items = $this->getItems();
+    if (!empty($data['data']['single'])) {
       foreach ($items as $v) {
-        if ($v['data']['type'] == 'background') {
+        if ($v['data']['type'] == $data['data']['type']) {
           $this->delete($v['id']);
         }
       }
+    }
+    if (!empty($data['data']['bottom'])) {
       // Делаем orderKey максимальным чтобы блок встал сверху
       $orderKey = 0;
       foreach ($items as $v) {
@@ -38,7 +39,24 @@ class SdPageBlockItems extends SdContainerItems {
     $data['userId'] = Auth::get('id');
     $data['bannerId'] = $this->bannerId;
     $data['orderKey'] = $orderKey;
-    return parent::create($data);
+    $r = parent::create($data);
+//    $this->fixTopOrder();
+    return $r;
+  }
+
+  function fixTopOrder() {
+    //$r = db()->select('SELECT id, orderKey FROM bcBlocks'.$this->cond->all().' ORDER BY orderKey');
+    //die2($r);
+    $items = $this->getItems();
+    $orderKey = 0;
+    foreach ($items as $v) {
+      if ($v['orderKey'] >= $orderKey) $orderKey--;
+    }
+    foreach ($items as $v) {
+      if (!empty($v['data']['top'])) {
+        db()->update('bcBlocks', $v['id'], ['orderKey' => $orderKey]);
+      }
+    }
   }
 
   function update($id, array $data) {

@@ -652,7 +652,7 @@ Ngn.sd.BlockB = new Class({
     }.bind(this));
   },
   deleteAction: function() {
-    if (!confirm('Вы уверены?')) return;
+    if (!confirm('Are you shure?')) return;
     this.loading(true);
     this._deleteAction();
   },
@@ -1380,7 +1380,7 @@ Ngn.sd.initUserTypes = function(types) {
   Ngn.sd.blockUserTypes = types;
 };
 
-Ngn.sd.initPageTitle = document.getElement('head title').get('text');
+Ngn.sd.initPageTitle = document.title;
 
 Ngn.getParam = function(val) {
   var result = "Not found",
@@ -1561,7 +1561,6 @@ Ngn.sd.animation.exists = function() {
   return false;
 };
 Ngn.sd.setBannerSize = function(size) {
-  document.title = size.w + 'x' + size.h;
   Ngn.sd.bannerSize = size;
   Ngn.sd.eLayoutContent.setStyle('width', size.w + 'px');
   Ngn.sd.eContentOverlayBottom.setStyle('width', size.w + 'px');
@@ -1585,7 +1584,9 @@ Ngn.sd.sortBySubKey = function(obj, key1, key2) {
   var r = [];
   for (var key in obj) r.push(obj[key]);
   r.sort(function(a, b) {
-    return a[key1][key2] < b[key1][key2] ? -1 : a[key1][key2] > b[key1][key2] ? 1 : 0
+    bb = parseInt(b[key1][key2]);
+    aa = parseInt(a[key1][key2]);
+    return aa < bb ? -1 : aa > bb ? 1 : 0;
   });
   return r;
 };
@@ -1604,19 +1605,20 @@ Ngn.sd.initLayersPanel = function() {
   }).inject(Ngn.sd.eLayers);
   for (var i = 0; i < sortedBlocks.length; i++) {
     item = sortedBlocks[i]._data;
-    if (item.data.type == 'image' || item.data.type == 'background' || item.data.type == 'button') {
+    if (item.data.subType == 'image') {
       title = '<span class="ico">' + //
       item.html + '</span>' + //
         // item.id + ' ' + //
       Ngn.String.ucfirst(item.data.type);
     } else if (item.data.type == 'font') {
-      var text = item.html.replace(/<br \/>/g, " ").substring(0, 10);
+      //var text = item.html.replace(/<br \/>/g, " ").substring(0, 10);
+      var text = item.html;
       title = '<span class="ico">' + //
       '<img src="/sd/img/font.png?v3"></span>' + //
         // item.id + ' ' + //
-      (text ? text : 'empty')
+      '<span class="text">' + (text ? text : 'empty') + '</span>'
     } else {
-      throw new Error('Unsupported layer type "' + item.data.type + '"');
+      title = '<span class="ico"></span>unsupported';
     }
     var eItem = new Element('div', {
       'class': 'item ' + 'item_' + item.data.type,

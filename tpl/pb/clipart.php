@@ -1,2 +1,2 @@
-<img src="<?= $d['data']['buttonUrl'] ?>" />
+<img src="<?= $d['data']['imageUrl'] ?>" />
 

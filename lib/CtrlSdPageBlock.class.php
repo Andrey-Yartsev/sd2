@@ -11,8 +11,18 @@ use SdItemsCtrl;
     return $this->req['ownPageId'] ? : SdCore::defaultOwnPageId;
   }
 
+  protected $_items;
+
   protected function items() {
-    return new SdPageBlockItems($this->req->param(1));
+    if (isset($this->_items)) return $this->_items;
+    return $this->_items = new SdPageBlockItems($this->req->param(1));
+  }
+
+  function action_json_getItems() {
+    $this->items()->cond->setOrder('orderKey');
+    $items = $this->items()->getItemsF();
+    foreach ($items as &$item) foreach ($item as &$v) if (is_array($v) and !count($v)) $v = (object)$v;
+    $this->json = $items;
   }
 
   static function boolValue($v) {
