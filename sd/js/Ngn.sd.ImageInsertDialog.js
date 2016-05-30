@@ -9,6 +9,7 @@ Ngn.sd.ImageInsertDialog = new Class({
     //url: 'ajax_select',
     //createUrl: 'ajax_select',
     dialogClass: 'dialog-images',
+    createImageJsonAction: 'createImageBlock',
     onRequest: function() {
       this.initImages();
     }
@@ -24,10 +25,9 @@ Ngn.sd.ImageInsertDialog = new Class({
     this.insertImage(this.selectedUrl);
   },
   createImageUrl: function(url) {
-    return '/cpanel/' + Ngn.sd.bannerId + '/json_createImageBlock?url=' + url
+    return '/cpanel/' + Ngn.sd.bannerId + '/json_' + this.createImageJsonAction + '?url=' + url
   },
   insertImage: function(url) {
-    console.debug(this.createImageUrl(url));
     new Ngn.Request.JSON({
       url: this.createImageUrl(url),
       onComplete: function() {

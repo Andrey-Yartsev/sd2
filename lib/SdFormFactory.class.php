@@ -15,23 +15,23 @@ class SdFormFactory {
   /**
    * @param $id
    * @param SdContainerItems $items
-   * @return SdFontSettingsFormBase
+   * @return SdBlockSettingsFormBase
    */
-  static function fontSettings($id, SdContainerItems $items) {
+  static function blockSettings($id, SdContainerItems $items) {
     $item = $items->getItemD($id);
     if (isset($item['type'])) {
       $type = $item['type'];
-      $class = 'SdFontSettingsForm'.ucfirst($type);
-      $class = class_exists($class) ? $class : 'SdFontSettingsForm';
+      $class = 'SdBlockSettingsForm'.ucfirst($type);
+      $class = class_exists($class) ? $class : 'SdBlockSettingsFormBase';
     } else {
-      $class = 'SdFontSettingsForm';
+      $class = 'SdBlockSettingsFormBase';
     }
     return new $class($id, $items);
   }
 
   static function contentAndFontSettings($id, SdContainerItems $items) {
     $contentForm = self::edit($id, $items);
-    $fontSettingsForm = self::fontSettings($id, $items);
+    $fontSettingsForm = self::blockSettings($id, $items);
     $form = new Form(array_merge($fontSettingsForm->fields, $contentForm->fields));
     return $form;
   }

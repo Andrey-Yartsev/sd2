@@ -46,10 +46,9 @@ class SdPageBlockItem extends ArrayAccesseble {
   }
 
   protected function html(array $tplData) {
-    $tplData['id'] = $this->r['id'];
-    $tplData['data'] = $this->r['data'];
+    $tplData = array_merge($tplData, $this->r);
     $tplData['bannerId'] = $this->bannerId;
-    return Tt()->getTpl("pb/{$this->r['data']['type']}", $tplData);
+    return Tt()->getTpl("blocks/{$this->r['data']['type']}", $tplData);
   }
 
   function editContent($ownPageId) {

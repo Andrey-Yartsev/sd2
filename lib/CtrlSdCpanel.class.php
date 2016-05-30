@@ -101,18 +101,9 @@ class CtrlSdCpanel extends CtrlBase {
   }
 
   function action_json_settings() {
-    $form = new Form([
-      [
-        'title'   => 'Banner Size',
-        'name'    => 'size',
-        'type'    => 'select',
-        'options' => self::getSizeOptions()
-      ]
-    ]);
-    if ($form->isSubmittedAndValid()) {
-      $data = $form->getData();
-      db()->update('bcBanners', $this->d['bannerId'], ['size' => $data['size']]);
-      list($this->json['w'], $this->json['h']) = explode(' x ', $data['size']);
+    $form = new BannerSettingsEditForm($this->d['bannerId']);
+    if ($form->update()) {
+      list($this->json['w'], $this->json['h']) = explode(' x ', $form->getData()['size']);
       return null;
     }
     $this->json['title'] = 'Banner Settings';

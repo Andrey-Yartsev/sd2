@@ -35,7 +35,7 @@ class CtrlSdSvg extends CtrlCommon {
   }
 
   function action_ajax_item() {
-    Tt()->tpl('pb/svg', [
+    Tt()->tpl('blocks/svg', [
       'html' => (new SvgItem(self::file($this->req->param(2))))->html(),
       'size' => 200
     ]);

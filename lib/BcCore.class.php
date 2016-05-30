@@ -2,8 +2,9 @@
 
 class BcCore {
 
-  static function createBanner($size) {
+  static function createBanner($size, $title) {
     return db()->insert('bcBanners', [
+      'title' => $title,
       'size' => $size,
       'userId' => BcCore::user()['id']
     ]);
@@ -57,8 +58,9 @@ class BcCore {
     $sdPath = SD_PATH;
     $tempFolder = UPLOAD_PATH.'/banner/animated/temp/'.$bannerId;
     Dir::make($tempFolder);
-    system('/usr/local/bin/phantomjs '.$sdPath.'/phantomjs/genAnimated.js '. //
-      PROJECT_KEY.' '.SITE_DOMAIN.' '.$bannerId.' '.$framesCount.' '.Config::getVar('sd/renderKey').' '.WEBROOT_PATH);
+    $cmd = '/usr/local/bin/phantomjs '.$sdPath.'/phantomjs/genAnimated.js '. //
+      PROJECT_KEY.' '.SITE_DOMAIN.' '.$bannerId.' '.$framesCount.' '.Config::getVar('sd/renderKey').' '.WEBROOT_PATH;
+    system($cmd);
     $size = BcCore::getSize($bannerId);
     $x = 1300 / 2 - $size['w'] / 2;
     foreach (glob($tempFolder.'/*') as $file) {

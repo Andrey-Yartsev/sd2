@@ -63,6 +63,7 @@ class SdPageBlockItems extends SdContainerItems {
     $item = $this->getItem($id);
     $item['data'] = array_merge($item['data'], $data);
     parent::update($id, $item->r);
+    db()->query('UPDATE bcBanners SET dateUpdate=? WHERE id=?', Date::db(), $this->bannerId);
   }
 
   function updateContent($id, $content, $replace = false) {

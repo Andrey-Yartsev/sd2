@@ -38,12 +38,7 @@ use SdItemsCtrl;
     $items = $this->items();
     $data = $this->req['data'];
     if (isset($this->req['data']['font']['shadow'])) {
-
-      $data['font']['shadow'] = self::boolValue($this->req['font']['shadow']);
-      //die2($this->req['font']);
-    }
-    if (isset($this->req['data']['font']['blink'])) {
-      $data['font']['blink'] = self::boolValue($this->req['font']['blink']);
+      $data['font']['shadow'] = self::boolValue($this->req['data']['font']['shadow']);
     }
     $items->update($this->updateReqId(), $data);
     $this->json = $items->getItemF($this->updateReqId());

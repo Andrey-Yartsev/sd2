@@ -37,12 +37,8 @@ use ItemsCtrl;
     return $this->jsonFormActionUpdate($this->bgSettingsForm());
   }
 
-  function action_json_cufonSettings() {
-    return $this->jsonFormActionUpdate(new SdCufonSettingsForm($this->req->param(3), $this->items()));
-  }
-
-  function action_json_fontSettings() {
-    return $this->jsonFormActionUpdate(SdFormFactory::fontSettings($this->req->param(3), $this->items()));
+  function action_json_blockSettings() {
+    return $this->jsonFormActionUpdate(SdFormFactory::blockSettings($this->req->param(3), $this->items()));
   }
 
 }

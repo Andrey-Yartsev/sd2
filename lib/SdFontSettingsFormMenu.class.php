@@ -1,6 +1,6 @@
 <?php
 
-class SdFontSettingsFormMenu extends SdFontSettingsForm {
+class SdFontSettingsFormMenu extends SdBlockSettingsFormFont {
 
   protected function getInitFields() {
     return Arr::append(parent::getInitFields(), [
