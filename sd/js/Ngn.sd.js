@@ -644,7 +644,7 @@ Ngn.sd.BlockB = new Class({
     }.bind(this));
   },
   deleteAction: function() {
-    if (!confirm('Are you shure?')) return;
+    if (!confirm('Are you sure?')) return;
     this.loading(true);
     this._deleteAction();
   },

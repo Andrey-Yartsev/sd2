@@ -18,9 +18,6 @@ class CtrlSdCpanel extends CtrlBase {
 
   protected function afterInit() {
     $this->d['bannerId'] = Misc::checkEmpty($this->req->param(1));
-
-    //die2((new SdPageBlockItems($this->d['bannerId']))->getItems());
-
     $this->banner = db()->getRow('bcBanners', $this->d['bannerId']);
     Sflm::frontend('css')->addLib('sdEdit');
     Sflm::frontend('js')->addLib('sdEdit');
