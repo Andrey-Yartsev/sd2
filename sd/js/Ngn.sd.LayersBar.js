@@ -4,9 +4,6 @@ Ngn.sd.LayersBar = new Class({
   },
   init: function() {
     Ngn.sd.eLayers.set('html', '');
-    var title;
-    var item;
-    var sortedBlocks = Ngn.sd.sortBySubKey(Ngn.sd.blocks, '_data', 'orderKey');
     new Element('div', {
       html: 'Layers',
       'class': 'lTitle'
@@ -14,13 +11,17 @@ Ngn.sd.LayersBar = new Class({
     var eLayers = new Element('div', {
       'class': 'layers'
     }).inject(Ngn.sd.eLayers);
-    for (var i = 0; i < sortedBlocks.length; i++) {
-      item = sortedBlocks[i]._data;
+    Ngn.sd.sortBySubKey(Ngn.sd.blocks, '_data', 'orderKey').each(function(item) {
       this.getTitle(item);
       var eItem = new Element('div', {
         'class': 'item ' + 'item_' + (item.data.subType || item.data.type),
-        'data-id': item.id,
-        'data-type': item.data.type
+        'data-id': item._data.id,
+        'data-type': item.data.type,
+        events: {
+          click: function() {
+            Ngn.sd.blocks[item._data.id]._settingsAction(Ngn.sd.blocks[item._data.id]);
+          }
+        }
       });
       new Element('div', {
         'class': 'title',
@@ -32,7 +33,7 @@ Ngn.sd.LayersBar = new Class({
       if (this.canEdit(item)) {
         new Ngn.Btn( //
           Ngn.Btn.btn2('Edit', 'edit').inject(eBtns), //
-          Ngn.sd.blocks[item.id]._settingsAction.bind(Ngn.sd.blocks[item.id]) //
+          Ngn.sd.blocks[item._data.id]._settingsAction.bind(Ngn.sd.blocks[item._data.id]) //
         );
       } else {
         new Element('a', {
@@ -41,10 +42,10 @@ Ngn.sd.LayersBar = new Class({
       }
       new Ngn.Btn( //
         Ngn.Btn.btn2('Delete', 'delete').inject(eBtns), //
-        Ngn.sd.blocks[item.id].deleteAction.bind(Ngn.sd.blocks[item.id]) //
+        Ngn.sd.blocks[item._data.id].deleteAction.bind(Ngn.sd.blocks[item._data.id]) //
       );
       eItem.inject(eLayers);
-    }
+    }.bind(this));
     new Sortables(eLayers, {
       onStart: function(eMovingLayer) {
         eMovingLayer.addClass('drag');
@@ -81,15 +82,15 @@ Ngn.sd.LayersBar = new Class({
   },
   getTitle: function(item) {
     if (item.data.subType == 'image') {
-      return '<span class="ico">' + item.html + '</span>' + Ngn.String.ucfirst(item.data.type);
+      return '<span class="ico 1">' + item._data.html + '</span>' + Ngn.String.ucfirst(item.data.type);
     } else if (item.data.type == 'font') {
-      return '<span class="ico">' + '<img src="/sd/img/font.png"></span>' + //
+      return '<span class="ico 2">' + '<img src="/sd/img/font.png"></span>' + //
       '<span class="text">' + (item.html ? item.html : 'empty') + '</span>'
     } else {
       return '<span class="ico"></span>unsupported';
     }
   },
   canEdit: function(item) {
-    return Ngn.sd.blocks[item.id].finalData().data.type == 'font';
+    return Ngn.sd.blocks[item._data.id].finalData().data.type == 'font';
   }
 });

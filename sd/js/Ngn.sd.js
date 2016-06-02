@@ -1666,13 +1666,6 @@ Ngn.sd.interface = {
 };
 
 Ngn.sd.init = function(bannerId) {
-  console.debug('asd');
-  if (typeof window.callPhantom === 'function') {
-    window.callPhantom({
-      action: 'asd'
-    });
-  }
-
   Ngn.sd.bannerId = bannerId;
   Ngn.sd.interface.bars = Ngn.sd.barsClass ? new Ngn.sd.barsClass() : new Ngn.sd.Bars();
   if (window.location.hash == '#preview') {
