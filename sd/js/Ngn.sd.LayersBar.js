@@ -19,8 +19,9 @@ Ngn.sd.LayersBar = new Class({
         'data-type': item.data.type,
         events: {
           click: function() {
+            if (!this.canEdit(item)) return;
             Ngn.sd.blocks[item._data.id]._settingsAction(Ngn.sd.blocks[item._data.id]);
-          }
+          }.bind(this)
         }
       });
       new Element('div', {
