@@ -1,16 +1,16 @@
 <?php
 
-class SdBlockSettingsFormCufon extends SdBlockSettingsFormFont {
+class SdBlockSettingsFormText extends SdBlockSettingsFormFontBase {
 
   protected $fontFieldType = 'fontFamilyCufon';
 
   protected function getInitFields() {
-    return [
+    return array_merge(parent::getInitFields(), [
       [
         'type' => 'textarea',
         'name' => 'text'
       ]
-    ];
+    ]);
   }
 
 }

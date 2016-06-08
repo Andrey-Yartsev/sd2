@@ -8,7 +8,6 @@ Ngn.sd.ClipartInsertDialog = new Class({
     title: 'Insert clipart',
     url: '/cpanel/' + Ngn.sd.bannerId + '/ajax_clipartSelect'
   },
-
   createImageUrl: function(url) {
     return '/cpanel/' + Ngn.sd.bannerId + '/json_createClipartBlock?url=' + url
   }

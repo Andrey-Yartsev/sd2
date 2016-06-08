@@ -334,6 +334,9 @@ Ngn.sd.BlockAbstract = new Class({
     this.initElement(el);
     this.addCont(this.el);
     this.event = event;
+    this.el.addEvent('click', function() {
+
+    });
     this.setOptions(options);
     this.ctrl = '/pageBlock/' + Ngn.sd.bannerId;
     this.init();

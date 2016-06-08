@@ -19,7 +19,7 @@ Ngn.sd.LayersBar = new Class({
         'data-type': item.data.type,
         events: {
           click: function() {
-            if (!this.canEdit(item)) return;
+            if (!Ngn.sd.blocks[item._data.id].canEdit()) return;
             Ngn.sd.blocks[item._data.id]._settingsAction(Ngn.sd.blocks[item._data.id]);
           }.bind(this)
         }
@@ -84,14 +84,14 @@ Ngn.sd.LayersBar = new Class({
   getTitle: function(item) {
     if (item.data.subType == 'image') {
       return '<span class="ico 1">' + item._data.html + '</span>' + Ngn.String.ucfirst(item.data.type);
-    } else if (item.data.type == 'font') {
+    } else if (item.data.type == 'text') {
       return '<span class="ico 2">' + '<img src="/sd/img/font.png"></span>' + //
-      '<span class="text">' + (item.html ? item.html : 'empty') + '</span>'
+      '<span class="text">' + (item._data.html ? item._data.html : 'empty') + '</span>'
     } else {
       return '<span class="ico"></span>unsupported';
     }
   },
   canEdit: function(item) {
-    return Ngn.sd.blocks[item._data.id].finalData().data.type == 'font';
+    return Ngn.sd.blocks[item._data.id].finalData().data.type == 'text';
   }
 });

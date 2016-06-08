@@ -8,7 +8,7 @@ class SdBlockSettingsFormFont extends SdBlockSettingsFormFontBase {
         'type'  => 'headerClose'
       ],
       [
-        'title' => 'Цвет ссылки',
+        'title' => 'Цвет ссылки1',
         'name'  => 'linkColor',
         'type'  => 'color'
       ],

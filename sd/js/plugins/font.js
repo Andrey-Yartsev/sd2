@@ -1,9 +1,11 @@
 if (!Ngn.sd.blockTypes) Ngn.sd.blockTypes = [];
 
+alert('!');
+
 Ngn.sd.blockTypes.push({
   title: 'Font',
   data: {
-    type: 'font'
+    type: 'cufon'
   },
   editDialogOptions: {
     width: 300,
