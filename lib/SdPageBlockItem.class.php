@@ -73,7 +73,11 @@ class SdPageBlockItem extends ArrayAccesseble {
   }
 
   function hasAnimation() {
-    return !empty($this->r['data']['font']['blink']);
+    return $this->framesNumber() > 1;
+  }
+
+  function framesNumber() {
+    return 1;
   }
 
 }

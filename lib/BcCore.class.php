@@ -54,13 +54,15 @@ class BcCore {
     return $path;
   }
 
-  static function renderAnimated($bannerId, $framesCount = 2) {
+  static function renderAnimated($bannerId) {
+    $framesCount = (new SdPageBlockItems($bannerId))->maxFramesNumber();
     $sdPath = SD_PATH;
     $tempFolder = UPLOAD_PATH.'/banner/animated/temp/'.$bannerId;
     Dir::make($tempFolder);
+    Dir::clear($tempFolder);
     $cmd = '/usr/local/bin/phantomjs '.$sdPath.'/phantomjs/genAnimated.js '. //
       PROJECT_KEY.' '.SITE_DOMAIN.' '.$bannerId.' '.$framesCount.' '.Config::getVar('sd/renderKey').' '.WEBROOT_PATH;
-    system($cmd);
+    sys($cmd);
     $size = BcCore::getSize($bannerId);
     $x = 1300 / 2 - $size['w'] / 2;
     foreach (glob($tempFolder.'/*') as $file) {
@@ -84,11 +86,12 @@ class BcCore {
       ob_start();
       imagegif($image);
       $frames[] = ob_get_contents();
-      $framed[] = 50; // delay
+      $framed[] = 150; // delay
       ob_end_clean();
     }
     $gif = new GifEncoder($frames, $framed, 0, 2, 0, 0, 0, 'bin');
     $path = 'banner/animated/result/'.$bannerId.'.gif';
+    output('Generating gif "'.UPLOAD_PATH.'/'.$path.'"');
     file_put_contents(UPLOAD_PATH.'/'.$path, $gif->getAnimation());
     return $path;
   }

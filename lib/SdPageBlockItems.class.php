@@ -29,7 +29,8 @@ class SdPageBlockItems extends SdContainerItems {
       foreach ($items as $v) {
         if ($v['orderKey'] >= $orderKey) $orderKey++;
       }
-    } else {
+    }
+    else {
       // Делаем orderKey минимальным чтобы блок встал сверху
       $orderKey = 0;
       foreach ($this->getItems() as $v) {
@@ -72,7 +73,8 @@ class SdPageBlockItems extends SdContainerItems {
     if ($item->hasSeparateContent()) {
       if ($replace) $_content = [];
       $_content[111] = $content;
-    } else {
+    }
+    else {
       $_content = $content;
     }
     $this->itemSubKey = false;
@@ -86,7 +88,8 @@ class SdPageBlockItems extends SdContainerItems {
       if (!empty($item['data']['separateContent'])) return;
       $this->update($id, ['separateContent' => true]);
       $this->updateContent($id, $item['content'], true);
-    } else {
+    }
+    else {
       if (empty($item['data']['separateContent'])) return;
       $this->remove($id, 'separateContent', 'data');
       $this->updateContent($id, Arr::first($item['content']));
@@ -104,7 +107,8 @@ class SdPageBlockItems extends SdContainerItems {
     $global = (bool)$global;
     if ($this->getItem($id)->getContainer()['global'] == $global) {
       $this->remove($id, 'global', 'data');
-    } else {
+    }
+    else {
       $this->update($id, ['global' => $global]);
     }
   }
@@ -136,7 +140,7 @@ class SdPageBlockItems extends SdContainerItems {
   }
 
   function getItemsFF() {
-    return array_filter(parent::getItems(), function($v) {
+    return array_filter(parent::getItems(), function ($v) {
       return $this->ownPageId == $v['data']['ownPageId'];
     });
   }
@@ -148,6 +152,17 @@ class SdPageBlockItems extends SdContainerItems {
       }
     }
     return false;
+  }
+
+  function maxFramesNumber() {
+    $maxFramesNumber = 1;
+    foreach (parent::getItems() as $v) {
+      $framesNumber = SdPageBlockItem::factory($v, $this->bannerId)->framesNumber();
+      if ($framesNumber > $maxFramesNumber) {
+        $maxFramesNumber = $framesNumber;
+      }
+    }
+    return $maxFramesNumber;
   }
 
 }

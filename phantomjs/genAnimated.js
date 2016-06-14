@@ -46,9 +46,9 @@ var render = function(n) {
 var currentFrame = 0;
 
 page.onCallback = function(data) {
-  console.debug(data);
   if (data.action == 'frameChange') {
     currentFrame++;
+    console.log("Frame " + currentFrame + " rendering");
     var timeoutId = setTimeout((function() {
       clearTimeout(timeoutId);
       render(currentFrame);
@@ -59,5 +59,5 @@ page.onCallback = function(data) {
   }
 };
 
-console.debug('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
+console.log('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
 page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');

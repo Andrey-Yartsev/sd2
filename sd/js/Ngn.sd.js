@@ -1674,6 +1674,7 @@ Ngn.sd.init = function(bannerId) {
   if (window.location.hash == '#preview') {
     Ngn.sd.previewSwitch();
   }
+  window.fireEvent('sdAfterInit', bannerId);
 }
 
 Ngn.sd.reinit = function() {
