@@ -187,11 +187,22 @@ class CtrlSdCpanel extends CtrlBase {
   }
 
   function action_ajax_clipartSelect() {
-    //$ids = implode(', ', db()->ids('bcBannerButtonBroken'));
     foreach (BcCore::zukulDb()->select("SELECT * FROM bannerImage
  -- WHERE id NOT IN ()
  ") as $v) {
       print "<img src='/u/bcImagesCache/bannerImage/{$v['filename']}'>\n";
+    }
+  }
+
+  const TEMPLATE_USER_ID = 2;
+
+  function action_ajax_templateSelect() {
+    foreach (db()->select('SELECT * FROM bcBanners WHERE userId=?d AND size=? AND dateRender!=?', //
+      self::TEMPLATE_USER_ID, $this->banner['size'], '0000-00-00 00:00:00') as $v) {
+      $path = BcCore::getPath($v['id']);
+      if (file_exists(UPLOAD_PATH.$path)) {
+        print "<img src='".'/'.UPLOAD_DIR.$path."'>\n";
+      }
     }
   }
 

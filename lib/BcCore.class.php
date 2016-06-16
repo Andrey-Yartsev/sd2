@@ -51,6 +51,7 @@ class BcCore {
       'y'      => 100
     ]);
     imagepng($src, $file, 4);
+    db()->update('bcBanners', $bannerId, ['dateRender' => Date::db()]);
     return $path;
   }
 
@@ -93,8 +94,43 @@ class BcCore {
     $path = 'banner/animated/result/'.$bannerId.'.gif';
     output('Generating gif "'.UPLOAD_PATH.'/'.$path.'"');
     file_put_contents(UPLOAD_PATH.'/'.$path, $gif->getAnimation());
+    db()->update('bcBanners', $bannerId, ['dateRender' => Date::db()]);
     return $path;
   }
 
+  protected static $hasAnimation;
+
+  static function hasAnimation($bannerId) {
+    if (isset(self::$hasAnimation)) return self::$hasAnimation;
+    return self::$hasAnimation = (new SdPageBlockItems($bannerId))->hasAnimation();
+  }
+
+  static function getPath($bannerId) {
+    return '/banner/'. //
+      (self::hasAnimation($bannerId) ? //
+        'animated/result/'.$bannerId.'.gif' : 'static/'.$bannerId.'.png');
+  }
+
+  static function copyBanner($bannerId, $userId = null) {
+    // copy banner record
+    $banner = db()->selectRow("SELECT * FROM bcBanners WHERE id=?d", $bannerId);
+    $banner['dateUpdate'] = Date::db();
+    unset($banner['id']);
+    if ($userId) $banner['userId'] = $userId;
+    $newBannerId = db()->insert('bcBanners', $banner);
+    // copy block records
+    foreach (db()->query("SELECT * FROM bcBlocks WHERE bannerId=?d", $bannerId) as $v) {
+      $v['dateCreate'] = $v['dateUpdate'] = Date::db();
+      $v['bannerId'] = $newBannerId;
+      if ($userId) $v['userId'] = $userId;
+      unset($v['id']);
+      db()->insert('bcBlocks', $v);
+    }
+    // copy files
+    $path = BcCore::getPath($bannerId);
+    $newPath = preg_replace('/\/\d+\./', '/'.$newBannerId.'.', BcCore::getPath(11));
+    copy(UPLOAD_PATH.$path, UPLOAD_PATH.$newPath);
+    return $newBannerId;
+  }
 
 }
