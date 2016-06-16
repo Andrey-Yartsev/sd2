@@ -4,11 +4,9 @@ class BannerSettingsCreationForm extends BannerSettingsForm {
 
   protected function defineOptions() {
     return array_merge(parent::defineOptions(), [
-      [
         'title'       => 'Create banner...',
         'submitTitle' => 'Create'
-      ]
-    ]);
+      ]);
   }
 
   public $createdId;

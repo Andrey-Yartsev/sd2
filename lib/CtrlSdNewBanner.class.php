@@ -3,23 +3,11 @@
 class CtrlSdNewBanner extends CtrlBase {
 
   function action_json_default() {
-    $form = new Form([
-      [
-        'title'   => 'Banner Size',
-        'name'    => 'bannerSize',
-        'required' => true,
-        'type'    => 'select',
-        'options' => CtrlSdCpanel::getSizeOptions()
-      ]
-    ], [
-      'title'       => 'Create banner...',
-      'submitTitle' => 'Create'
-    ]);
-    if ($form->isSubmittedAndValid()) {
-      $this->json['id'] = BcCore::createBanner($form->getData()['bannerSize']);
-      return;
+    $form = new BannerSettingsCreationForm;
+    if ($r = ($this->jsonFormActionUpdate($form) === true)) {
+      $this->json['id'] = $form->createdId;
     }
-    return $form;
+    return $r;
   }
 
 }
