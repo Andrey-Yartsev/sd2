@@ -80,4 +80,8 @@ class SdPageBlockItem extends ArrayAccesseble {
     return 1;
   }
 
+  function hasCufon() {
+    return !empty($this->r['data']['font']);
+  }
+
 }

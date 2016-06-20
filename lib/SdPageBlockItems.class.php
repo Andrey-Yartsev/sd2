@@ -41,7 +41,6 @@ class SdPageBlockItems extends SdContainerItems {
     $data['bannerId'] = $this->bannerId;
     $data['orderKey'] = $orderKey;
     $r = parent::create($data);
-//    $this->fixTopOrder();
     return $r;
   }
 
@@ -163,6 +162,16 @@ class SdPageBlockItems extends SdContainerItems {
       }
     }
     return $maxFramesNumber;
+  }
+
+  function cufonBlocksNumber() {
+    $n = 0;
+    foreach (parent::getItems() as $v) {
+      if (SdPageBlockItem::factory($v, $this->bannerId)->hasCufon()) {
+        $n++;
+      }
+    }
+    return $n;
   }
 
 }

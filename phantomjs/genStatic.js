@@ -23,20 +23,38 @@ if (!args[5]) {
   phantom.exit();
 }
 
-var projectName = args[1];
+//var projectName = args[1];
 var domain = args[2];
 var bannerId = args[3];
 var renderKey = args[4];
 var projectPath = args[5];
+var cufonBlocksNumber = args[6];
 
 page.viewportSize = {
   width: 1300,
   height: 900
 };
 
+var render = function() {
+  page.render(projectPath + '/u/banner/static/' + bannerId + '.png');
+  phantom.exit();
+};
+
+page.onCallback = function(data) {
+  if (cufonBlocksNumber) {
+    if (data.action == 'cufonLoaded') {
+      window.setTimeout(function() {
+        render();
+      }, 500);
+    }
+  } else {
+    if (data.action == 'afterInit') {
+      window.setTimeout(function() {
+        render();
+      }, 500);
+    }
+  }
+};
+
 page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview', function() {
-  window.setTimeout(function () {
-    page.render(projectPath + '/u/banner/static/' + bannerId + '.png');
-    phantom.exit();
-  }, 500);
 });

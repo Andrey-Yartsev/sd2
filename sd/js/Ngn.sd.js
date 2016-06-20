@@ -900,7 +900,15 @@ Ngn.sd.BlockBFont = new Class({
       }
       Cufon.replace(this.styleEl(), cufonProps);
       Ngn.Request.Iface.loading(false);
+      this.phantomCufonLoaded();
     }.bind(this));
+  },
+  phantomCufonLoaded: function() {
+    if (typeof window.callPhantom === 'function') {
+      window.callPhantom({
+        action: 'cufonLoaded'
+      });
+    }
   },
   loadFont: function(onLoad) {
     if (!this.data.font || !this.data.font.fontFamily) return;
@@ -1665,14 +1673,18 @@ Ngn.sd.exportPageR = function(n) {
   Ngn.sd.loadData(n, onLoaded);
 };
 
-Ngn.sd.interface = {
-};
+Ngn.sd.interface = {};
 
 Ngn.sd.init = function(bannerId) {
   Ngn.sd.bannerId = bannerId;
   Ngn.sd.interface.bars = Ngn.sd.barsClass ? new Ngn.sd.barsClass() : new Ngn.sd.Bars();
   if (window.location.hash == '#preview') {
     Ngn.sd.previewSwitch();
+  }
+  if (typeof window.callPhantom === 'function') {
+    window.callPhantom({
+      action: 'afterInit'
+    });
   }
   window.fireEvent('sdAfterInit', bannerId);
 }

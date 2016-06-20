@@ -38,8 +38,9 @@ class BcCore {
   }
 
   static function renderStatic($bannerId) {
+    $cufonBlocksNumber = (new SdPageBlockItems($bannerId))->cufonBlocksNumber();
     Dir::make(UPLOAD_PATH.'/banner/static');
-    system('/usr/local/bin/phantomjs '.SD_PATH.'/phantomjs/genStatic.js '.PROJECT_KEY.' '.SITE_DOMAIN.' '.$bannerId.' '.Config::getVar('sd/renderKey').' '.WEBROOT_PATH);
+    system('/usr/local/bin/phantomjs '.SD_PATH.'/phantomjs/genStatic.js '.PROJECT_KEY.' '.SITE_DOMAIN.' '.$bannerId.' '.Config::getVar('sd/renderKey').' '.WEBROOT_PATH.' '.$cufonBlocksNumber);
     $path = 'banner/static/'.$bannerId.'.png';
     $file = UPLOAD_PATH.'/'.$path;
     $src = imagecreatefrompng($file);
