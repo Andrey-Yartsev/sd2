@@ -26,9 +26,9 @@ use SdItemsCtrl;
   }
 
   static function boolValue($v) {
-    if (is_string($v) and (bool)$v != $v) {
+    if (strlen($v) > 1) {
       // значит это слово 'false' / 'true'
-      return (bool)$v;
+      return $v === 'false' ? false : true;
     } else {
       return (bool)$v;
     }
