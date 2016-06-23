@@ -199,6 +199,7 @@ Ngn.sd.Items = new Class({
       onComplete: function(data) {
         this.setData(data);
         this.updateElement();
+        //Ngn.sd.GlobalSlides.init(true);
         this.loading(false);
       }.bind(this)
     }).send();
@@ -585,6 +586,7 @@ Ngn.sd.BlockB = new Class({
     this.el.setStyle('z-index', -this._data.orderKey + 100);
   },
   updateContent: function() {
+    Ngn.sd.GlobalSlides.init();
   },
   rotate: function(deg) {
     this._rotate(this.el.getElement('.cont'), deg);
@@ -1303,18 +1305,6 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
       var v, i;
       document.getElement('head title').set('html', data.pageTitle + ' - ' + Ngn.sd.initPageTitle);
       if (data.blockUserTypes) Ngn.sd.initUserTypes(data.blockUserTypes);
-      //for (i = 0; i < data.items.layout.length; i++) {
-      //  new Ngn.sd.Layout(data.items.layout[i], {
-      //    cls: i == 0 ? data.layout : ''
-      //  });
-      //}
-      //for (i = 0; i < data.items.layoutContent.length; i++) {
-      //  Ngn.sd.layoutContent = new Ngn.sd.LayoutContent(data.items.layoutContent[i]);
-      //}
-      //for (i = 0; i < data.items.blockContainer.length; i++) {
-      //  v = data.items.blockContainer[i];
-      //  Ngn.sd.blockContainers[v.id] = new Ngn.sd.BlockContainer(v);
-      //}
       Ngn.sd.eLayoutContent = new Element('div', {
         'class': 'lCont sdEl'
       }).inject('layout1');
@@ -1323,7 +1313,6 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
         v = data.items.pageBlock[i];
         Ngn.sd.blocks[v.id] = Ngn.sd.block(Ngn.sd.elBlock().inject(Ngn.sd.eLayoutContent), v);
       }
-
       Ngn.sd.eContentOverlayBorder = new Element('div', {'class': 'contentOverlayBorder'}).inject(Ngn.sd.eLayoutContent, 'top');
       new Element('div', {'class': 'contentOverlay contentOverlayLeft'}). //
         inject(Ngn.sd.eLayoutContent, 'top');
@@ -1333,13 +1322,11 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
         inject(Ngn.sd.eLayoutContent, 'top');
       Ngn.sd.eContentOverlayBottom = new Element('div', {'class': 'contentOverlay contentOverlayBottom'}). //
         inject(Ngn.sd.eLayoutContent, 'top');
-
       Ngn.sd.data = data;
       Ngn.sd.setBannerSize(data.bannerSettings.size);
       Ngn.sd.updateLayoutContentHeight();
       Ngn.sd.updateOrderBar(data.items.pageBlock);
       Ngn.sd.setPageTitle(ownPageId);
-      // window.location = window.location.href.replace(/#pg\d+/, '') + '#pg' + ownPageId;
       Ngn.Request.Iface.loading(false);
       window.fireEvent('resize');
       onComplete(data);
@@ -1374,30 +1361,6 @@ Ngn.sd.PageBlocksShift = new Class({
         ids: ids
       });
   }
-});
-
-Ngn.sd.PagesSet = new Class({
-  Extends: Ngn.FieldSet,
-  initRows: function() {
-    this.parent();
-    for (var i = 0; i < this.esRows.length; i++) {
-      this.createRowButton(this.esRows[i], {
-        caption: 'Перейти к редактированию раздела',
-        cls: 'edit'
-      }, function() {
-        Ngn.sd.loadData(this.options.n);
-      }, {
-        n: this.esRows[i].retrieve('n')
-      });
-    }
-  },
-  setActive: function(n) {
-    for (var i = 0; i < this.esRows.length; i++) {
-      this.esRows[i].removeClass('active');
-    }
-    this.esRows[n - 1].addClass('active');
-  }
-
 });
 
 Ngn.sd.pages = {};
@@ -1687,7 +1650,7 @@ Ngn.sd.init = function(bannerId) {
     });
   }
   window.fireEvent('sdAfterInit', bannerId);
-}
+};
 
 Ngn.sd.reinit = function() {
   Ngn.sd.init(Ngn.sd.bannerId);

@@ -19,6 +19,7 @@ class SdFormFactory {
    */
   static function blockSettings($id, SdContainerItems $items) {
     $item = $items->getItemD($id);
+    //die2($item);
     if (isset($item['type'])) {
       $type = $item['type'];
       $class = 'SdBlockSettingsForm'.ucfirst($type);
