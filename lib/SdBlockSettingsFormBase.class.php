@@ -11,7 +11,7 @@ abstract class SdBlockSettingsFormBase extends Form {
     if (!empty($this->block['data']['font'])) {
       $this->defaultData = $this->block['data']['font'];
     }
-    $this->options['title'] = "Block Settings";
+    $this->options['title'] = "Layer Settings";
     $this->options['filterEmpties'] = true;
     parent::__construct($this->getInitFields());
   }

@@ -113,8 +113,20 @@ Ngn.sd.Font = new Class({
     this.updateFont();
   },
 
+  toggleActive: function(isActive) {
+    if (isActive) {
+      this.el.addClass('active');
+    } else {
+      this.el.removeClass('active');
+    }
+  },
+
   _settingsAction: function() {
     if (Ngn.sd.openedPropDialog) Ngn.sd.openedPropDialog.close();
+    Ngn.sd.layersBar.toggleActive(this.id());
+    this.toggleActive(true);
+    if (Ngn.sd.currentEditBlock) Ngn.sd.currentEditBlock.toggleActive(false);
+    Ngn.sd.currentEditBlock = this;
     Ngn.sd.openedPropDialog = new Ngn.sd.SettingsDialog(Object.merge({
       onClose: function() {
         Ngn.sd.openedPropDialog = false;
@@ -569,7 +581,17 @@ Ngn.sd.BlockB = new Class({
     this.replaceContent();
     this.updateContent();
     this.updateSize();
-    // Ngn.sd.setMinHeight(eContainer); 
+    if (this.canEdit()) {
+      this.el.addEvent('click', function() {
+        this._settingsAction();
+      }.bind(this));
+    } else {
+      //this.el.addClass('nonEditable');
+      this.el.addEvent('click', function() {
+        if (Ngn.sd.openedPropDialog) Ngn.sd.openedPropDialog.close();
+      }.bind(this));
+    }
+    // Ngn.sd.setMinHeight(eContainer);
   }, // предназначено для изменения стилей внутренних элементов из данных блока
   setToTheTop: function() {
     var minOrderKey = 1;
@@ -649,9 +671,12 @@ Ngn.sd.BlockB = new Class({
     }.bind(this));
   },
   deleteAction: function() {
-    if (!confirm('Are you sure?')) return;
-    this.loading(true);
-    this._deleteAction();
+    new Ngn.Dialog.Confirm({
+      onOkClose: function() {
+        this.loading(true);
+        this._deleteAction();
+      }.bind(this)
+    });
   },
   _deleteAction: function() {
     new Ngn.Request.JSON({
@@ -789,6 +814,9 @@ Ngn.sd.BlockB = new Class({
   },
   framesCount: function() {
     return 0;
+  },
+  canEdit: function() {
+    return true;
   }
 });
 
@@ -1513,99 +1541,6 @@ Ngn.sd.updateLayoutContentHeight = function() {
   for (var i in Ngn.sd.blockContainers) y += Ngn.sd.blockContainers[i].el.getSize().y;
   $('layout').getElement('.lCont').sdSetStyle('min-height', (y + 6) + 'px');
 };
-
-Ngn.sd.SelectDialog = new Class({
-  Extends: Ngn.ElSelectDialog,
-  options: {
-    selectedName: false,
-    footer: false,
-    width: 580,
-    height: 300,
-    savePosition: true,
-    onChangeFont: function() {
-    }
-  },
-  setOptions: function(opts) {
-    this.parent(Object.merge(opts || {}, {id: this.name + 'Select'}));
-  },
-  init: function() {
-    var eSelected;
-    var obj = this;
-    this.message.getElements('div.item').each(function(el) {
-      if (obj.options.selectedName && el.get('data-name') == obj.options.selectedName) {
-        eSelected = el.addClass('selected');
-      }
-      el.addEvent('click', function() {
-        if (eSelected) eSelected.removeClass('selected');
-        el.addClass('selected');
-        eSelected = this;
-        obj.fireEvent('changeValue', el.get('data-name'));
-      });
-    });
-    if (eSelected) (function() {
-      new Fx.Scroll(obj.message).toElement(eSelected)
-    }).delay(500);
-  }
-});
-
-// @requiresBefore s2/js/common/tpl?name=fontSelect&controller=/font/ajax_browse
-Ngn.sd.FontSelectDialog = new Class({
-  Extends: Ngn.sd.SelectDialog,
-  name: 'font',
-  options: {
-    width: 600,
-    message: Ngn.tpls.fontSelect,
-    title: 'Choose Font...'
-  },
-  init: function() {
-    this.parent();
-    this.message.addClass('hLoader');
-    var els = this.message.getElements('div.item');
-    var loaded = 0;
-    els.each(function(el) {
-      Ngn.sd.loadFont(el.get('data-name'), function() {
-        loaded++;
-        Cufon.set('fontFamily', el.get('data-name')).replace(el.getElement('.font'));
-        if (loaded == els.length) this.message.removeClass('hLoader');
-      }.bind(this));
-    }.bind(this));
-  }
-});
-
-Ngn.Form.El.DialogSelect.Sd = new Class({
-  Extends: Ngn.Form.El.DialogSelect,
-
-  getSelectDialogEl: function() {
-    var eSelectDialog = new Element('div', {
-      'class': 'dialogSelect' + (this.options.selectClass ? ' ' + this.options.selectClass : ''),
-      title: this.options.selectTitle
-    }).inject(this.eInitField, 'after');
-    new Element('div', {'class': 'rightFading'}).inject(eSelectDialog);
-    return eSelectDialog;
-  }
-
-});
-
-Ngn.Form.El.FontFamilyCufon = new Class({
-  Extends: Ngn.Form.El.DialogSelect.Sd,
-  baseName: 'font',
-  options: {
-    selectClass: 'font'
-  },
-  init: function() {
-    this.parent();
-    this.value ? Ngn.sd.loadFont(this.value, this.initControl.bind(this)) : this.initControl();
-  },
-  initControlDefault: function() {
-  },
-  setValue: function(font) {
-    this.parent(font);
-    Cufon.set('fontFamily', font).replace(this.eSelectDialog);
-  },
-  getDialogClass: function() {
-    return Ngn.sd.FontSelectDialog;
-  }
-});
 
 Ngn.sd.itemTpl = function(k, v) {
   var el = Elements.from(Ngn.tpls[k])[0].getElement('div.item[data-name=' + v + ']');

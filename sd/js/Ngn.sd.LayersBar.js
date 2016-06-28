@@ -1,53 +1,27 @@
 Ngn.sd.LayersBar = new Class({
   initialize: function() {
     this.init();
+    Ngn.sd.layersBar = this;
   },
+  items: {},
   init: function() {
     Ngn.sd.eLayers.set('html', '');
-    new Element('div', {
+    var eTitle = new Element('div', {
       html: 'Layers',
       'class': 'lTitle'
     }).inject(Ngn.sd.eLayers);
-    var eLayers = new Element('div', {
+    this.eLayers = new Element('div', {
       'class': 'layers'
     }).inject(Ngn.sd.eLayers);
+    new Tips(new Element('span', {
+      html: '?',
+      title: 'Click any layer and drag to change its position in the layers list',
+      'class': 'questionMark'
+    }).inject(eTitle));
     Ngn.sd.sortBySubKey(Ngn.sd.blocks, '_data', 'orderKey').each(function(item) {
-      this.getTitle(item);
-      var eItem = new Element('div', {
-        'class': 'item ' + 'item_' + (item.data.subType || item.data.type),
-        'data-id': item._data.id,
-        'data-type': item.data.type,
-        events: {
-          click: function() {
-            if (!Ngn.sd.blocks[item._data.id].canEdit()) return;
-            Ngn.sd.blocks[item._data.id]._settingsAction(Ngn.sd.blocks[item._data.id]);
-          }.bind(this)
-        }
-      });
-      new Element('div', {
-        'class': 'title',
-        html: this.getTitle(item)
-      }).inject(eItem);
-      var eBtns = new Element('div', {
-        'class': 'btns'
-      }).inject(eItem);
-      if (this.canEdit(item)) {
-        new Ngn.Btn( //
-          Ngn.Btn.btn2('Edit', 'edit').inject(eBtns), //
-          Ngn.sd.blocks[item._data.id]._settingsAction.bind(Ngn.sd.blocks[item._data.id]) //
-        );
-      } else {
-        new Element('a', {
-          'class': 'smIcons dummy'
-        }).inject(eBtns);
-      }
-      new Ngn.Btn( //
-        Ngn.Btn.btn2('Delete', 'delete').inject(eBtns), //
-        Ngn.sd.blocks[item._data.id].deleteAction.bind(Ngn.sd.blocks[item._data.id]) //
-      );
-      eItem.inject(eLayers);
+      this.items[item._data.id] = new Ngn.sd.LayersBar.Item(this, item);
     }.bind(this));
-    new Sortables(eLayers, {
+    new Sortables(this.eLayers, {
       onStart: function(eMovingLayer) {
         eMovingLayer.addClass('drag');
       },
@@ -92,6 +66,57 @@ Ngn.sd.LayersBar = new Class({
     }
   },
   canEdit: function(item) {
-    return Ngn.sd.blocks[item._data.id].finalData().data.type == 'text';
+    return Ngn.sd.blocks[item._data.id].canEdit();
+  },
+  cauurentActiveId: null,
+  toggleActive: function(blockId) {
+    if (this.cauurentActiveId) this.items[this.cauurentActiveId].toggleActive(false);
+    this.items[blockId].toggleActive(true);
+    this.cauurentActiveId = blockId;
+  }
+});
+
+Ngn.sd.LayersBar.Item = new Class({
+  initialize: function(layersBar, item) {
+    this.eItem = new Element('div', {
+      'class': 'item ' + 'item_' + (item.data.subType || item.data.type),
+      'data-id': item._data.id,
+      'data-type': item.data.type,
+      events: {
+        click: function() {
+          if (!Ngn.sd.blocks[item._data.id].canEdit()) return;
+          Ngn.sd.blocks[item._data.id]._settingsAction(Ngn.sd.blocks[item._data.id]);
+        }.bind(this)
+      }
+    });
+    new Element('div', {
+      'class': 'title',
+      html: layersBar.getTitle(item)
+    }).inject(this.eItem);
+    var eBtns = new Element('div', {
+      'class': 'btns'
+    }).inject(this.eItem);
+    if (layersBar.canEdit(item)) {
+      new Ngn.Btn( //
+        Ngn.Btn.btn2('Edit', 'edit').inject(eBtns), //
+        Ngn.sd.blocks[item._data.id]._settingsAction.bind(Ngn.sd.blocks[item._data.id]) //
+      );
+    } else {
+      new Element('a', {
+        'class': 'smIcons dummy'
+      }).inject(eBtns);
+    }
+    new Ngn.Btn( //
+      Ngn.Btn.btn2('Delete', 'delete').inject(eBtns), //
+      Ngn.sd.blocks[item._data.id].deleteAction.bind(Ngn.sd.blocks[item._data.id]) //
+    );
+    this.eItem.inject(layersBar.eLayers);
+  },
+  toggleActive: function(isActive) {
+    if (isActive) {
+      this.eItem.addClass('active');
+    } else {
+      this.eItem.removeClass('active');
+    }
   }
 });
