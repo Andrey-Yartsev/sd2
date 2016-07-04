@@ -122,11 +122,15 @@ Ngn.sd.Font = new Class({
   },
 
   _settingsAction: function() {
+    if (Ngn.sd.currentEditBlock && Ngn.sd.currentEditBlock.id() == this.id()) return;
     if (Ngn.sd.openedPropDialog) Ngn.sd.openedPropDialog.close();
-    Ngn.sd.layersBar.toggleActive(this.id());
+    Ngn.sd.layersBar.setActive(this.id());
     this.toggleActive(true);
-    if (Ngn.sd.currentEditBlock) Ngn.sd.currentEditBlock.toggleActive(false);
+    if (Ngn.sd.currentEditBlock) {
+      Ngn.sd.currentEditBlock.toggleActive(false);
+    }
     Ngn.sd.currentEditBlock = this;
+    if (!this.canEdit()) return;
     Ngn.sd.openedPropDialog = new Ngn.sd.SettingsDialog(Object.merge({
       onClose: function() {
         Ngn.sd.openedPropDialog = false;
@@ -581,16 +585,9 @@ Ngn.sd.BlockB = new Class({
     this.replaceContent();
     this.updateContent();
     this.updateSize();
-    if (this.canEdit()) {
-      this.el.addEvent('click', function() {
-        this._settingsAction();
-      }.bind(this));
-    } else {
-      //this.el.addClass('nonEditable');
-      this.el.addEvent('click', function() {
-        if (Ngn.sd.openedPropDialog) Ngn.sd.openedPropDialog.close();
-      }.bind(this));
-    }
+    this.el.addEvent('click', function() {
+      this._settingsAction();
+    }.bind(this));
     // Ngn.sd.setMinHeight(eContainer);
   }, // предназначено для изменения стилей внутренних элементов из данных блока
   setToTheTop: function() {

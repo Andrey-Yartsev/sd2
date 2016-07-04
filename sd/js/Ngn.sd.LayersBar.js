@@ -21,6 +21,9 @@ Ngn.sd.LayersBar = new Class({
     Ngn.sd.sortBySubKey(Ngn.sd.blocks, '_data', 'orderKey').each(function(item) {
       this.items[item._data.id] = new Ngn.sd.LayersBar.Item(this, item);
     }.bind(this));
+    if (this.currentActiveId) {
+      this.setActive(this.currentActiveId);
+    }
     new Sortables(this.eLayers, {
       onStart: function(eMovingLayer) {
         eMovingLayer.addClass('drag');
@@ -68,11 +71,12 @@ Ngn.sd.LayersBar = new Class({
   canEdit: function(item) {
     return Ngn.sd.blocks[item._data.id].canEdit();
   },
-  cauurentActiveId: null,
-  toggleActive: function(blockId) {
-    if (this.cauurentActiveId) this.items[this.cauurentActiveId].toggleActive(false);
-    this.items[blockId].toggleActive(true);
-    this.cauurentActiveId = blockId;
+  setActive: function(blockId) {
+    if (this.currentActiveId && blockId != this.currentActiveId) {
+      this.items[this.currentActiveId].setActive(false);
+    }
+    this.items[blockId].setActive(true);
+    this.currentActiveId = blockId;
   }
 });
 
@@ -112,7 +116,7 @@ Ngn.sd.LayersBar.Item = new Class({
     );
     this.eItem.inject(layersBar.eLayers);
   },
-  toggleActive: function(isActive) {
+  setActive: function(isActive) {
     if (isActive) {
       this.eItem.addClass('active');
     } else {
