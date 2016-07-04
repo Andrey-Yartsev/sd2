@@ -43,7 +43,7 @@ var render = function() {
 };
 
 page.onCallback = function(data) {
-  console.debug(data.action + ' ' + cufonBlocksNumber);
+  //console.debug(data.action + ' ' + cufonBlocksNumber);
   if (parseInt(cufonBlocksNumber)) {
     if (data.action == 'cufonLoaded') {
       window.setTimeout(function() {
@@ -57,7 +57,7 @@ page.onCallback = function(data) {
   }
 };
 
-console.debug('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
+//console.debug('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
 
 page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview', function() {
 });
