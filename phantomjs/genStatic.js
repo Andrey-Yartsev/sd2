@@ -28,31 +28,29 @@ var domain = args[2];
 var bannerId = args[3];
 var renderKey = args[4];
 var projectPath = args[5];
-var cufonBlocksNumber = args[6];
+//var cufonBlocksNumber = args[6];
 
 page.viewportSize = {
   width: 1300,
   height: 900
 };
-
+//page.onConsoleMessage = function(msg, lineNum, sourceId) {
+//  console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
+//};
 var render = function() {
   page.render(projectPath + '/u/banner/static/' + bannerId + '.png');
   phantom.exit();
 };
 
 page.onCallback = function(data) {
-  if (cufonBlocksNumber) {
-    if (data.action == 'cufonLoaded') {
-      window.setTimeout(function() {
-        render();
-      }, 500);
-    }
-  } else {
-    if (data.action == 'afterInit') {
-      window.setTimeout(function() {
-        render();
-      }, 500);
-    }
+  if (data.action == 'cufonLoaded') {
+    window.setTimeout(function() {
+      render();
+    }, 500);
+  } else if (data.action == 'afterInit') {
+    window.setTimeout(function() {
+      render();
+    }, 500);
   }
 };
 
