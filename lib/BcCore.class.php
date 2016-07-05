@@ -30,7 +30,6 @@ class BcCore {
   }
 
   static function render($bannerId) {
-    die2((new SdPageBlockItems($bannerId))->hasAnimation());
     if ((new SdPageBlockItems($bannerId))->hasAnimation()) {
       return self::renderAnimated($bannerId);
     } else {
