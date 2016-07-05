@@ -43,7 +43,7 @@ var render = function() {
 };
 
 page.onCallback = function(data) {
-  //console.debug(data.action + ' ' + cufonBlocksNumber);
+  // - console.debug(data.action + ' ' + cufonBlocksNumber);
   if (parseInt(cufonBlocksNumber)) {
     if (data.action == 'cufonLoaded') {
       window.setTimeout(function() {

@@ -123,6 +123,7 @@ Ngn.sd.Font = new Class({
 
   _settingsAction: function() {
     if (Ngn.sd.currentEditBlock && Ngn.sd.currentEditBlock.id() == this.id()) return;
+    console.debug('!!!');
     if (Ngn.sd.openedPropDialog) Ngn.sd.openedPropDialog.close();
     Ngn.sd.layersBar.setActive(this.id());
     this.toggleActive(true);

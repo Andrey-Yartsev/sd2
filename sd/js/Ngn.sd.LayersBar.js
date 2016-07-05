@@ -88,7 +88,6 @@ Ngn.sd.LayersBar.Item = new Class({
       'data-type': item.data.type,
       events: {
         click: function() {
-          if (!Ngn.sd.blocks[item._data.id].canEdit()) return;
           Ngn.sd.blocks[item._data.id]._settingsAction(Ngn.sd.blocks[item._data.id]);
         }.bind(this)
       }
