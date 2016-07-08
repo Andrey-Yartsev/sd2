@@ -130,11 +130,21 @@ Ngn.sd.Font = new Class({
       Ngn.sd.currentEditBlock.toggleActive(false);
     }
     Ngn.sd.currentEditBlock = this;
-    if (!this.canEdit()) return;
+    if (!this.canEdit()) {
+
+      if (Ngn.sd.openedPropDialog) {
+        console.debug('Ngn.sd.openedPropDialog: close');
+        Ngn.sd.openedPropDialog.close();
+      }
+      return;
+    }
+
     Ngn.sd.openedPropDialog = new Ngn.sd.SettingsDialog(Object.merge({
       onClose: function() {
         Ngn.sd.currentEditBlock = false;
         Ngn.sd.openedPropDialog = false;
+      }.bind(this),
+      onOkClose: function() {
         this._settingsAction();
       }.bind(this),
       dialogClass: 'settingsDialog dialog',
