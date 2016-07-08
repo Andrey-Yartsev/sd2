@@ -1,0 +1,65 @@
+Ngn.sd.BannersBar = new Class({
+
+  initialize: function() {
+    this.opened = Ngn.Storage.get('sd.BannersBar.opened');
+    this.eWrapper = new Element('div', {
+      'class': 'bannerBarWrapper'
+    }).inject(document.getElement('.body'));
+    this.eBar = new Element('div', {
+      'class': 'bannerBar'
+    }).inject(this.eWrapper);
+    this.eCont = new Element('div', {
+      'class': 'bannerBarCont'
+    }).inject(this.eBar);
+    var eHandler = new Element('div', {
+      'class': 'handler'
+    }).inject(this.eBar);
+    if (this.opened) {
+      this.show();
+    } else {
+      this.hide();
+    }
+    //
+    eHandler.addEvent('click', this.toggle.bind(this));
+    //
+    new Ngn.Request.JSON({
+      url: '/allBanners',
+      onComplete: function(r) {
+        for (var i=0; i<r.banners.length; i++) {
+          var el = new Element('a', {
+            'class': 'item',
+            href: r.banners[i].editLink,
+            html: '<img src="' + r.banners[i].directLink + '">'
+          }).inject(this.eCont);
+          if (Ngn.sd.bannerId == r.banners[i].id) {
+            el.addClass('selected');
+          }
+        }
+      }.bind(this)
+    }).send();
+  },
+
+  show: function() {
+    this.eCont.setStyle('display', 'block');
+    this.eWrapper.removeClass('hiddn');
+    this.opened = true;
+    Ngn.Storage.set('sd.BannersBar.opened', true);
+  },
+
+  hide: function() {
+    this.eCont.setStyle('display', 'none');
+    //this.eWrapper.setStyle('bottom', '-10px');
+    this.eWrapper.addClass('hiddn');
+    this.opened = false;
+    Ngn.Storage.set('sd.BannersBar.opened', false);
+  },
+
+  toggle: function() {
+    if (this.opened) {
+      this.hide();
+    } else {
+      this.show();
+    }
+  }
+
+});

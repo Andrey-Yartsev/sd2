@@ -3,6 +3,7 @@
 class BcBanner extends ArrayAccesseble {
 
   function __construct(array $data) {
+    $data['editLink'] = '/cpanel/'.$data['id'];
     if ((new SdPageBlockItems($data['id']))->hasAnimation()) {
       if (file_exists(UPLOAD_PATH.'/banner/animated/result/'.$data['id'].'.gif')) {
         $data['directLink'] = '/'.UPLOAD_DIR.'/banner/animated/result/'.$data['id'].'.gif';
