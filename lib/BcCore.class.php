@@ -57,13 +57,15 @@ class BcCore {
   }
 
   static function renderAnimated($bannerId) {
+    $cufonBlocksNumber = (new SdPageBlockItems($bannerId))->cufonBlocksNumber();
     $framesCount = (new SdPageBlockItems($bannerId))->maxFramesNumber();
     $sdPath = SD_PATH;
     $tempFolder = UPLOAD_PATH.'/banner/animated/temp/'.$bannerId;
     Dir::make($tempFolder);
     Dir::clear($tempFolder);
     $cmd = '/usr/local/bin/phantomjs '.$sdPath.'/phantomjs/genAnimated.js '. //
-      PROJECT_KEY.' '.SITE_DOMAIN.' '.$bannerId.' '.$framesCount.' '.Config::getVar('sd/renderKey').' '.WEBROOT_PATH;
+      PROJECT_KEY.' '.SITE_DOMAIN.' '.$bannerId.' '.$framesCount.' '.Config::getVar('sd/renderKey').' '. //
+      WEBROOT_PATH.' '.$cufonBlocksNumber;
     sys($cmd);
     $size = BcCore::getSize($bannerId);
     $x = 1300 / 2 - $size['w'] / 2;

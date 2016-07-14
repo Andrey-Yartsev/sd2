@@ -82,7 +82,7 @@ Ngn.sd.GlobalSlides = new Class({
   startAnimation: function() {
     if (this.animationStarted) return;
     this.animationStarted = true;
-    this.phantomFrameChange();
+    //this.phantomFrameChange();
     this.cacheSlides();
     this.initMaxSlidesBlockN();
     if (this.slides.length) {

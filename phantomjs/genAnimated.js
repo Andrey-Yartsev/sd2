@@ -33,6 +33,7 @@ var bannerId = args[3];
 var framesCount = args[4];
 var renderKey = args[5];
 var projectPath = args[6];
+var cufonBlocksNumber = args[7];
 
 page.viewportSize = {
   width: 1300,
@@ -40,17 +41,33 @@ page.viewportSize = {
 };
 
 var render = function(n) {
+  console.log("Frame " + n + " rendering");
   page.render(projectPath + '/u/banner/animated/temp/' + bannerId + '/' + n + '.png');
 };
 
 var currentFrame = 0;
 
 page.onCallback = function(data) {
+  if (parseInt(cufonBlocksNumber)) {
+    if (data.action == 'cufonLoaded') {
+      currentFrame++;
+      console.log('render on cufonLoaded');
+      window.setTimeout(function() {
+        render(currentFrame);
+      }, 500);
+    }
+  } else if (data.action == 'afterInit') {
+    currentFrame++;
+    window.setTimeout(function() {
+      console.log('render on afterInit');
+      render(currentFrame);
+    }, 500);
+  }
   if (data.action == 'frameChange') {
     currentFrame++;
-    console.log("Frame " + currentFrame + " rendering");
     var timeoutId = setTimeout((function() {
       clearTimeout(timeoutId);
+      console.log('render on frameChange');
       render(currentFrame);
       if (currentFrame == framesCount) {
         phantom.exit();
