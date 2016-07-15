@@ -7,7 +7,7 @@ abstract class CtrlSdRenderAbstract extends CtrlCommon {
   }
 
   protected function render() {
-    return BcCore::render($this->req->param(1));
+    return O::di('BcRender', $this->req->param(1))->render();
   }
 
 }

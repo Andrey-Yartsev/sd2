@@ -41,7 +41,7 @@ page.viewportSize = {
 };
 
 var render = function(n) {
-  console.log("Frame " + n + " rendering");
+  //console.log("Frame " + n + " rendering");
   page.render(projectPath + '/u/banner/animated/temp/' + bannerId + '/' + n + '.png');
 };
 
@@ -51,7 +51,7 @@ page.onCallback = function(data) {
   if (parseInt(cufonBlocksNumber)) {
     if (data.action == 'cufonLoaded') {
       currentFrame++;
-      console.log('render on cufonLoaded');
+      //console.log('render on cufonLoaded');
       window.setTimeout(function() {
         render(currentFrame);
       }, 500);
@@ -59,7 +59,7 @@ page.onCallback = function(data) {
   } else if (data.action == 'afterInit') {
     currentFrame++;
     window.setTimeout(function() {
-      console.log('render on afterInit');
+      //console.log('render on afterInit');
       render(currentFrame);
     }, 500);
   }
@@ -67,7 +67,7 @@ page.onCallback = function(data) {
     currentFrame++;
     var timeoutId = setTimeout((function() {
       clearTimeout(timeoutId);
-      console.log('render on frameChange');
+      //console.log('render on frameChange');
       render(currentFrame);
       if (currentFrame == framesCount) {
         phantom.exit();
@@ -76,5 +76,5 @@ page.onCallback = function(data) {
   }
 };
 
-console.log('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
+//console.log('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
 page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');

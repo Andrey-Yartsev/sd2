@@ -25,11 +25,11 @@ Ngn.sd.BannersBar = new Class({
     new Ngn.Request.JSON({
       url: '/allBanners',
       onComplete: function(r) {
-        for (var i=0; i<r.banners.length; i++) {
+        for (var i = 0; i < r.banners.length; i++) {
           var el = new Element('a', {
             'class': 'item',
             href: r.banners[i].editLink,
-            html: '<img src="' + r.banners[i].directLink + '">'
+            html: r.banners[i].downloadLink ? '<img src="' + r.banners[i].directLink + '">' : '<div>need to render</div>'
           }).inject(this.eCont);
           if (Ngn.sd.bannerId == r.banners[i].id) {
             el.addClass('selected');

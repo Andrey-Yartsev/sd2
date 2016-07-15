@@ -131,14 +131,12 @@ Ngn.sd.Font = new Class({
     }
     Ngn.sd.currentEditBlock = this;
     if (!this.canEdit()) {
-
       if (Ngn.sd.openedPropDialog) {
         console.debug('Ngn.sd.openedPropDialog: close');
         Ngn.sd.openedPropDialog.close();
       }
       return;
     }
-
     Ngn.sd.openedPropDialog = new Ngn.sd.SettingsDialog(Object.merge({
       onClose: function() {
         Ngn.sd.currentEditBlock = false;
@@ -363,9 +361,6 @@ Ngn.sd.BlockAbstract = new Class({
     this.initElement(el);
     this.addCont(this.el);
     this.event = event;
-    this.el.addEvent('click', function() {
-
-    });
     this.setOptions(options);
     this.ctrl = '/pageBlock/' + Ngn.sd.bannerId;
     this.init();
@@ -589,9 +584,12 @@ Ngn.sd.BlockB = new Class({
     Ngn.sd.interface.bars.layersBar.init();
     //this.updateContainerHeight();
   },
+  initPosition: function() {
+    this.el.sdSetPosition(this.data.position);
+  },
   init: function() {
     if (this._data.id) Ngn.sd.blocks[this._data.id] = this;
-    this.el.sdSetPosition(this.data.position);
+    this.initPosition();
     this.updateOrder();
     this.initControls();
     this.initFont();
