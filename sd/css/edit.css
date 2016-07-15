@@ -921,9 +921,15 @@ z-index: 298;
 background: #212121;
 margin-left: 200px;
 position: relative;
+overflow-x: hidden;
 }
 .bannerBarCont {
-height: 100px;
+height: 115px;
+overflow-y: hidden;
+overflow-x: auto;
+}
+.bannerBarContInner {
+width: 3000px;
 }
 .bannerBar .handler {
 position: absolute;
