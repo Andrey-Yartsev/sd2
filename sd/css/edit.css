@@ -930,6 +930,7 @@ overflow-x: auto;
 }
 .bannerBarContInner {
 width: 3000px;
+padding-right: 30px;
 }
 .bannerBar .handler {
 position: absolute;

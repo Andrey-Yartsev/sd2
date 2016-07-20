@@ -48,6 +48,7 @@ var render = function(n) {
 var currentFrame = 0;
 
 page.onCallback = function(data) {
+  //console.log(data);
   if (parseInt(cufonBlocksNumber)) {
     if (data.action == 'cufonLoaded') {
       currentFrame++;
@@ -78,3 +79,4 @@ page.onCallback = function(data) {
 
 //console.log('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
 page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
+//page.open('http://' + domain + '/sd/1.html');

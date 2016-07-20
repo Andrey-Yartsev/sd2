@@ -25,4 +25,5 @@
 <script>
   Ngn.renderKey = '<?= Config::getVar('sd/renderKey') ?>';
   Ngn.sd.init(<?= $d['bannerId'] ?>);
+  Ngn.toObj('Ngn.sd.baseUrl', 'http://<?= SITE_DOMAIN ?>');
 </script>
