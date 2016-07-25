@@ -44,7 +44,7 @@ page.viewportSize = {
 };
 
 function log(s) {
-  console.log(s);
+  //console.log(s);
 }
 
 var render = function(descr, callNumber) {
