@@ -35,6 +35,9 @@ var renderKey = args[5];
 var projectPath = args[6];
 var cufonBlocksNumber = args[7];
 
+var currentFrame = 0;
+var timeoutId;
+
 page.viewportSize = {
   width: 1300,
   height: 900
@@ -44,44 +47,43 @@ function log(s) {
   console.log(s);
 }
 
-var render = function(n) {
-  log("Frame " + n + " rendering");
-  page.render(projectPath + '/u/banner/animated/temp/' + bannerId + '/' + n + '.png');
+var render = function(descr, callNumber) {
+  log('try ' + descr + " ("+new Date().getSeconds()+':'+ new Date().getMilliseconds()+") [" + callNumber + "]");
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(function() {
+    currentFrame++;
+    log("Frame " + currentFrame + " rendering on '" + descr + "' ("+ //
+      new Date().getSeconds()+':'+ new Date().getMilliseconds()+") [" + callNumber + "]");
+    page.render(projectPath + '/u/banner/animated/temp/' + bannerId + '/' + currentFrame + '.png');
+    if (currentFrame == framesCount) {
+      phantom.exit();
+    }
+  }, 100);
 };
 
-var currentFrame = 0;
-var timeoutId;
-
+var cufonBlocksExists = parseInt(cufonBlocksNumber) ? true : false;
+var callNumber = 0;
 page.onCallback = function(data) {
-  //log(data);
-  if (parseInt(cufonBlocksNumber)) {
+  callNumber++;
+  if (cufonBlocksExists) {
     if (data.action == 'cufonLoaded') {
-      currentFrame++;
-      log('render on cufonLoaded');
-      window.setTimeout(function() {
-        render(currentFrame);
-      }, 500);
+      render(data.action, callNumber);
     }
   } else if (data.action == 'afterInit') {
-    currentFrame++;
-    window.setTimeout(function() {
-      log('render on afterInit');
-      render(currentFrame);
-    }, 500);
+    render(data.action, callNumber);
   }
   if (data.action == 'frameChange') {
-    currentFrame++;
-    timeoutId = setTimeout((function() {
-      clearTimeout(timeoutId);
-      log('render on frameChange');
-      render(currentFrame);
-      log('currentFrame:' + currentFrame + ', framesCount:' + framesCount);
-      if (currentFrame == framesCount) {
-        phantom.exit();
-      }
-    }), 100);
+    render(data.action, callNumber);
   }
 };
+
+function a() {
+  timeoutId = setTimeout(function() {
+    clearTimeout(timeoutId);
+    log('a');
+  }, 100);
+}
+
 
 log('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
 page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');

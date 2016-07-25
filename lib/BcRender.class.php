@@ -50,7 +50,6 @@ class BcRender {
     $cmd = '/usr/local/bin/phantomjs '.$sdPath.'/phantomjs/genAnimated.js '. //
       PROJECT_KEY.' '.SITE_DOMAIN.' '.$this->bannerId.' '.$framesCount.' '.Config::getVar('sd/renderKey').' '. //
       WEBROOT_PATH.' '.$cufonBlocksNumber;
-    die2($cmd);
     system($cmd);
     $size = BcCore::getSize($this->bannerId);
     $x = 1300 / 2 - $size['w'] / 2;

@@ -52,14 +52,18 @@ Ngn.sd.GlobalSlides = new Class({
   maxSlidesBlockN: 0,
 
   initMaxSlidesBlockN: function() {
+    var maxSlides = 0;
     for (var i = 0; i < this.slides.length; i++) {
-      if (this.slides[i].length > this.maxSlidesBlockN) {
+      if (this.slides[i].length > maxSlides) {
+        maxSlides = this.slides[i].length;
         this.maxSlidesBlockN = i;
       }
     }
   },
 
   nextSlide: function() {
+    //console.debug(this.slides);
+    //console.debug(this.maxSlidesBlockN);
     if (this.slides[this.maxSlidesBlockN][this.currentIndex + 1]) {
       this.nextIndex = this.currentIndex + 1;
     } else {

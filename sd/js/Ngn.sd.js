@@ -1512,7 +1512,7 @@ Ngn.sd.init = function(bannerId) {
   if (window.location.hash == '#preview') {
     Ngn.sd.previewSwitch();
   }
-  console.debug('callPhantom: afterInit');
+  //console.debug('callPhantom: afterInit');
   if (typeof window.callPhantom === 'function') {
     window.callPhantom({
       action: 'afterInit'
