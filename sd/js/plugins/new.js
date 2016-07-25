@@ -1,5 +1,5 @@
 window.addEvent('sdPanelComplete', function() {
-  new Ngn.Btn(Ngn.sd.fbtn('New banner', 'add'), function() {
+  new Ngn.Btn(Ngn.sd.fbtn(Ngn.Locale.get('Sd.newBanner'), 'add'), function() {
     new Ngn.Dialog.RequestForm({
       url: '/newBanner',
       width: 200,

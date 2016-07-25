@@ -2,7 +2,7 @@
 
 class FieldEFontFamilyCufon extends FieldEDialogSelect {
 
-  static $title = 'Font';
+  static $title;
 
   protected function defineOptions() {
     $options['value'] = 'arial';
@@ -16,3 +16,5 @@ class FieldEFontFamilyCufon extends FieldEDialogSelect {
   }
 
 }
+
+FieldEFontFamilyCufon::$title = Locale::get('font');

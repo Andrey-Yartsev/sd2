@@ -1,3 +1,5 @@
+// @requiresBefore s2/js/locale?key=sd
+
 // from common
 
 if (!Ngn.sd) Ngn.sd = {};
@@ -139,6 +141,7 @@ Ngn.sd.Font = new Class({
     }
     Ngn.sd.openedPropDialog = new Ngn.sd.SettingsDialog(Object.merge({
       onClose: function() {
+        Ngn.sd.currentEditBlock.toggleActive(false);
         Ngn.sd.currentEditBlock = false;
         Ngn.sd.openedPropDialog = false;
       }.bind(this),

@@ -50,6 +50,9 @@ font-size: 9px;
 text-align: center;
 opacity: 0.8;
 }
+.panelBtn div {
+padding: 0 5px;
+}
 .panelBtn:hover {
 opacity: 1;
 color: #fff;
@@ -290,7 +293,7 @@ border: 1px solid rgba(255, 255, 255, 0.2);
 border-color: rgba(255, 255, 255, 0.5);
 }
 .block.active {
-border-color: rgba(255, 255, 255, 1);
+border-color: #f00;
 }
 .dragBox {
 width: 15px;
@@ -385,7 +388,6 @@ position: relative;
 box-sizing: border-box;
 border: 1px solid #E9E8DB;
 margin-bottom: 1px;
-border-radius: 5px;
 white-space: nowrap;
 padding: 3px;
 cursor: pointer;

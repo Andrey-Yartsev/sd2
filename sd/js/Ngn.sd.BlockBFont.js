@@ -44,6 +44,7 @@ Ngn.sd.BlockBFont = new Class({
           textShadow: '1px 1px rgba(0, 0, 0, 0.8)'
         };
       }
+      console.debug(this.styleEl());
       Cufon.replace(this.styleEl(), cufonProps);
       Ngn.Request.Iface.loading(false);
       this.phantomCufonLoaded();

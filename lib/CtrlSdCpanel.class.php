@@ -17,6 +17,7 @@ class CtrlSdCpanel extends CtrlBase {
   protected $banner;
 
   protected function afterInit() {
+
     $this->d['bannerId'] = Misc::checkEmpty($this->req->param(1));
     $this->banner = db()->getRow('bcBanners', $this->d['bannerId']);
     if ($this->banner['userId'] != Auth::get('id') and $this->req['renderKey'] != Config::getVar('sd/renderKey')) throw new AccessDenied;

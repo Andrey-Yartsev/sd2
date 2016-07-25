@@ -15,7 +15,6 @@ Ngn.sd.Bars = new Class({
     new Element('div', {
       'class': 'tit'
     }).inject(Ngn.sd.ePanel);
-    document.getElement('.profileBar').inject(Ngn.sd.ePanel);
     Ngn.sd.eLayers = new Element('div', {'class': 'cont'}).inject($('layers'));
     Ngn.sd.loadData(pg ? pg[1] : 1, function(data) {
       this.layersBar = this.getLayersBar();
