@@ -8,7 +8,7 @@ class CtrlSdCpanel extends CtrlBase {
   }
 
   protected function init() {
-    if (!Auth::get('id') and $this->req['renderKey'] != Config::getVar('sd/renderKey')) {
+    if (!Auth::get('id') and $this->req['adminKey'] != Config::getVar('adminKey')) {
       $this->redirect('/');
       return;
     }
@@ -17,10 +17,9 @@ class CtrlSdCpanel extends CtrlBase {
   protected $banner;
 
   protected function afterInit() {
-
     $this->d['bannerId'] = Misc::checkEmpty($this->req->param(1));
     $this->banner = db()->getRow('bcBanners', $this->d['bannerId']);
-    if ($this->banner['userId'] != Auth::get('id') and $this->req['renderKey'] != Config::getVar('sd/renderKey')) throw new AccessDenied;
+    if ($this->banner['userId'] != Auth::get('id') and $this->req['adminKey'] != Config::getVar('adminKey')) throw new AccessDenied;
     Sflm::frontend('css')->addLib('sdEdit');
     Sflm::frontend('js')->addLib('sdEdit');
     Sflm::frontend('js')->addClass('Ngn.Dialog.RequestForm');

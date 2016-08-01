@@ -1261,7 +1261,7 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
   Ngn.sd.blockContainers = {};
   if (Ngn.sd.pagesSet) Ngn.sd.pagesSet.setActive(ownPageId);
   new Ngn.Request.JSON({
-    url: '/cpanel/' + Ngn.sd.bannerId + '/json_get/?renderKey=' + Ngn.renderKey,
+    url: '/cpanel/' + Ngn.sd.bannerId + '/json_get/?adminKey=' + Ngn.adminKey,
     onComplete: function(data) {
       var v, i;
       document.getElement('head title').set('html', data.pageTitle + ' - ' + Ngn.sd.initPageTitle);

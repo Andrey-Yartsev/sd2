@@ -26,7 +26,7 @@ if (!args[5]) {
 //var projectName = args[1];
 var domain = args[2];
 var bannerId = args[3];
-var renderKey = args[4];
+var adminKey = args[4];
 var projectPath = args[5];
 var cufonBlocksNumber = args[6];
 
@@ -57,7 +57,7 @@ page.onCallback = function(data) {
   }
 };
 
-//console.debug('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
+//console.debug('http://' + domain + '/cpanel/' + bannerId + '?adminKey=' + adminKey + '#preview');
 
-page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview', function() {
+page.open('http://' + domain + '/cpanel/' + bannerId + '?adminKey=' + adminKey + '#preview', function() {
 });

@@ -23,7 +23,7 @@ class BcRender {
     $cufonBlocksNumber = $this->items->cufonBlocksNumber();
     Dir::make(UPLOAD_PATH.'/banner/static');
     $cmd = '/usr/local/bin/phantomjs '.SD_PATH.'/phantomjs/genStatic.js '.PROJECT_KEY.' '.SITE_DOMAIN.' '. //
-      $this->bannerId.' '.Config::getVar('sd/renderKey').' '.WEBROOT_PATH.' '.$cufonBlocksNumber;
+      $this->bannerId.' '.Config::getVar('adminKey').' '.WEBROOT_PATH.' '.$cufonBlocksNumber;
     system($cmd);
     $path = 'banner/static/'.$this->bannerId.'.png';
     $file = UPLOAD_PATH.'/'.$path;
@@ -48,7 +48,7 @@ class BcRender {
     Dir::make($tempFolder);
     Dir::clear($tempFolder);
     $cmd = '/usr/local/bin/phantomjs '.$sdPath.'/phantomjs/genAnimated.js '. //
-      PROJECT_KEY.' '.SITE_DOMAIN.' '.$this->bannerId.' '.$framesCount.' '.Config::getVar('sd/renderKey').' '. //
+      PROJECT_KEY.' '.SITE_DOMAIN.' '.$this->bannerId.' '.$framesCount.' '.Config::getVar('adminKey').' '. //
       WEBROOT_PATH.' '.$cufonBlocksNumber;
     system($cmd);
     $size = BcCore::getSize($this->bannerId);

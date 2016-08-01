@@ -31,7 +31,7 @@ var projectName = args[1];
 var domain = args[2];
 var bannerId = args[3];
 var framesCount = args[4];
-var renderKey = args[5];
+var adminKey = args[5];
 var projectPath = args[6];
 var cufonBlocksNumber = args[7];
 
@@ -85,6 +85,6 @@ function a() {
 }
 
 
-log('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
-page.open('http://' + domain + '/cpanel/' + bannerId + '?renderKey=' + renderKey + '#preview');
+log('http://' + domain + '/cpanel/' + bannerId + '?adminKey=' + adminKey + '#preview');
+page.open('http://' + domain + '/cpanel/' + bannerId + '?adminKey=' + adminKey + '#preview');
 //page.open('http://' + domain + '/sd/1.html');

@@ -9,7 +9,7 @@
 <div id="orderBar"></div>
 
 <script>
-  Ngn.renderKey = '<?= Config::getVar('sd/renderKey') ?>';
+  Ngn.adminKey = '<?= Config::getVar('adminKey') ?>';
   Ngn.sd.init(<?= $d['bannerId'] ?>);
   Ngn.toObj('Ngn.sd.baseUrl', 'http://<?= SITE_DOMAIN ?>');
 </script>
