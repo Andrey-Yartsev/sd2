@@ -1,3 +1,3 @@
 <?php
 
-require dirname(NGN_PATH).'/sd/init.php';
+require dirname(NGN_PATH).'/bc/init.php';
