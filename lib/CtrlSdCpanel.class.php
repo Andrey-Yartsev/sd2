@@ -12,6 +12,7 @@ class CtrlSdCpanel extends CtrlBase {
       $this->redirect('/');
       return;
     }
+    $this->setPageTitle('Editor');
   }
 
   protected $banner;
