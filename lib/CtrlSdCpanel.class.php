@@ -162,26 +162,6 @@ class CtrlSdCpanel extends CtrlBase {
     }));
   }
 
-  function action_ajax_backgroundSelect() {
-    $db = BcCore::zukulDb();
-    $size = BcCore::getSize($this->d['bannerId']);
-    $bannerSizeId = $db->selectCell("SELECT id FROM bannerSize WHERE width=? AND height=?", $size['w'], $size['h']);
-    $r = $db->select("SELECT * FROM bannerTemplate WHERE bannerSizeId=?d", $bannerSizeId);
-    foreach ($r as $v) {
-      print "<img src='/u/bcImagesCache/bannerTemplate/{$v['filename']}'>\n";
-    }
-  }
-
-  function action_json_createBackgroundBlock() {
-    $data = CtrlSdPageBlock::protoData('background');
-    $data['data']['backgroundUrl'] = $this->req->rq('backgroundUrl');
-    $data['data']['size'] = BcCore::getSize($this->d['bannerId']);
-    $data['data']['subType'] = 'image';
-    $data['data']['bottom'] = true;
-    $data['data']['single'] = true;
-    (new SdPageBlockItems($this->d['bannerId']))->create($data);
-  }
-
   protected function createImageBlock($type) {
     $data = CtrlSdPageBlock::protoData($type);
     $data['data']['subType'] = 'image';
