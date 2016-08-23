@@ -452,7 +452,7 @@ Ngn.sd.BlockAbstract = new Class({
     Ngn.sd.interface.bars.layersBar.init();
   },
   replaceContent: function() {
-    if (!this._data.html) return;
+    //if (!this._data.html) return; this does not give save empty value
     this.el.getElement('.cont').set('html', this._data.html);
     this.el.getElement('.cont').getElements('a').addEvent('click', function(e) {
       e.preventDefault()
@@ -583,12 +583,24 @@ Ngn.sd.BlockB = new Class({
   },
   delete: function() {
     this.parent();
-    delete Ngn.sd.blocks[this._data.id];
+    var blockIds=this.getBlocksId();
+    if (blockIds.length!==1 && Ngn.sd.currentEditBlock.id() == this.id()) {
+      blockIds.splice(blockIds.indexOf(this._data.id), 1);
+      delete Ngn.sd.blocks[this._data.id];
+      Ngn.sd.blocks[ Math.max.apply({},blockIds) ]._settingsAction();
+    } else { delete Ngn.sd.blocks[this._data.id]; }
     Ngn.sd.interface.bars.layersBar.init();
     //this.updateContainerHeight();
   },
   initPosition: function() {
     this.el.sdSetPosition(this.data.position);
+  },
+  getBlocksId: function() {
+    var blocksArr = [];
+    for (var i in Ngn.sd.blocks) {
+      blocksArr.push(i);
+    }
+    return blocksArr;
   },
   init: function() {
     if (this._data.id) Ngn.sd.blocks[this._data.id] = this;
