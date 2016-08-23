@@ -57,7 +57,8 @@ Ngn.sd.Bars = new Class({
       'У': 'forward'
     };
     document.addEvent('keypress', function(e) {
-      if (e.shift && (e.key == 'p' || e.key == 'з')) Ngn.sd.previewSwitch(); // p
+      if (e.shift && (e.key == 'p' || e.key == 'з')){//Ngn.sd.previewSwitch(); fix issue BC-88
+         } // p
       else if (moveMap[e.code]) {
         var movingBlock = Ngn.sd.movingBlock.get();
         if (movingBlock) movingBlock.move(moveMap[e.code]);
