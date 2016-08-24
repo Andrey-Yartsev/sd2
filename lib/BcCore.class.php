@@ -42,26 +42,28 @@ class BcCore {
         'animated/result/'.$bannerId.'.gif' : 'static/'.$bannerId.'.png');
   }
 
-  static function copyBanner($bannerId, $userId = null) {
+  static function copyBanner($bannerId, $userId = null, $bannerIdFrom) {
     // copy banner record
-    $banner = db()->selectRow("SELECT * FROM bcBanners WHERE id=?d", $bannerId);
-    $banner['dateUpdate'] = Date::db();
-    unset($banner['id']);
+    db()->selectRow("DELETE FROM bcBlocks WHERE bannerId=?d", $bannerIdFrom);
+    //$banner = db()->selectRow("SELECT * FROM bcBanners WHERE id=?d", $bannerId);
+    //$banner['dateUpdate'] = Date::db();
+    //unset($banner['id']);
     if ($userId) $banner['userId'] = $userId;
-    $newBannerId = db()->insert('bcBanners', $banner);
+    //$newBannerId = db()->insert('bcBanners', $banner);
     // copy block records
     foreach (db()->query("SELECT * FROM bcBlocks WHERE bannerId=?d", $bannerId) as $v) {
+        error_log("ghch".$v['bannerId'],0);
       $v['dateCreate'] = $v['dateUpdate'] = Date::db();
-      $v['bannerId'] = $newBannerId;
+      $v['bannerId'] = $bannerIdFrom;
       if ($userId) $v['userId'] = $userId;
       unset($v['id']);
       db()->insert('bcBlocks', $v);
     }
     // copy files
     $path = BcCore::getPath($bannerId);
-    $newPath = preg_replace('/\/\d+\./', '/'.$newBannerId.'.', BcCore::getPath(11));
+    $newPath = preg_replace('/\/\d+\./', '/'.$bannerIdFrom.'.', BcCore::getPath($bannerId));
+    unlink(UPLOAD_PATH.$newPath);
     copy(UPLOAD_PATH.$path, UPLOAD_PATH.$newPath);
-    return $newBannerId;
+    return $bannerIdFrom;
   }
-
 }

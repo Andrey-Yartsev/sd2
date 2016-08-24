@@ -3,7 +3,7 @@ window.addEvent('sdPanelComplete', function() {
     Extends: Ngn.sd.ImageInsertDialog,
     options: {
       id: 'template',
-      title: 'Create from template',
+      title: 'Create from template<br><font color="red" size="2">Your progress will clear after creation</font>',
       okText: 'Create',
       width: 400,
       height: 300,
@@ -11,7 +11,7 @@ window.addEvent('sdPanelComplete', function() {
     },
     insertImage: function(url) {
       new Ngn.Request.JSON({
-        url: '/createFromTemplate/' + url.replace(/.*\/(\d+)\..*/, '$1'),
+        url: '/createFromTemplate/' + url.replace(/.*\/(\d+)\..*/, '$1')+'/'+ Ngn.sd.bannerId,
         onComplete: function(bannerId) {
           window.location = '/cpanel/' + bannerId;
         }
