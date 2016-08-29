@@ -312,7 +312,7 @@ Element.implement({
         selector += ' ' + (cls ? '.' + cls : this.get('tag'));
       }
     }
-    if (!value) return;
+    if (!value && value!==0) return;
     if (!subSelector && (property.test(new RegExp(Ngn.sd.directChangeStyleProperies, 'i')) || value.test(new RegExp(Ngn.sd.directChangeStyleValues, 'i')))) {
       if (!this.hasClass('dynamicStyles')) this.addClass('dynamicStyles');
       this.setStyle(property, value);
