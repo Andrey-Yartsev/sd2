@@ -412,7 +412,6 @@ Ngn.sd.BlockAbstract = new Class({
       x: 0,
       y: 0
     };
-    if (!this.data.position) this.data.position = {};
     this.data.position = Object.merge(this.data.position, position);
     this.el.sdSetPosition(this.data.position);
   },
