@@ -18,7 +18,7 @@ window.addEvent('sdPanelComplete', function() {
       }).send();
     }
   });
-  new Ngn.Btn(Ngn.sd.fbtn('Create from template', 'template'), function() {
+  new Ngn.Btn(Ngn.sd.fbtn('Use Template', 'template'), function() {
     new Ngn.sd.CreateFromTemplateDialog();
   });
 });
