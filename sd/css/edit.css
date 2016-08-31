@@ -871,15 +871,15 @@ background-position: -171px 0;
 background-position: -188px 0;
 }
 
-.profileBar a.list i {^M
-background-position: 0 0;^M
-}^M
-.profileBar a.profile i {^M
-background-position: -171px 0;^M
-}^M
-.profileBar a.logout i {^M
-background-position: -188px 0;^M
-}^M
+.profileBar a.list i {
+background-position: 0 0;
+}
+.profileBar a.profile i {
+background-position: -171px 0;
+}
+.profileBar a.logout i {
+background-position: -188px 0;
+}
 
 .settingsDialog .fieldSet .element {
 float: left;
