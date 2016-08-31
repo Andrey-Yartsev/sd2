@@ -849,6 +849,14 @@ height: 16px;
 margin-right: 10px;
 background: url(/sd/img/icons.png);
 }
+.profileBar a i {
+display: block;
+float: left;
+width: 17px;
+height: 16px;
+margin-right: 10px;
+background: url(/sd/img/icons.png);
+}
 .profileBar .dropdown a span {
 display: inline-block;
 padding-top: 2px;
@@ -862,6 +870,16 @@ background-position: -171px 0;
 .profileBar .dropdown a.logout i {
 background-position: -188px 0;
 }
+
+.profileBar a.list i {^M
+background-position: 0 0;^M
+}^M
+.profileBar a.profile i {^M
+background-position: -171px 0;^M
+}^M
+.profileBar a.logout i {^M
+background-position: -188px 0;^M
+}^M
 
 .settingsDialog .fieldSet .element {
 float: left;
