@@ -22,9 +22,12 @@ Ngn.sd.BannersBar = new Class({
     } else {
       this.hide();
     }
-    //
     eHandler.addEvent('click', this.toggle.bind(this));
-    //
+    this.load();
+  },
+
+  load: function() {
+    this.eContInner.set('html', '');
     new Ngn.Request.JSON({
       url: '/allBanners',
       onComplete: function(r) {

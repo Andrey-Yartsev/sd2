@@ -1527,7 +1527,7 @@ Ngn.sd.init = function(bannerId) {
   if (window.location.hash == '#preview') {
     Ngn.sd.previewSwitch();
   }
-  //console.debug('callPhantom: afterInit');
+  Ngn.sd.interface.bannersBar = new Ngn.sd.BannersBar();
   if (typeof window.callPhantom === 'function') {
     window.callPhantom({
       action: 'afterInit'
