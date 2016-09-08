@@ -37,6 +37,8 @@ class BcRender {
     ]);
     imagepng($src, $file, 4);
     db()->update('bcBanners', $this->bannerId, ['dateRender' => Date::db()]);
+    system("/home/developer/bin/pngquant -f --speed 1 --quality=85-95 $file -o $file");
+
     return $path;
   }
 
