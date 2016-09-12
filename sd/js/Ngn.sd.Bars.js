@@ -3,7 +3,7 @@ Ngn.sd.Bars = new Class({
   initialize: function() {
     var pg = window.location.hash.match(/#pg(\d+)/);
     Ngn.sd.ePanel = new Element('div', {'class': 'cont'}).inject($('panel'));
-    this.logoElement()..inject(Ngn.sd.ePanel);
+    this.logoElement().inject(Ngn.sd.ePanel);
     Ngn.sd.eFeatureBtns = new Element('div', {
       'class': 'featureBtns'
     }).inject(Ngn.sd.ePanel);
