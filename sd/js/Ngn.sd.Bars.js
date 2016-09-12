@@ -3,11 +3,7 @@ Ngn.sd.Bars = new Class({
   initialize: function() {
     var pg = window.location.hash.match(/#pg(\d+)/);
     Ngn.sd.ePanel = new Element('div', {'class': 'cont'}).inject($('panel'));
-    new Element('a', {
-      'class': 'logo',
-      href: '/', //target: '_blank',
-      title: '...'
-    }).inject(Ngn.sd.ePanel);
+    this.logoElement()..inject(Ngn.sd.ePanel);
     Ngn.sd.eFeatureBtns = new Element('div', {
       'class': 'featureBtns'
     }).inject(Ngn.sd.ePanel);
@@ -23,6 +19,13 @@ Ngn.sd.Bars = new Class({
     }.bind(this));
     this.bindKeys();
     window.fireEvent('sdPanelComplete');
+  },
+  logoElement: function() {
+    return new Element('a', {
+      'class': 'logo',
+      href: '/', //target: '_blank',
+      title: 'Home'
+    });
   },
   getLayersBar: function() {
     return new Ngn.sd.LayersBar();
