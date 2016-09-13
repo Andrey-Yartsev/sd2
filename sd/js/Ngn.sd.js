@@ -451,6 +451,14 @@ Ngn.sd.BlockAbstract = new Class({
       }.bind(this)
     }).post(this.getDataForSave(create));
   },
+  undo: function() {
+    this.init();
+    this.setData(data);
+    this.updateElement();
+    this.creationEvent();
+    this.loading(false);
+    this._settingsAction();
+  },
   creationEvent: function() {
     Ngn.sd.interface.bars.layersBar.init();
   },

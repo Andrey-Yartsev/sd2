@@ -41,6 +41,10 @@ class SdPageBlockItems extends SdContainerItems {
     $data['bannerId'] = $this->bannerId;
     $data['orderKey'] = $orderKey;
     $r = parent::create($data);
+    $data['act'] = "add";
+    $data['idBlock'] = $r;
+    $this->db->query("INSERT INTO `bcBlocks_undo_stack` SET ?a", Arr::serialize($data));
+    $this->db->query("DELETE FROM `bcBlocks_redo_stack` WHERE `bannerId`=?", $this->bannerId);
     return $r;
   }
 

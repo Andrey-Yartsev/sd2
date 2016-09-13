@@ -42,6 +42,8 @@ use SdItemsCtrl;
     }
     $items->update($this->updateReqId(), $data);
     $this->json = $items->getItemF($this->updateReqId());
+    db()->query('INSERT INTO `bcBlocks_undo_stack` SELECT NULL,`dateCreate`,`dateUpdate`,`orderKey`,`content`,`data`,`bannerId`,`userId`,"update" AS `act`,`id` AS `idBlock` FROM `bcBlocks` WHERE `bcBlocks`.`id`=?', $this->json["id"]);
+    db()->query("DELETE FROM `bcBlocks_redo_stack` WHERE `bannerId`=?",$this->json["id"]);
   }
 
   function action_json_edit() {

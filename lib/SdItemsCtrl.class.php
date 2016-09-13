@@ -1,44 +1,56 @@
 <?php
 
-trait SdItemsCtrl {
-use ItemsCtrl;
+trait SdItemsCtrl
+{
+    use ItemsCtrl;
 
-  protected function getParamActionN() {
-    return 2;
-  }
+    protected function getParamActionN()
+    {
+        return 2;
+    }
 
-  function action_json_uploadBg() {
-    $items = $this->items();
-    $id = $this->req->param(2);
-    copy($this->req->files['file']['tmp_name'], Dir::make(UPLOAD_PATH."/{$items->name}/bg")."/$id.jpg");
-    $url = '/'.UPLOAD_DIR."/{$items->name}/bg/".$id.'.jpg';
-    $form = $this->bgSettingsForm();
-    $data = [
-      'dateUpdate' => time(),
-      'bg' => $url
-    ];
-    foreach ($form->fields->fields as $k => $v) if (!empty($v['default'])) $default[$k] = $v['default'];
-    if (isset($default)) $data = array_merge($data, [$form->settingsKey => $default]);
-    $this->items()->update($id, $data);
-    $this->json['url'] = $url;
-  }
+    function action_json_uploadBg()
+    {
+        $items = $this->items();
+        $id = $this->req->param(2);
+        copy($this->req->files['file']['tmp_name'], Dir::make(UPLOAD_PATH . "/{$items->name}/bg") . "/$id.jpg");
+        $url = '/' . UPLOAD_DIR . "/{$items->name}/bg/" . $id . '.jpg';
+        $form = $this->bgSettingsForm();
+        $data = [
+            'dateUpdate' => time(),
+            'bg' => $url
+        ];
+        foreach ($form->fields->fields as $k => $v) if (!empty($v['default'])) $default[$k] = $v['default'];
+        if (isset($default)) $data = array_merge($data, [$form->settingsKey => $default]);
+        $this->items()->update($id, $data);
+        $this->json['url'] = $url;
+    }
 
-  protected function bgSettingsForm() {
-    return $form = new SdBgSettingsForm($this->items(), $this->req->param(2));
-  }
+    protected function bgSettingsForm()
+    {
+        return $form = new SdBgSettingsForm($this->items(), $this->req->param(2));
+    }
 
-  function action_json_removeBg() {
-    $id = $this->req->param(2);
-    $this->items()->remove($id, 'bg');
-    File::delete(UPLOAD_PATH."/{$this->items()->name}/bg/$id.jpg");
-  }
+    function action_json_removeBg()
+    {
+        $id = $this->req->param(2);
+        $this->items()->remove($id, 'bg');
+        File::delete(UPLOAD_PATH . "/{$this->items()->name}/bg/$id.jpg");
+    }
 
-  function action_json_bgSettings() {
-    return $this->jsonFormActionUpdate($this->bgSettingsForm());
-  }
+    function action_json_bgSettings()
+    {
+        return $this->jsonFormActionUpdate($this->bgSettingsForm());
+    }
 
-  function action_json_blockSettings() {
-    return $this->jsonFormActionUpdate(SdFormFactory::blockSettings($this->req->param(3), $this->items()));
-  }
+    function action_json_blockSettings()
+    {
+        $r = $this->jsonFormActionUpdate(SdFormFactory::blockSettings($this->req->param(3), $this->items()));
+        if ($r == "null") {
+            db()->query('INSERT INTO `bcBlocks_undo_stack` SELECT NULL,`dateCreate`,`dateUpdate`,`orderKey`,`content`,`data`,`bannerId`,`userId`,"update" AS `act`,`id` AS `idBlock` FROM `bcBlocks` WHERE `bcBlocks`.`id`=?', $this->req->param(3));
+            db()->query("DELETE FROM `bcBlocks_redo_stack` WHERE `bannerId`=?", $this->req->param(3));
+        }
+        return $r;
+    }
 
 }

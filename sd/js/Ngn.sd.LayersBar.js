@@ -18,6 +18,16 @@ Ngn.sd.LayersBar = new Class({
       title: Locale.get('Sd.layersQuestionMark'),
       'class': 'questionMark'
     }).inject(eTitle));
+    new Element('img', {
+      src: "/sd/img/redo.png",
+      style: "float:right",
+      title: Locale.get('Sd.redo'),
+    }).inject(eTitle).addEvent('click', function(){ redo();});
+    new Element('img', {
+      src: "/sd/img/undo.png",
+      style: "float:right",
+      title: Locale.get('Sd.undo'),
+    }).inject(eTitle).addEvent('click', function(){ undo();});
     Ngn.sd.sortBySubKey(Ngn.sd.blocks, '_data', 'orderKey').each(function(item) {
       this.items[item._data.id] = new Ngn.sd.LayersBar.Item(this, item);
     }.bind(this));

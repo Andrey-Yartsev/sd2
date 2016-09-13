@@ -44,7 +44,9 @@ class BcCore {
 
   static function copyBanner($bannerId, $userId = null, $bannerIdFrom) {
     // copy banner record
-    db()->selectRow("DELETE FROM bcBlocks WHERE bannerId=?d", $bannerIdFrom);
+    db()->query("DELETE FROM bcBlocks WHERE bannerId=?d", $bannerIdFrom);
+    db()->query("DELETE FROM bcBlocks_undo_stack WHERE bannerId=?d", $bannerIdFrom);
+    db()->query("DELETE FROM bcBlocks_redo_stack WHERE bannerId=?d", $bannerIdFrom);
     //$banner = db()->selectRow("SELECT * FROM bcBanners WHERE id=?d", $bannerId);
     //$banner['dateUpdate'] = Date::db();
     //unset($banner['id']);
