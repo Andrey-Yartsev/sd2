@@ -145,13 +145,13 @@ class CtrlSdPageBlock extends CtrlCommon {
     $this->items()->updateOrder(array_flip($this->req['ids']));
   }
 
-  function action_json_undo() {
-    if (($r = $this->items()->undo()) === false) {
-      $this->json['act'] = false;
-      return;
-    }
-    $this->json = $r;
-  }
+//  function action_json_undo() {
+//    if (($r = $this->items()->undo()) === false) {
+//      $this->json['act'] = false;
+//      return;
+//    }
+//    $this->json = $r;
+//  }
 
   function action_json_redo() {
     if (($r = $this->items()->redo()) === false) {
