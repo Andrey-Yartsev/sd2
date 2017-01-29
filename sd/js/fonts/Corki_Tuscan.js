@@ -2,7 +2,7 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * Copyright © 2012 by Typedepot. All rights reserved.
+ * Copyright ï¿½ 2012 by Typedepot. All rights reserved.
  * 
  * Manufacturer:
  * Typedepot

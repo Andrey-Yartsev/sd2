@@ -2,7 +2,7 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * Intruder Alert © Starving-4 Entertainment. 2002. This font is licensed under the
+ * Intruder Alert ï¿½ Starving-4 Entertainment. 2002. This font is licensed under the
  * terms of the Design Science Licence: http://dsl.org/copyleft/dsl.txt
  * 
  * Trademark:

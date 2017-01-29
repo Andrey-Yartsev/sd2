@@ -2,7 +2,7 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * © 2012 by Sergiy S. Tkachenko / 4th february (info@4thfebruary.com.ua).
+ * ï¿½ 2012 by Sergiy S. Tkachenko / 4th february (info@4thfebruary.com.ua).
  * All rights reserved. This font software is the property of Sergiy S. Tkachenko
  * (Kremenchuk, Ukraine). You may not reproduce, modify, adapt, translate, alter
  * nor create derivative works of the font software. You may not reverse engineer,

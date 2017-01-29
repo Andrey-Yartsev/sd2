@@ -1,0 +1,12 @@
+.bannerBarCont::-webkit-scrollbar {
+height: 5px;
+}
+.bannerBarCont::-webkit-scrollbar-button {
+width: 0;
+}
+.bannerBarCont::-webkit-scrollbar-track-piece {
+background-color: #666;
+}
+.bannerBarCont::-webkit-scrollbar-thumb {
+background-color: #ccc;
+}

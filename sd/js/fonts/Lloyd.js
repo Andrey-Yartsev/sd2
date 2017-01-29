@@ -2,7 +2,7 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * Typeface © (Ivan Kostynyk). 2010. All Rights Reserved
+ * Typeface ï¿½ (Ivan Kostynyk). 2010. All Rights Reserved
  * 
  * Description:
  * This font was created using Font Creator 5.0 from High-Logic.com

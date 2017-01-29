@@ -2,7 +2,7 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * © 2006 The Monotype Corporation. All Rights Reserved.
+ * ï¿½ 2006 The Monotype Corporation. All Rights Reserved.
  * 
  * Trademark:
  * Impact is a trademark of Stephenson Blake (Holdings) Ltd.

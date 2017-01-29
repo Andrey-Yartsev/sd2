@@ -2,7 +2,7 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * © 2011 Microsoft Corporation. All rights reserved.
+ * ï¿½ 2011 Microsoft Corporation. All rights reserved.
  * 
  * Trademark:
  * Tahoma is a trademark of the Microsoft group of companies.

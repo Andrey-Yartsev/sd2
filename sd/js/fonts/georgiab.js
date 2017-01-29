@@ -2,7 +2,7 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * © 2006 Microsoft Corporation. All Rights Reserved.
+ * ï¿½ 2006 Microsoft Corporation. All Rights Reserved.
  * 
  * Trademark:
  * Georgia is either a registered trademark or a trademark of Microsoft Corporation

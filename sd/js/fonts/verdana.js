@@ -2,7 +2,7 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * © 2011 Microsoft Corporation. All Rights Reserved.
+ * ï¿½ 2011 Microsoft Corporation. All Rights Reserved.
  * 
  * Trademark:
  * Verdana is a trademark of the Microsoft group of companies.

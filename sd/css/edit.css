@@ -15,7 +15,7 @@ height: 50px;
 position: fixed;
 z-index: 10;
 width: 100%;
-background: #212121;
+background: #181818;/**/
 }
 #panel .logo {
 margin: 5px 0 0 5px;
@@ -53,7 +53,7 @@ opacity: 0.8;
 .panelBtn div {
 padding: 0 5px;
 }
-.panelBtn:hover {
+.panelBtn:hover:not(.nonActive) {
 opacity: 1;
 color: #fff;
 }
@@ -94,8 +94,11 @@ background-position: -119px 0;
 .panelBtn.download i {
 background-position: -222px 0;
 }
-.panelBtn.profile i {
-
+.panelBtn.redo i {
+background-position: -238px 0;
+}
+.panelBtn.undo i {
+background-position: -255px 0;
 }
 .blockPreview {
 box-sizing: border-box;
@@ -569,16 +572,18 @@ position: relative;
 clear: both;
 border-bottom: 1px solid #575757;
 color: #ccc;
-margin-bottom: 5px;
+padding-top: 5px; /**/
 height: 30px;
+cursor: pointer;
 }
 #layers .btns {
 position: absolute;
 top: 0;
-right: 0;
+right: 7px;
 height: 30px;
 padding-left: 15px;
 width: 40px;
+text-align: right;
 }
 .smIcons i {
 width: 13px;
@@ -606,30 +611,29 @@ width: 13px;
 height: 13px;
 margin-right: 4px;
 }
+#layers .btns button {
+display: inline-block;
+padding: 1px;
+}
 #layers .title {
 float: left;
 font-size: 10px;
 padding-left: 10px;
 text-align: left;
-border-bottom: 1px solid #444;
-cursor: pointer;
 }
 #layers .title .text {
+vertical-align: middle;
 display: inline-block;
 width: 100px;
 white-space: nowrap;
 overflow-x: hidden;
 }
-#layers .item {
-cursor: pointer;
-}
-#layers .item:hover .title {
+#layers .item:hover .title .text {
 text-decoration: underline;
 }
 #layers .item:active,
 #layers .item.drag {
 cursor: url(http://www.google.com/intl/en_ALL/mapfiles/closedhand.cur) 4 4, move;
-text-decoration: underline;
 color: #00AEEF;
 border-bottom-color: #00AEEF;
 }
@@ -637,6 +641,7 @@ border-bottom-color: #00AEEF;
 text-decoration: underline;
 color: #00AEEF;
 border-bottom-color: #00AEEF;
+background: #363636;
 }
 #layers .title img {
 max-height: 25px;
@@ -739,19 +744,22 @@ margin: 0 !important;
 cursor: default;
 }
 .settingsDialog .btn {
-border-radius: 20px !important;
+border-radius: 2px;
 background: #535252;
-color: #ccc !important;
+color: #ccc;
 text-transform: uppercase;
-padding-left: 10px;
-padding-right: 10px;
-border: none !important;
+padding: 3px 10px;
+border: none;
 }
-.settingsDialog .btn:hover {
-background: #00AEEF !important;
+.settingsDialog .btn > span {
+padding: 0;
+}
+.settingsDialog .btn:hover:not(.nonActive):not(.pushed):not(:active):not(:disabled),b.btn {
+color: #fff;
+background: #00AEEF;
 }
 .settingsDialog .btn:hover span {
-color: #fff !important;
+color: #fff;
 }
 .settingsDialog .dialog-footer .foot-wrap {
 background: #414141 !important;
@@ -767,6 +775,7 @@ display: none;
 }
 .settingsDialog .dialogSelect {
 border-color: #535252;
+background: #363636 ;/**/
 }
 .settingsDialog .dialogSelect:hover {
 border-color: #9f9f9f;
@@ -789,6 +798,7 @@ width: 180px;
 position: absolute;
 top: 0;
 right: 0;
+font-size: 10px;
 }
 .profileBarBg {
 width: 150px;
@@ -885,6 +895,10 @@ background-position: -188px 0;
 float: left;
 width: 184px;
 }
+.settingsDialog .bottomBtns {
+padding: 10px 5px;
+}
+
 .fieldSet .element input[type=text] {
 width: 160px;
 }
@@ -895,9 +909,14 @@ display: block;
 .settingsDialog .fieldSet .rowBtns {
 position: absolute;
 right: 8px;
-top: 7px;
+top: 6px;
 margin-left: 0 !important;
 }
+.settingsDialog .fieldSet .rowBtns button {
+display: inline-block;
+padding: 1px;
+}
+
 .settingsDialog .fieldSet .hgrp {
 width: 100%;
 position: relative;
@@ -946,7 +965,7 @@ position: relative;
 overflow-x: hidden;
 }
 .bannerBarCont {
-height: 115px;
+height: 75px;
 overflow-y: hidden;
 overflow-x: auto;
 }
@@ -972,28 +991,57 @@ background-image: url(/i/img/white/arrow-up.png);
 }
 .bannerBar .item {
 display: block;
-border: 2px solid #ccc;
+box-sizing: border-box;
+border: 1px solid #555;
 width: 50px;
 height: 50px;
 margin-left: 20px;
-margin-top: 30px;
+margin-top: 10px; /* */
 float: left;
 background: #000;
+position: relative;
 }
-
 .bannerBar a.item {
 color: #ccc;
 text-decoration: none;
 text-align: center;
-font-size: 10px;
+font-size: 9px;
 overflow: hidden;
+background: #000;
 }
 .bannerBar .item div {
-margin-top: 12px;
+margin-top: 14px;
 }
 .bannerBar .item img {
 max-height: 50px;
 }
+.bannerBar .item img,
+.bannerBar .item div {
+opacity: 0.5;
+}
+.bannerBar .item:hover {
+border-color: #ccc;
+}
+
 .bannerBar .item.selected {
-border-color: #f00;
+border-color: #00AEEF;
+
+}
+.bannerBar .item:hover img,
+.bannerBar .item:hover div {
+opacity: 1;
+}
+
+.element.type_image,
+.element.type_image input {
+font-size: 10px;
+}
+
+input.fld, textarea, input[type=text], input[type=password] {
+background: #363636;
+border: 1px solid #535252;
+color: #ccc;
+font-size: 12px;
+padding: 3px  4px;
+box-sizing: border-box;
 }

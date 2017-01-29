@@ -48,17 +48,18 @@ function log(s) {
 }
 
 var render = function(descr, callNumber) {
-  log('try ' + descr + " ("+new Date().getSeconds()+':'+ new Date().getMilliseconds()+") [" + callNumber + "]");
+  //log('try ' + descr + " (" + new Date().getSeconds() + ':' + new Date().getMilliseconds() + ") [" + callNumber + "]");
   clearTimeout(timeoutId);
   timeoutId = setTimeout(function() {
+    var date = new Date();
     currentFrame++;
-    log("Frame " + currentFrame + " rendering on '" + descr + "' ("+ //
-      new Date().getSeconds()+':'+ new Date().getMilliseconds()+") [" + callNumber + "]");
+    log("Frame " + currentFrame + " rendering on '" + descr + "' (" + //
+    date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '.' + date.getMilliseconds() + ") [" + callNumber + "]");
     page.render(projectPath + '/u/banner/animated/temp/' + bannerId + '/' + currentFrame + '.png');
     if (currentFrame == framesCount) {
       phantom.exit();
     }
-  }, 100);
+  }, 500);
 };
 
 var cufonBlocksExists = parseInt(cufonBlocksNumber) ? true : false;
@@ -76,14 +77,6 @@ page.onCallback = function(data) {
     render(data.action, callNumber);
   }
 };
-
-function a() {
-  timeoutId = setTimeout(function() {
-    clearTimeout(timeoutId);
-    log('a');
-  }, 100);
-}
-
 
 log('http://' + domain + '/cpanel/' + bannerId + '?adminKey=' + adminKey + '#preview');
 page.open('http://' + domain + '/cpanel/' + bannerId + '?adminKey=' + adminKey + '#preview');

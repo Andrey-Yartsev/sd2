@@ -2,8 +2,8 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * © 2011 Sergiy S. Tkachenko / 4th february
- * © 2011 Azoft.com
+ * ï¿½ 2011 Sergiy S. Tkachenko / 4th february
+ * ï¿½ 2011 Azoft.com
  * http://creativecommons.org/licenses/by-nc-nd/3.0
  * http://creativecommons.org/licenses/by-nc-nd/3.0/deed.ru
  * 

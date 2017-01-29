@@ -23,6 +23,9 @@ Ngn.sd.BannersBar = new Class({
       this.hide();
     }
     eHandler.addEvent('click', this.toggle.bind(this));
+    this.eCont.addEvent('mousewheel', function(e) {
+      this.eCont.scrollLeft += -(e.wheel * 35 );
+    }.bind(this));
     this.load();
   },
 
@@ -43,6 +46,8 @@ Ngn.sd.BannersBar = new Class({
             eSelected = el;
           }
         }
+        this.eContInner.setStyle('width', (el.getSizeWithMargin().x * r.banners.length) + 'px');
+
         if (eSelected && eSelected.getPosition().x > this.eCont.getSize().x) {
           new Fx.Scroll(this.eCont).toElement(eSelected);
         }

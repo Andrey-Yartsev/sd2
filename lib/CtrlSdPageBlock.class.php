@@ -1,14 +1,14 @@
 <?php
 
 class CtrlSdPageBlock extends CtrlCommon {
-use SdItemsCtrl;
+  use SdItemsCtrl;
 
   protected function updateReqId() {
     return $this->req['id'];
   }
 
   protected function getCurrentOwnPageId() {
-    return $this->req['ownPageId'] ? : SdCore::defaultOwnPageId;
+    return $this->req['ownPageId'] ?: SdCore::defaultOwnPageId;
   }
 
   protected $_items;
@@ -29,7 +29,8 @@ use SdItemsCtrl;
     if (strlen($v) > 1) {
       // значит это слово 'false' / 'true'
       return $v === 'false' ? false : true;
-    } else {
+    }
+    else {
       return (bool)$v;
     }
   }
@@ -42,8 +43,6 @@ use SdItemsCtrl;
     }
     $items->update($this->updateReqId(), $data);
     $this->json = $items->getItemF($this->updateReqId());
-    db()->query('INSERT INTO `bcBlocks_undo_stack` SELECT NULL,`dateCreate`,`dateUpdate`,`orderKey`,`content`,`data`,`bannerId`,`userId`,"update" AS `act`,`id` AS `idBlock` FROM `bcBlocks` WHERE `bcBlocks`.`id`=?', $this->json["id"]);
-    db()->query("DELETE FROM `bcBlocks_redo_stack` WHERE `bannerId`=?",$this->json["id"]);
   }
 
   function action_json_edit() {
@@ -51,15 +50,17 @@ use SdItemsCtrl;
   }
 
   static function protoData($type) {
-    return ['data' => [
-      'type'        => $type,
-      'ownPageId'   => SdCore::defaultOwnPageId,
-      'dateUpdate'  => time(),
-      'position'    => [
-        'x' => 0,
-        'y' => 0
+    return [
+      'data' => [
+        'type'       => $type,
+        'ownPageId'  => SdCore::defaultOwnPageId,
+        'dateUpdate' => time(),
+        'position'   => [
+          'x' => 0,
+          'y' => 0
+        ]
       ]
-    ]];
+    ];
   }
 
   function uploadCreate($type) {
@@ -77,14 +78,14 @@ use SdItemsCtrl;
     }
     $d = [
       'data' => [
-        'type'        => 'image',
-        'ownPageId'   => $this->getCurrentOwnPageId(),
-        'dateUpdate'  => time(),
-        'position'    => [
+        'type'       => 'image',
+        'ownPageId'  => $this->getCurrentOwnPageId(),
+        'dateUpdate' => time(),
+        'position'   => [
           'x' => 0,
           'y' => 0
         ],
-        'size'        => [
+        'size'       => [
           'w' => $size[0],
           'h' => $size[1]
         ]
@@ -102,7 +103,7 @@ use SdItemsCtrl;
     $size = getimagesize($this->req->files[$this->req['fn']]['tmp_name']);
     $items->update($id, [
       'dateUpdate' => time(),
-      'size' => [
+      'size'       => [
         'w' => $size[0],
         'h' => $size[1]
       ]
@@ -141,9 +142,30 @@ use SdItemsCtrl;
   }
 
   function action_json_updateOrder() {
-    foreach (array_flip($this->req['ids']) as $blockId => $orderKey) {
-      db()->query("UPDATE bcBlocks SET orderKey=?d WHERE id=?d", $orderKey, $blockId);
+    $this->items()->updateOrder(array_flip($this->req['ids']));
+  }
+
+  function action_json_undo() {
+    if (($r = $this->items()->undo()) === false) {
+      $this->json['act'] = false;
+      return;
     }
+    $this->json = $r;
+  }
+
+  function action_json_redo() {
+    if (($r = $this->items()->redo()) === false) {
+      $this->json['act'] = false;
+      return;
+    }
+    $this->json = $r;
+  }
+
+  function action_cleanUndoRedo() {
+    db()->query("DELETE FROM bcBlocks_redo_stack WHERE bannerId=?d", $this->req->param(1));
+    db()->query("DELETE FROM bcBlocks_undo_stack WHERE bannerId=?d", $this->req->param(1));
+    print "done";
+    $this->hasOutput = false;
   }
 
 }

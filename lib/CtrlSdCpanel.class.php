@@ -22,6 +22,7 @@ class CtrlSdCpanel extends CtrlBase {
     $this->banner = db()->getRow('bcBanners', $this->d['bannerId']);
     if ($this->banner['userId'] != Auth::get('id') and $this->req['adminKey'] != Config::getVar('adminKey')) throw new AccessDenied;
     Sflm::frontend('css')->addLib('sdEdit');
+    Sflm::frontend('css')->addPath('sd/css/scroll.css');
     Sflm::frontend('js')->addLib('sdEdit');
     Sflm::frontend('js')->addClass('Ngn.Dialog.RequestForm');
     Sflm::frontend('js')->addPath('sd/js/Ngn.sd.js');
@@ -75,6 +76,8 @@ class CtrlSdCpanel extends CtrlBase {
     $this->json['pageTitle'] = $this->editPageTitle();
     $this->json['layout'] = SdCore::getLayout($this->req['ownPageId']);
     $this->json['bannerSettings']['size'] = BcCore::getSize($this->d['bannerId']);
+    $this->json['undoExists'] = (bool)db()->selectCell("SELECT COUNT(*) FROM bcBlocks_undo_stack WHERE bannerId=?", $this->d['bannerId']);
+    $this->json['redoExists'] = (bool)db()->selectCell("SELECT COUNT(*) FROM bcBlocks_redo_stack WHERE bannerId=?", $this->d['bannerId']);
   }
 
   protected function editPageTitle() {
@@ -179,8 +182,10 @@ class CtrlSdCpanel extends CtrlBase {
     $bannerSize = BcCore::getSize($this->d['bannerId']);
     $data['data']['size'] = $imageSize;
     $data['data']['position'] = [
-      'x' => $bannerSize['w'] - $imageSize['w'] - 10,
-      'y' => $bannerSize['h'] - $imageSize['h'] - 10
+//      'x' => $bannerSize['w'] - $imageSize['w'] - 10,
+//      'y' => $bannerSize['h'] - $imageSize['h'] - 10
+      'x' => 0,
+      'y' => 0
     ];
     (new SdPageBlockItems($this->d['bannerId']))->create($data);
   }

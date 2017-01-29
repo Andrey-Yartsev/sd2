@@ -2,7 +2,7 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * © 2011 The Monotype Corporation. All Rights Reserved.
+ * ï¿½ 2011 The Monotype Corporation. All Rights Reserved.
  * 
  * Trademark:
  * Arial is a trademark of The Monotype Corporation.

@@ -1,1 +1,1 @@
-﻿Banner Creator
+Banner Creator

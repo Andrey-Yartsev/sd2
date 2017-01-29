@@ -2,7 +2,7 @@
  * The following copyright notice may not be removed under any circumstances.
  * 
  * Copyright:
- * Digitized data copyright © 2007, Google Corporation.
+ * Digitized data copyright ï¿½ 2007, Google Corporation.
  * 
  * Trademark:
  * Droid is a trademark of Google and may be registered in certain jurisdictions.

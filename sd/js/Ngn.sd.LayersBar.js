@@ -1,44 +1,47 @@
 Ngn.sd.LayersBar = new Class({
   initialize: function() {
+    //console.trace('initializing layers bar');
     this.init();
     Ngn.sd.layersBar = this;
   },
   items: {},
   init: function() {
     Ngn.sd.eLayers.set('html', '');
-    var eTitle = new Element('div', {
-      html: Locale.get('Sd.layers'),
-      'class': 'lTitle'
+    // var eTitle = new Element('div', {
+    //   html: Locale.get('Sd.layers'),
+    //   'class': 'lTitle'
+    // }).inject(Ngn.sd.eLayers);
+    this.eLayers = new Element('div', { 'class': 'layers'
     }).inject(Ngn.sd.eLayers);
-    this.eLayers = new Element('div', {
-      'class': 'layers'
-    }).inject(Ngn.sd.eLayers);
-    new Tips(new Element('span', {
-      html: '?',
-      title: Locale.get('Sd.layersQuestionMark'),
-      'class': 'questionMark'
-    }).inject(eTitle));
-    new Element('img', {
-      src: "/sd/img/redo.png",
-      style: "float:right",
-      title: Locale.get('Sd.redo'),
-    }).inject(eTitle).addEvent('click', function(){ redo();});
-    new Element('img', {
-      src: "/sd/img/undo.png",
-      style: "float:right",
-      title: Locale.get('Sd.undo'),
-    }).inject(eTitle).addEvent('click', function(){ undo();});
-    Ngn.sd.sortBySubKey(Ngn.sd.blocks, '_data', 'orderKey').each(function(item) {
-      this.items[item._data.id] = new Ngn.sd.LayersBar.Item(this, item);
-    }.bind(this));
+    // new Tips(new Element('span', {
+    //   html: '?',
+    //   title: Locale.get('Sd.layersQuestionMark'),
+    //   'class': 'questionMark'
+    // }).inject(eTitle));
+    this.buildItems();
     if (this.currentActiveId) {
       this.setActive(this.currentActiveId);
     }
+    this.initSortables();
+  },
+  initSortables: function() {
+    var obj = this;
+
     new Sortables(this.eLayers, {
       onStart: function(eMovingLayer) {
+        this.startIds = this.serialize(0, function(element) {
+          return element.get('data-id');
+        }).filter(function(item) {
+          return item !== null;
+        });
+
         eMovingLayer.addClass('drag');
       },
       onComplete: function(eMovingLayer) {
+        if (!this.startIds) {
+          // no dragging
+          return;
+        }
         eMovingLayer.removeClass('drag');
         var ePrevLayer;
         var id = eMovingLayer.get('data-id');
@@ -57,16 +60,38 @@ Ngn.sd.LayersBar = new Class({
         var ids = this.serialize(0, function(element) {
           return element.get('data-id');
         });
-        for (var i = 0; i < ids.length; i++) {
-          Ngn.sd.blocks[ids[i]].updateOrder(i);
+        if (ids.join('') === this.startIds.join('')) {
+          // no changes
+          return;
         }
+        for (var i = 0; i < ids.length; i++) {
+          Ngn.sd.blocks[ids[i]].updateOrderOnDrag(i);
+        }
+        Ngn.Request.Iface.loading(true);
         new Ngn.Request({
-          url: '/pageBlock/' + Ngn.sd.bannerId + '/json_updateOrder'
+          url: '/pageBlock/' + Ngn.sd.bannerId + '/json_updateOrder',
+          onComplete: function() {
+            Ngn.Request.Iface.loading(false);
+          }
         }).post({
             ids: ids
           });
       }
     });
+  },
+  flip: function(trans) {
+    var key, arr = {};
+    for (key in trans) {
+      if (trans.hasOwnProperty(key)) {
+        arr[trans[key]] = key;
+      }
+    }
+    return arr;
+  },
+  buildItems: function() {
+    Ngn.sd.sortBySubKey(Ngn.sd.blocks, '_data', 'orderKey').each(function(item) {
+      this.items[item._data.id] = new Ngn.sd.LayersBar.Item(this, item);
+    }.bind(this));
   },
   getTitle: function(item) {
     if (item.data.subType == 'image') {
@@ -87,6 +112,33 @@ Ngn.sd.LayersBar = new Class({
     }
     this.items[blockId].setActive(true);
     this.currentActiveId = blockId;
+  },
+  reorder: function(blockIds) {
+    this.updateOrder(blockIds);
+    //this.outputOrder();
+    this.eLayers.set('html', '');
+    this.buildItems();
+    this.initSortables();
+  },
+  reinit: function() {
+    this.eLayers.set('html', '');
+    this.buildItems();
+    this.initSortables();
+  },
+  updateOrder: function(blockIds) {
+    if (!blockIds) throw new Error('blockIds is fucking up');
+    this.outputOrder();
+    for (var id in blockIds) {
+      if (!Ngn.sd.blocks[id]) throw new Error('block id=' + id + ' does not exists');
+      Ngn.sd.blocks[id].updateOrder(blockIds[id]);
+    }
+  },
+  outputOrder: function() {
+    var s = '';
+    for (var i in Ngn.sd.blocks) {
+      s += i + ': ' + Ngn.sd.blocks[i]._data.orderKey + '; ';
+    }
+    console.log(s);
   }
 });
 
@@ -111,16 +163,13 @@ Ngn.sd.LayersBar.Item = new Class({
     }).inject(this.eItem);
     if (layersBar.canEdit(item)) {
       new Ngn.Btn( //
-        Ngn.Btn.btn2('Edit', 'edit').inject(eBtns), //
+        Ngn.Btn.btn2(Locale.get('Core.edit'), 'edit').inject(eBtns), //
         Ngn.sd.blocks[item._data.id]._settingsAction.bind(Ngn.sd.blocks[item._data.id]) //
       );
     } else {
-      new Element('a', {
-        'class': 'smIcons dummy'
-      }).inject(eBtns);
     }
     new Ngn.Btn( //
-      Ngn.Btn.btn2('Delete', 'delete').inject(eBtns), //
+      Ngn.Btn.btn2(Locale.get('Core.delete'), 'delete').inject(eBtns), //
       Ngn.sd.blocks[item._data.id].deleteAction.bind(Ngn.sd.blocks[item._data.id]) //
     );
     this.eItem.inject(layersBar.eLayers);
