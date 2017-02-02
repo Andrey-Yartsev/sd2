@@ -46,7 +46,7 @@ display: block;
 color: #ccc;
 text-decoration: none;
 padding-top: 10px;
-font-size: 9px;
+font-size: 10px;
 text-align: center;
 opacity: 0.8;
 }
@@ -717,9 +717,8 @@ margin: 0 !important;
 border-radius: 0 !important;
 background: #3c3c3c !important;
 height: 33px;
-font-size: 10px;
+font-size: 12px;
 text-transform: uppercase;
-font-family: Verdana, Tahome, Helvetica;
 padding: 0 !important;
 color: #9f9f9f;
 }
@@ -775,16 +774,25 @@ display: none;
 }
 .settingsDialog .dialogSelect {
 border-color: #535252;
-background: #363636 ;/**/
+background: #363636;
 }
-.settingsDialog .dialogSelect:hover {
+.settingsDialog .dialogSelect:hover,
+.settingsDialog .type_color .color:hover {
 border-color: #9f9f9f;
 }
+.settingsDialog .type_color .color {
+border-color: #535252;
+height: 20px;
+}
+/* making these two field stand by columns */
+.settingsDialog .type_color, .settingsDialog .type_fontSize {
+display: inline-block;
+}
+
 .apeform .checkbox {
 cursor: pointer;
 }
 .apeform .checkbox:hover label {
-
 border-color: #ccc;
 }
 /*=====*/
@@ -924,6 +932,10 @@ position: relative;
 .settingsDialog .foot-wrap {
 border-top: 1px solid #575757;
 margin-top: 10px;
+padding-top: 10px;
+}
+.settingsDialog .fieldSet .btn {
+margin-left: 3px;
 }
 
 a:hover.iconBtn, a.over.iconBtn {
