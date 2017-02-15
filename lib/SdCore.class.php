@@ -12,4 +12,8 @@ class SdCore {
     return (new SdProjectItems)->getItemByField('name', PROJECT_KEY);
   }
 
+  static function pageBlockItems() {
+
+  }
+
 }

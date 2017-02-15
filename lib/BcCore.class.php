@@ -3,7 +3,7 @@
 class BcCore {
 
   static function createBanner($size, $title) {
-    return db()->insert('bcBanners', [
+    return db()->insert('sdDocuments', [
       'title' => $title,
       'size' => $size,
       'userId' => BcCore::user()['id']
@@ -25,7 +25,7 @@ class BcCore {
 
   static function getSize($bannerId) {
     if (isset(self::$size)) return self::$size;
-    list($r['w'], $r['h']) = explode(' x ', db()->selectCell("SELECT size FROM bcBanners WHERE id=?d", $bannerId));
+    list($r['w'], $r['h']) = explode(' x ', db()->selectCell("SELECT size FROM sdDocuments WHERE id=?d", $bannerId));
     return self::$size = $r;
   }
 
@@ -44,18 +44,16 @@ class BcCore {
 
   static function copyBanner($bannerId, $userId = null, $bannerIdFrom) {
     // copy banner record
-    db()->query("DELETE FROM bcBlocks WHERE bannerId=?d", $bannerIdFrom);
-    db()->query("DELETE FROM bcBlocks_undo_stack WHERE bannerId=?d", $bannerIdFrom);
-    db()->query("DELETE FROM bcBlocks_redo_stack WHERE bannerId=?d", $bannerIdFrom);
+    db()->query("DELETE FROM sdBlocks WHERE bannerId=?d", $bannerIdFrom);
     if ($userId) $banner['userId'] = $userId;
     // copy block records
-    foreach (db()->query("SELECT * FROM bcBlocks WHERE bannerId=?d", $bannerId) as $v) {
+    foreach (db()->query("SELECT * FROM sdBlocks WHERE bannerId=?d", $bannerId) as $v) {
         error_log("ghch".$v['bannerId'],0);
       $v['dateCreate'] = $v['dateUpdate'] = Date::db();
       $v['bannerId'] = $bannerIdFrom;
       if ($userId) $v['userId'] = $userId;
       unset($v['id']);
-      db()->insert('bcBlocks', $v);
+      db()->insert('sdBlocks', $v);
     }
     // copy files
     $path = BcCore::getPath($bannerId);

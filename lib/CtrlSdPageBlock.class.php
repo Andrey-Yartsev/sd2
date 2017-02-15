@@ -161,11 +161,4 @@ class CtrlSdPageBlock extends CtrlCommon {
     $this->json = $r;
   }
 
-  function action_cleanUndoRedo() {
-    db()->query("DELETE FROM bcBlocks_redo_stack WHERE bannerId=?d", $this->req->param(1));
-    db()->query("DELETE FROM bcBlocks_undo_stack WHERE bannerId=?d", $this->req->param(1));
-    print "done";
-    $this->hasOutput = false;
-  }
-
 }

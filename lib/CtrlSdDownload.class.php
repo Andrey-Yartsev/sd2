@@ -8,7 +8,7 @@ class CtrlSdDownload extends CtrlSdRenderAbstract {
   }
 
   function action_get() {
-    $banner = new BcBanner(db()->selectRow('SELECT * FROM bcBanners WHERE id=?d', $this->req->param(1)));
+    $banner = new BcBanner(db()->selectRow('SELECT * FROM sdDocuments WHERE id=?d', $this->req->param(1)));
     Misc::checkEmpty($banner['downloadFile']);
     header('Content-Type: application/image');
     header('Content-Disposition: attachment;filename="'.basename($banner['downloadFile']).'"');

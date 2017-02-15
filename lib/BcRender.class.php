@@ -15,7 +15,7 @@ class BcRender {
     } else {
       $path = $this->renderStatic();
     }
-    db()->update('bcBanners', $this->bannerId, ['dateRender' => Date::db()]);
+    db()->update('sdDocuments', $this->bannerId, ['dateRender' => Date::db()]);
     return $path;
   }
 
@@ -36,7 +36,7 @@ class BcRender {
       'y'      => 100
     ]);
     imagepng($src, $file, 4);
-    db()->update('bcBanners', $this->bannerId, ['dateRender' => Date::db()]);
+    db()->update('sdDocuments', $this->bannerId, ['dateRender' => Date::db()]);
     system("/home/developer/bin/pngquant -f --speed 1 --quality=85-95 $file -o $file");
     return $path;
   }

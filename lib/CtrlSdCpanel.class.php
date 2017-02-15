@@ -19,7 +19,7 @@ class CtrlSdCpanel extends CtrlBase {
 
   protected function afterInit() {
     $this->d['bannerId'] = Misc::checkEmpty($this->req->param(1));
-    $this->banner = db()->getRow('bcBanners', $this->d['bannerId']);
+    $this->banner = db()->getRow('sdDocuments', $this->d['bannerId']);
     if ($this->banner['userId'] != Auth::get('id') and $this->req['adminKey'] != Config::getVar('adminKey')) throw new AccessDenied;
     Sflm::frontend('css')->addLib('sdEdit');
     Sflm::frontend('css')->addPath('sd/css/scroll.css');
@@ -76,8 +76,6 @@ class CtrlSdCpanel extends CtrlBase {
     $this->json['pageTitle'] = $this->editPageTitle();
     $this->json['layout'] = SdCore::getLayout($this->req['ownPageId']);
     $this->json['bannerSettings']['size'] = BcCore::getSize($this->d['bannerId']);
-    $this->json['undoExists'] = (bool)db()->selectCell("SELECT COUNT(*) FROM bcBlocks_undo_stack WHERE bannerId=?", $this->d['bannerId']);
-    $this->json['redoExists'] = (bool)db()->selectCell("SELECT COUNT(*) FROM bcBlocks_redo_stack WHERE bannerId=?", $this->d['bannerId']);
   }
 
   protected function editPageTitle() {
