@@ -7,6 +7,5 @@ return [
   'afterCmdTttt' => [
     'php {runPath}/run.php site {name} {pmPath}/installers/common',
     'php {runPath}/run.php site {name} sd2/install',
-    //'pm localProject cc {name}',
   ]
 ];

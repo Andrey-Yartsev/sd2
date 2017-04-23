@@ -1,8 +1,6 @@
 <?php
 
-$projectName = PROJECT_KEY;
-$projFolder = NGN_ENV_PATH.'/projects/'.$projectName;
-File::checkExists($projFolder);
-$dummyFolder = __DIR__.'/dummyProject';
-Dir::copy($dummyFolder, $projFolder, false);
-print `pm localProject cc $projectName`;
+$s = '-u '.DB_USER.' -p'.DB_PASS.' '.DB_NAME;
+$folder = __DIR__;
+print `mysql $s < $folder/sql/structure.sql`;
+print `mysql $s < $folder/sql/fixture.sql`;
