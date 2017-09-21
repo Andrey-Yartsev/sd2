@@ -15,6 +15,9 @@ Ngn.sd.SettingsDialog = new Class({
       this.message.getElement('[name=fontSize]').addEvent('change', function() {
         obj.fireEvent('changeSize', this.get('value'));
       });
+      this.message.getElement('[name=shadow]').addEvent('change', function() {
+        obj.fireEvent('changeShadow', this.get('checked'));
+      });
       this.message.getElement('[name=color]').addEvent('change', function() {
         obj.fireEvent('changeColor', this.get('value'));
       });

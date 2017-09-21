@@ -15,35 +15,44 @@ if (!args[3]) {
   phantom.exit();
 }
 if (!args[4]) {
-  console.log('Render key (param #4) is not defined');
+  console.log('User ID (param #4) is not defined');
   phantom.exit();
 }
 if (!args[5]) {
+  console.log('Render key (param #4) is not defined');
+  phantom.exit();
+}
+if (!args[6]) {
   console.log('projectPath (param #5) is not defined');
   phantom.exit();
 }
 
-//var projectName = args[1];
+// var projectName = args[1];
 var domain = args[2];
 var bannerId = args[3];
-var adminKey = args[4];
-var projectPath = args[5];
-var cufonBlocksNumber = args[6];
+var userId = args[4];
+var adminKey = args[5];
+var projectPath = args[6];
+var cufonBlocksNumber = args[7];
 
 page.viewportSize = {
   width: 1300,
   height: 900
 };
-//page.onConsoleMessage = function(msg, lineNum, sourceId) {
-//  console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
-//};
+
+// UNCOMMENT FOR DEBUG
+page.onConsoleMessage = function(msg, lineNum, sourceId) {
+  //console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
+  //phantom.exit();
+};
+
 var render = function() {
   page.render(projectPath + '/u/banner/static/' + bannerId + '.png');
   phantom.exit();
 };
 
 page.onCallback = function(data) {
-  //console.debug(data.action + ' ' + cufonBlocksNumber);
+  // console.debug(data.action + ' ' + cufonBlocksNumber);
   if (parseInt(cufonBlocksNumber)) {
     if (data.action == 'cufonLoaded') {
       window.setTimeout(function() {
@@ -57,7 +66,11 @@ page.onCallback = function(data) {
   }
 };
 
-//console.debug('http://' + domain + '/cpanel/' + bannerId + '?adminKey=' + adminKey + '#preview');
+// UNCOMMENT TO SHOW URL
+// console.debug('http://' + domain + '/cpanel/' + bannerId + //
+//   '?adminKey=' + adminKey + //
+//   '&userId=' + userId + '#preview');
 
-page.open('http://' + domain + '/cpanel/' + bannerId + '?adminKey=' + adminKey + '#preview', function() {
-});
+page.open('http://' + domain + '/cpanel/' + bannerId + //
+  '?adminKey=' + adminKey + //
+  '&userId=' + userId + '#preview', function() {});

@@ -1,12 +1,12 @@
 <?php
 
-class BcCore {
+class Sd2Core {
 
-  static function createBanner($size, $title) {
+  static function createDocument($size, $title) {
     return db()->insert('sdDocuments', [
       'title' => $title,
       'size' => $size,
-      'userId' => BcCore::user()['id']
+      'userId' => Sd2Core::user()['id']
     ]);
   }
 
@@ -15,10 +15,6 @@ class BcCore {
     return [
       'id' => $id
     ];
-  }
-
-  static function zukulDb() {
-    return new Db('developer', 'aK211foDyBXwf2', 's0.toasterbridge.com', 'zukul');
   }
 
   static protected $size;
@@ -42,7 +38,7 @@ class BcCore {
         'animated/result/'.$bannerId.'.gif' : 'static/'.$bannerId.'.png');
   }
 
-  static function copyBanner($bannerId, $userId = null, $bannerIdFrom) {
+  static function copyDocument($bannerId, $userId = null, $bannerIdFrom) {
     // copy banner record
     db()->query("DELETE FROM sdBlocks WHERE bannerId=?d", $bannerIdFrom);
     if ($userId) $banner['userId'] = $userId;
@@ -56,10 +52,11 @@ class BcCore {
       db()->insert('sdBlocks', $v);
     }
     // copy files
-    $path = BcCore::getPath($bannerId);
-    $newPath = preg_replace('/\/\d+\./', '/'.$bannerIdFrom.'.', BcCore::getPath($bannerId));
+    $path = Sd2Core::getPath($bannerId);
+    $newPath = preg_replace('/\/\d+\./', '/'.$bannerIdFrom.'.', Sd2Core::getPath($bannerId));
     File::delete(UPLOAD_PATH.$newPath);
     copy(UPLOAD_PATH.$path, UPLOAD_PATH.$newPath);
     return $bannerIdFrom;
   }
+
 }

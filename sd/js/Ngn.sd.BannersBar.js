@@ -31,12 +31,15 @@ Ngn.sd.BannersBar = new Class({
 
   load: function() {
     this.eContInner.set('html', '');
+
     new Ngn.Request.JSON({
-      url: '/allBanners',
+      url: '/allDocuments' + Ngn.sd.adminQuery,
       onComplete: function(r) {
+        var el = null;
+        //.....
         var eSelected = null;
         for (var i = 0; i < r.banners.length; i++) {
-          var el = new Element('a', {
+          el = new Element('a', {
             'class': 'item',
             href: r.banners[i].editLink,
             html: r.banners[i].downloadLink ? '<img src="' + r.banners[i].directLink + '">' : '<div>need to render</div>'
@@ -46,10 +49,11 @@ Ngn.sd.BannersBar = new Class({
             eSelected = el;
           }
         }
-        this.eContInner.setStyle('width', (el.getSizeWithMargin().x * r.banners.length) + 'px');
-
-        if (eSelected && eSelected.getPosition().x > this.eCont.getSize().x) {
-          new Fx.Scroll(this.eCont).toElement(eSelected);
+//        if (el) {
+          this.eContInner.setStyle('width', (el.getSizeWithMargin().x * r.banners.length) + 'px');
+          if (eSelected && eSelected.getPosition().x > this.eCont.getSize().x) {
+            new Fx.Scroll(this.eCont).toElement(eSelected);
+//          }
         }
       }.bind(this)
     }).send();

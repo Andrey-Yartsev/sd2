@@ -8,11 +8,7 @@ class CtrlSdCpanel extends CtrlBase {
   }
 
   protected function init() {
-    if (!Auth::get('id') and $this->req['adminKey'] != Config::getVar('adminKey')) {
-      $this->redirect('/');
-      return;
-    }
-    $this->setPageTitle('Editor');
+    $this->initAuth();
   }
 
   protected $banner;
@@ -20,7 +16,7 @@ class CtrlSdCpanel extends CtrlBase {
   protected function afterInit() {
     $this->d['bannerId'] = Misc::checkEmpty($this->req->param(1));
     $this->banner = db()->getRow('sdDocuments', $this->d['bannerId']);
-    if ($this->banner['userId'] != Auth::get('id') and $this->req['adminKey'] != Config::getVar('adminKey')) throw new AccessDenied;
+    if ($this->banner['userId'] != Auth::get('id')) throw new AccessDenied;
     Sflm::frontend('css')->addLib('sdEdit');
     Sflm::frontend('css')->addPath('sd/css/scroll.css');
     Sflm::frontend('js')->addLib('sdEdit');
@@ -30,6 +26,22 @@ class CtrlSdCpanel extends CtrlBase {
 
   function action_default() {
     $this->d['tpl'] = 'inner';
+    if ($this->isSdAdmin()) {
+      $userId = Auth::get('id');
+      $this->d['adminJs'] = <<<JS
+
+  Ngn.adminKey = '{$this->req['adminKey']}';
+  Ngn.sd.userId = {$userId};
+  Ngn.sd.adminQuery = '?adminKey={$this->req['adminKey']}&userId={$userId}';
+
+JS;
+    } else {
+      $this->d['adminJs'] = <<<JS
+
+  Ngn.sd.adminQuery = '';
+
+JS;
+    }
   }
 
   function action_json_get() {
@@ -75,11 +87,11 @@ class CtrlSdCpanel extends CtrlBase {
     $this->json['project'] = ['title' => 'dummy'];
     $this->json['pageTitle'] = $this->editPageTitle();
     $this->json['layout'] = SdCore::getLayout($this->req['ownPageId']);
-    $this->json['bannerSettings']['size'] = BcCore::getSize($this->d['bannerId']);
+    $this->json['bannerSettings']['size'] = Sd2Core::getSize($this->d['bannerId']);
   }
 
   protected function editPageTitle() {
-    return implode('x', BcCore::getSize($this->d['bannerId']));
+    return implode('x', Sd2Core::getSize($this->d['bannerId']));
   }
 
   static $sizes;
@@ -177,7 +189,7 @@ class CtrlSdCpanel extends CtrlBase {
       $file = $data['data']['imageUrl'];
     }
     list($imageSize['w'], $imageSize['h']) = getimagesize($file);
-    $bannerSize = BcCore::getSize($this->d['bannerId']);
+    $bannerSize = Sd2Core::getSize($this->d['bannerId']);
     $data['data']['size'] = $imageSize;
     $data['data']['position'] = [
 //      'x' => $bannerSize['w'] - $imageSize['w'] - 10,

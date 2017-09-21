@@ -684,6 +684,7 @@ Ngn.sd.BlockB = new Class({
   },
   deleteAction: function() {
     new Ngn.Dialog.Confirm({
+      top: 100,
       onOkClose: function() {
         this.loading(true);
         this._deleteAction();
@@ -1210,7 +1211,7 @@ Ngn.sd.loadData = function(ownPageId, onComplete) {
   Ngn.Request.Iface.loading(true);
   Ngn.sd.blockContainers = {};
   new Ngn.Request.JSON({
-    url: '/cpanel/' + Ngn.sd.bannerId + '/json_get/?adminKey=' + Ngn.adminKey,
+    url: '/cpanel/' + Ngn.sd.bannerId + '/json_get' + Ngn.sd.adminQuery,
     onComplete: function(data) {
       var v, i;
       document.getElement('head title').set('html', data.pageTitle + ' - ' + Ngn.sd.initPageTitle);
@@ -1448,3 +1449,7 @@ Ngn.sd.getBlockIds = function() {
   }
   return ids;
 };
+
+// setTimeout(function() {
+//   Ngn.sd.blocks[1]._settingsAction();
+// }, 500);

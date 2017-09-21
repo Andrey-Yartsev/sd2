@@ -12,7 +12,7 @@ class BannerSettingsCreationForm extends BannerSettingsForm {
   public $createdId;
 
   protected function _update(array $data) {
-    $this->createdId = BcCore::createBanner($data['size'], $data['title']);
+    $this->createdId = Sd2Core::createDocument($data['size'], $data['title']);
   }
 
 }

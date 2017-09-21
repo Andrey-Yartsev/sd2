@@ -1,0 +1,13 @@
+.selectDialog .selectItems .item.selected,
+.selectItems .item:active {
+  background: #454545;
+  border-color: #ccc;
+}
+
+.selectDialog .selectItems .item {
+  border-color: #626262;
+}
+.selectDialog .selectItems .item:hover {
+  border-color: #ccc;
+}
+

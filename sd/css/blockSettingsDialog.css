@@ -1,0 +1,115 @@
+.settingsDialog {
+  width: 200px !important;
+  left: auto !important;
+  top: 0 !important;
+
+  right: 0;
+  padding-top: 63px;
+  background: #414141;
+  height: 100%;
+}
+.settingsDialog .mid-float-box {
+  box-sizing: border-box;
+  border-radius: 0;
+  height: 100%;
+  background: #414141;
+}
+.settingsDialog .md-closer {
+  background-size: auto;
+}
+.settingsDialog .dialog-title {
+  margin: 0;
+  border-radius: 0;
+  background: #3c3c3c;
+  font-size: 12px;
+  text-transform: uppercase;
+  text-align: left;
+  color: #9f9f9f;
+  padding-bottom: 10px;
+}
+.settingsDialog .md-closer {
+  background-image: url(/sd/img/hide-bar.png) !important;
+  background-position: center center;
+  top: 4px;
+}
+.settingsDialog .dialog-message {
+  margin: 0;
+  padding: 0;
+  color: #ccc;
+}
+.settingsDialog .dialog-footer {
+  margin: 0 !important;
+}
+.settingsDialog .move {
+  cursor: default;
+}
+.settingsDialog .btn > span {
+  padding: 0;
+}
+.settingsDialog .btn:hover span {
+  color: #fff;
+}
+.settingsDialog .dialog-footer .foot-wrap {
+  background: #414141 !important;
+}
+.settingsDialog .foot-wrap {
+  padding-right: 20px;
+}
+.settingsDialog .btn i {
+  display: none;
+}
+.settingsDialog .btn i {
+  display: none;
+}
+.settingsDialog .dialogSelect {
+  border-color: #535252;
+  background: #363636;
+}
+.settingsDialog .dialogSelect:hover,
+.settingsDialog .type_color .color:hover {
+  border-color: #9f9f9f;
+}
+.settingsDialog .type_color .color {
+  border-color: #535252;
+  height: 20px;
+}
+/* making these two field stand by columns */
+.settingsDialog .type_color, .settingsDialog .type_fontSize {
+  display: inline-block;
+}
+
+
+.settingsDialog .apeform .element {
+  padding: 5px 10px;
+}
+.settingsDialog .apeform .fieldSet .element {
+  padding: 2px 10px;
+}
+
+.settingsDialog .fieldSet .rowBtns {
+  position: absolute;
+  right: 8px;
+  top: 0;
+  margin-left: 0 !important;
+}
+.settingsDialog .fieldSet .rowBtns button {
+  display: inline-block;
+  padding: 1px;
+}
+
+.settingsDialog .fieldSet .hgrp {
+  position: relative;
+}
+
+.settingsDialog .foot-wrap {
+  border-top: 1px solid #575757;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+.settingsDialog .fieldSet .btn {
+  margin-left: 3px;
+}
+
+.settingsDialog .fieldSet .bottomBtns {
+  padding-left: 3px;
+}

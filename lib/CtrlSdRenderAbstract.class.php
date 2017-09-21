@@ -7,9 +7,11 @@ abstract class CtrlSdRenderAbstract extends CtrlCommon {
   }
 
   protected function render() {
-    $banner = db()->getRow('sdDocuments', $this->req->param(1));
-    if ($banner['userId'] != Auth::get('id')) throw new AccessDenied;
-    return O::di('BcRender', $this->req->param(1))->render();
+    $document = db()->getRow('sdDocuments', $this->req->param(1));
+    if ($document['userId'] != Auth::get('id')) die('AccessDenied');
+    return (new BcRender($this->req->param(1)))->render();
+//    get_class(O::di('BcRender', $this->req->param(1)));
+//    return O::di('BcRender', $this->req->param(1))->render();
   }
 
 }

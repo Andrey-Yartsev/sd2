@@ -3,6 +3,7 @@
 class CtrlSdDownload extends CtrlSdRenderAbstract {
 
   function action_ajax_default() {
+    //die2('-');
     $this->render();
     $this->ajaxOutput = '/download/'.$this->req->param(1).'/get';
   }

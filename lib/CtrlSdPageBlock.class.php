@@ -13,9 +13,17 @@ class CtrlSdPageBlock extends CtrlCommon {
 
   protected $_items;
 
+  protected function documentId() {
+    return $this->req->param(1);
+  }
+
+  protected function blockId() {
+    return $this->req->param(3);
+  }
+
   protected function items() {
     if (isset($this->_items)) return $this->_items;
-    return $this->_items = new SdPageBlockItems($this->req->param(1));
+    return $this->_items = new SdPageBlockItems($this->documentId());
   }
 
   function action_json_getItems() {
@@ -67,7 +75,7 @@ class CtrlSdPageBlock extends CtrlCommon {
     $items = $this->items();
     $name = $items->name;
     $size = getimagesize($this->req->files['file']['tmp_name']);
-    $maxWidth = BcCore::getSize($this->req->param(1))['w'] * 2;
+    $maxWidth = Sd2Core::getSize($this->req->param(1))['w'] * 2;
     if ($size[0] > $maxWidth) {
       $w = $maxWidth;
       $a = $size[0] / $size[1];
@@ -123,42 +131,40 @@ class CtrlSdPageBlock extends CtrlCommon {
 
   function action_json_updateImages() {
     $items = $this->items();
-    $id = $this->req->param(2);
     $n = 0;
-    foreach ($this->req->files['images'] as $v) {
-      $file = Dir::make(UPLOAD_PATH."/{$items->name}/images/$id").'/'.$n.'.jpg';
-      copy($v['tmp_name'], $file);
-      $n++;
+    LogWriter::str('image', getPrr($this->req->files));
+    if (empty($this->req->files['image'])) {
+      $this->error404('no image uploaded');
+      return;
     }
-    $items->updateContent($id, ['n' => $n]);
+    $images = [];
+    foreach ($this->req->files['image'] as $n => $v) {
+      $folder = UPLOAD_PATH."/{$items->name}/images/{$this->blockId()}";
+      $path = '/'.UPLOAD_DIR."/{$items->name}/images/{$this->blockId()}/$n.jpg";
+      Dir::make($folder);
+      $file = "$folder/$n.jpg";
+      copy($v['tmp_name'], $file);
+      $images[$n] = $path;
+    }
+    $currentImages = $items->getItem($this->blockId())['data']['images'];
+    //die2($images);
+    //die2($items->getItem($this->blockId()));
+    foreach ($images as $k => $v) {
+      $currentImages[$k] = $v;
+    }
+    //$images = array_merge($currentImages, $images);
+    //die2($currentImages);
+    //$images = [];
+    $items->update($this->blockId(), ['images' => $currentImages]);
+    // $items->updateContent($this->blockId(), ['n' => $n]);
   }
 
-  function action_ajax_updateGlobal() {
-    $this->items()->updateGlobal($this->req->param(2), $this->req->params[3]);
-  }
-
-  function action_ajax_updateSeparateContent() {
-    $this->items()->updateSeparateContent($this->req->param(2), $this->req->params[3]);
+  function action_json_imageMultiUpload() {
+    $this->action_json_updateImages();
   }
 
   function action_json_updateOrder() {
     $this->items()->updateOrder(array_flip($this->req['ids']));
-  }
-
-//  function action_json_undo() {
-//    if (($r = $this->items()->undo()) === false) {
-//      $this->json['act'] = false;
-//      return;
-//    }
-//    $this->json = $r;
-//  }
-
-  function action_json_redo() {
-    if (($r = $this->items()->redo()) === false) {
-      $this->json['act'] = false;
-      return;
-    }
-    $this->json = $r;
   }
 
 }

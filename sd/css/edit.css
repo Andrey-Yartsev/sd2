@@ -296,7 +296,7 @@ border: 1px solid rgba(255, 255, 255, 0.2);
 border-color: rgba(255, 255, 255, 0.5);
 }
 .block.active {
-border-color: #f00;
+border-color: #00AEEF;
 }
 .dragBox {
 width: 15px;
@@ -383,7 +383,7 @@ white-space: nowrap;
 clear: both;
 }
 .element.type_fontFamilyCufon .dialogSelect {
-width: 185px;
+width: 100%;
 }
 .dialogSelect {
 overflow: hidden;
@@ -513,7 +513,9 @@ pointer-events: none;
 background: #fff;
 opacity: 1;
 }
-.preview #layers, .preview #panel {
+.preview #layers,
+.preview #panel,
+.preview .bannerBarWrapper {
 visibility: hidden;
 }
 .contentOverlayBorder {
@@ -603,8 +605,23 @@ background-position: -17px 1px;
 .smIcons.cleanup i {
 background-position: -34px 1px;
 }
+.smIcons.cleanup {
+margin-top: -5px;
+}
 #layers .btns .smIcons {
 margin-top: 7px;
+}
+button.smIcons {
+border: 0;
+background-color: transparent;
+border-radius: 3px;
+}
+button.smIcons:hover {
+background-color: #212121 ;
+}
+button.smIcons i {
+margin: 2px;
+margin-right: 2px !important;
 }
 #layers .btns .smIcons.dummy {
 width: 13px;
@@ -696,53 +713,8 @@ border-color: #555;
 padding: 50px;
 }
 /*=======================*/
-.settingsDialog {
-width: 200px !important;
-left: auto !important;
-right: -15px !important;
-top: 0 !important;
-padding-top: 63px;
-height: 100%;
-}
-.settingsDialog .mid-float-box {
-box-shadow: none !important;
-border-radius: 0 !important;
-border: 0 !important;
-background: none !important;
-height: 100%;
-background: #414141 !important;
-}
-.settingsDialog .dialog-title {
-margin: 0 !important;
-border-radius: 0 !important;
-background: #3c3c3c !important;
-height: 33px;
-font-size: 12px;
-text-transform: uppercase;
-padding: 0 !important;
-color: #9f9f9f;
-}
-.settingsDialog .md-title-text {
-border-bottom: none !important;
-padding-top: 10px;
-}
-.settingsDialog .md-closer {
-background-image: url(/sd/img/hide-bar.png) !important;
-background-position: center center;
-top: 4px;
-}
-.settingsDialog .dialog-message {
-margin: 0 !important;
-background: #414141 !important;
-color: #ccc;
-}
-.settingsDialog .dialog-footer {
-margin: 0 !important;
-}
-.settingsDialog .move {
-cursor: default;
-}
-.settingsDialog .btn {
+.dialog .btn {
+cursor: pointer;
 border-radius: 2px;
 background: #535252;
 color: #ccc;
@@ -750,45 +722,10 @@ text-transform: uppercase;
 padding: 3px 10px;
 border: none;
 }
-.settingsDialog .btn > span {
-padding: 0;
-}
-.settingsDialog .btn:hover:not(.nonActive):not(.pushed):not(:active):not(:disabled),b.btn {
+.dialog .btn:hover:not(.nonActive):not(.pushed):not(:active):not(:disabled),b.btn {
 color: #fff;
 background: #00AEEF;
 }
-.settingsDialog .btn:hover span {
-color: #fff;
-}
-.settingsDialog .dialog-footer .foot-wrap {
-background: #414141 !important;
-}
-.settingsDialog .foot-wrap {
-padding-right: 20px;
-}
-.settingsDialog .btn i {
-display: none;
-}
-.settingsDialog .btn i {
-display: none;
-}
-.settingsDialog .dialogSelect {
-border-color: #535252;
-background: #363636;
-}
-.settingsDialog .dialogSelect:hover,
-.settingsDialog .type_color .color:hover {
-border-color: #9f9f9f;
-}
-.settingsDialog .type_color .color {
-border-color: #535252;
-height: 20px;
-}
-/* making these two field stand by columns */
-.settingsDialog .type_color, .settingsDialog .type_fontSize {
-display: inline-block;
-}
-
 .apeform .checkbox {
 cursor: pointer;
 }
@@ -899,43 +836,11 @@ background-position: -171px 0;
 background-position: -188px 0;
 }
 
-.settingsDialog .fieldSet .element {
-float: left;
-width: 184px;
-}
-.settingsDialog .bottomBtns {
-padding: 10px 5px;
-}
-
 .fieldSet .element input[type=text] {
 width: 160px;
 }
 .apeform .colSet {
 display: block;
-}
-
-.settingsDialog .fieldSet .rowBtns {
-position: absolute;
-right: 8px;
-top: 6px;
-margin-left: 0 !important;
-}
-.settingsDialog .fieldSet .rowBtns button {
-display: inline-block;
-padding: 1px;
-}
-
-.settingsDialog .fieldSet .hgrp {
-width: 100%;
-position: relative;
-}
-.settingsDialog .foot-wrap {
-border-top: 1px solid #575757;
-margin-top: 10px;
-padding-top: 10px;
-}
-.settingsDialog .fieldSet .btn {
-margin-left: 3px;
 }
 
 a:hover.iconBtn, a.over.iconBtn {

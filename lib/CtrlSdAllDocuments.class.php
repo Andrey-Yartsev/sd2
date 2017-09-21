@@ -1,6 +1,11 @@
 <?php
 
-class CtrlSdAllBanners extends CtrlBase {
+class CtrlSdAllDocuments extends CtrlBase {
+  use SdPersonalCtrl;
+
+  protected function init() {
+    $this->initAuth();
+  }
 
   function action_json_default() {
     $this->json['banners'] = [];

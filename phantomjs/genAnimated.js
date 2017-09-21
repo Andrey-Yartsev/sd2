@@ -15,25 +15,30 @@ if (!args[3]) {
   phantom.exit();
 }
 if (!args[4]) {
-  console.log('Frames count (param #4) is not defined');
+  console.log('User ID (param #4) is not defined');
   phantom.exit();
 }
 if (!args[5]) {
-  console.log('Render key (param #5) is not defined');
+  console.log('Frames count (param #5) is not defined');
   phantom.exit();
 }
 if (!args[6]) {
-  console.log('projectPath (param #6) is not defined');
+  console.log('Admin key (param #6) is not defined');
+  phantom.exit();
+}
+if (!args[7]) {
+  console.log('projectPath (param #7) is not defined');
   phantom.exit();
 }
 
 var projectName = args[1];
 var domain = args[2];
 var bannerId = args[3];
-var framesCount = args[4];
-var adminKey = args[5];
-var projectPath = args[6];
-var cufonBlocksNumber = args[7];
+var userId = args[4];
+var framesCount = args[5];
+var adminKey = args[6];
+var projectPath = args[7];
+var cufonBlocksNumber = args[8];
 
 var currentFrame = 0;
 var timeoutId;
@@ -44,8 +49,13 @@ page.viewportSize = {
 };
 
 function log(s) {
-  //console.log(s);
+  console.log(s);
 }
+
+// UNCOMMENT FOR DEBUG
+page.onConsoleMessage = function(msg, lineNum, sourceId) {
+  log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
+};
 
 var render = function(descr, callNumber) {
   //log('try ' + descr + " (" + new Date().getSeconds() + ':' + new Date().getMilliseconds() + ") [" + callNumber + "]");
@@ -61,6 +71,10 @@ var render = function(descr, callNumber) {
     }
   }, 500);
 };
+
+// setTimeout(function() {
+//   phantom.exit();
+// }, 2000);
 
 var cufonBlocksExists = parseInt(cufonBlocksNumber) ? true : false;
 var callNumber = 0;
@@ -78,6 +92,13 @@ page.onCallback = function(data) {
   }
 };
 
-log('http://' + domain + '/cpanel/' + bannerId + '?adminKey=' + adminKey + '#preview');
-page.open('http://' + domain + '/cpanel/' + bannerId + '?adminKey=' + adminKey + '#preview');
-//page.open('http://' + domain + '/sd/1.html');
+log('http://' + domain + '/cpanel/' + bannerId + //
+  '?adminKey=' + adminKey + //
+  '&userId=' + userId + //
+  '#preview');
+
+page.open('http://' + domain + '/cpanel/' + bannerId + //
+  '?adminKey=' + adminKey + //
+  '&userId=' + userId + //
+  '#preview');
+

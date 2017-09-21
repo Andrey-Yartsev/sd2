@@ -96,10 +96,12 @@ Ngn.sd.LayersBar = new Class({
   getTitle: function(item) {
     if (item.data.subType == 'image') {
       return '<span class="ico 1">' + item._data.html + '</span>' + Ngn.String.ucfirst(item.data.type);
-    } else if (item.data.type == 'text') {
+    } else if (item.data.subType == 'text') {
       return '<span class="ico 2">' + '<img src="/sd/img/font.png"></span>' + //
       '<span class="text">' + (item._data.html ? item._data.html : 'empty') + '</span>'
     } else {
+      console.log('unsupported');
+      console.log(item);
       return '<span class="ico"></span>unsupported';
     }
   },

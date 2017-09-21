@@ -2,12 +2,9 @@
 
 class SdPageBlockItems extends SdContainerItems {
 
-  public $name;
-
-  protected $ownPageId = 1, $bannerId;
+  public $name, $ownPageId = 1, $bannerId;
 
   function __construct($bannerId) {
-    //DbModelCore::get('');
     Misc::checkEmpty($bannerId);
     $this->bannerId = $bannerId;
     $this->name = 'sd/pageBlocks/'.$bannerId;
@@ -75,12 +72,12 @@ class SdPageBlockItems extends SdContainerItems {
   function update($id, array $data) {
     if (empty($data['images']) and !$this->dataHasChanged($id, $data)) return;
     $r = $this->getItem($id);
-    $r2 = $r->r;
-    $r2['data'] = serialize($r2['data']);
-    $r2['act'] = 'update';
-    $r2['blockId'] = $r2['id'];
-    unset($r2['id']);
-    if (empty($r2['content'])) $r2['content'] = '';
+    $currentData = $r->r;
+    $currentData['data'] = serialize($currentData['data']);
+    $currentData['act'] = 'update';
+    $currentData['blockId'] = $currentData['id'];
+    unset($currentData['id']);
+    if (empty($currentData['content'])) $currentData['content'] = '';
     $this->_update($id, $data);
   }
 
@@ -149,7 +146,7 @@ class SdPageBlockItems extends SdContainerItems {
 
   function getItem($id) {
     if (($item = parent::getItem($id)) === false) throw new EmptyException("id=$id");
-    if (!isset($item['data']['type'])) throw new Exception("no type in block $id");
+    if (!isset($item['data']['type'])) throw new Exception("no type in block $id. ".getPrr($item));
     return SdPageBlockItem::factory($item, $this->bannerId);
   }
 

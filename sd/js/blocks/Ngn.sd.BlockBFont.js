@@ -13,6 +13,11 @@ Ngn.sd.BlockBFont = new Class({
         this.data.font.fontSize = size;
         this.updateCufon();
       }.bind(this),
+      onChangeShadow: function(shadow) {
+        if (!this.data.font) this.data.font = {};
+        this.data.font.shadow = shadow;
+        this.updateCufon();
+      }.bind(this),
       onChangeColor: function(color) {
         if (!this.data.font) this.data.font = {};
         this.data.font.color = color;
