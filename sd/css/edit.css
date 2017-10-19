@@ -497,8 +497,7 @@ height: 10px;
 /*===============================================*/
 
 #layout1 {
-margin-top: 100px;
-
+/* margin-top: 100px; */
 }
 .contentOverlay {
 position: absolute;
@@ -677,7 +676,6 @@ margin-right: 10px;
 display: inline-block;
 width: 25px;
 height: 25px;
-background: #7C7D7F;
 vertical-align: middle;
 text-align: center;
 }
@@ -942,7 +940,6 @@ border-color: #ccc;
 
 .bannerBar .item.selected {
 border-color: #00AEEF;
-
 }
 .bannerBar .item:hover img,
 .bannerBar .item:hover div {
@@ -961,4 +958,16 @@ color: #ccc;
 font-size: 12px;
 padding: 3px  4px;
 box-sizing: border-box;
+}
+
+.dialog .iconsSet.fileNav .iconBtn {
+    margin: 0 !important;
+}
+.type_image .iconsSet a {
+margin: 0 !important;
+}
+
+.dialog-confirm .dialog-message {
+  padding: 20px;
+  font-size: 20px;
 }

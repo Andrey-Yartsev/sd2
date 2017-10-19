@@ -15,6 +15,12 @@ Ngn.sd.BlockBAnimatedImage = new Class({
   },
   hasAnimation: function() {
     return this.data.images && this.data.images.length > 1;
+  },
+  toolbarImageIcon: function() {
+    if (!this._data.data.images || !this._data.data.images.length) {
+      return '';
+    }
+    return '<img src="' + this._data.data.images[0] + '">';
   }
 });
 

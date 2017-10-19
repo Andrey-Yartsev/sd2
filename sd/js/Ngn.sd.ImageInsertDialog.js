@@ -8,7 +8,7 @@ Ngn.sd.ImageInsertDialog = new Class({
     height: 300,
     //url: 'ajax_select',
     //createUrl: 'ajax_select',
-    dialogClass: 'dialog-images',
+    dialogClass: 'dialog dialog-images',
     createImageJsonAction: 'createImageBlock',
     onRequest: function() {
       this.initImages();

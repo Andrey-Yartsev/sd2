@@ -3,7 +3,7 @@
   background: #282828;
   color: #ccc;
   border-radius: 3px;
-  box-shadow: 0 0 50px #555;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 input[type=text].active,
 input[type=password].active {

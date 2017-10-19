@@ -1,10 +1,10 @@
 <?php
 
-class BannerSettingsCreationForm extends BannerSettingsForm {
+class DocumentSettingsCreationForm extends BannerSettingsForm {
 
   protected function defineOptions() {
     return array_merge(parent::defineOptions(), [
-        'title'       => 'Create banner...',
+        'title'       => Locale::get('newDocument', 'sd'),
         'submitTitle' => 'Create'
       ]);
   }

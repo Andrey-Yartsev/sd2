@@ -10,6 +10,12 @@ Ngn.sd.BlockBAnimatedText = new Class({
   Extends: Ngn.sd.BlockBFont,
   hasAnimation: function() {
     return this.data.font && this.data.font.text && this.data.font.text.length > 1;
+  },
+  toolbarTextTitle: function() {
+    if (this._data.data.font && this._data.data.font.text && this._data.data.font.text.length) {
+      return this._data.data.font.text[0];
+    }
+    return 'empty';
   }
 });
 

@@ -131,7 +131,6 @@ class CtrlSdPageBlock extends CtrlCommon {
 
   function action_json_updateImages() {
     $items = $this->items();
-    $n = 0;
     LogWriter::str('image', getPrr($this->req->files));
     if (empty($this->req->files['image'])) {
       $this->error404('no image uploaded');
@@ -146,21 +145,31 @@ class CtrlSdPageBlock extends CtrlCommon {
       copy($v['tmp_name'], $file);
       $images[$n] = $path;
     }
-    $currentImages = $items->getItem($this->blockId())['data']['images'];
-    //die2($images);
-    //die2($items->getItem($this->blockId()));
+    $data = $items->getItem($this->blockId())['data'];
+    if (isset($data['images'])) {
+      $currentImages = $data['images'];
+    } else {
+      $currentImages = [];
+    }
     foreach ($images as $k => $v) {
       $currentImages[$k] = $v;
     }
-    //$images = array_merge($currentImages, $images);
-    //die2($currentImages);
-    //$images = [];
-    $items->update($this->blockId(), ['images' => $currentImages]);
-    // $items->updateContent($this->blockId(), ['n' => $n]);
+    $items->update($this->blockId(), [
+      'images' => array_values($currentImages)
+    ]);
   }
 
   function action_json_imageMultiUpload() {
     $this->action_json_updateImages();
+  }
+
+  function action_json_deleteImage() {
+    $items = $this->items();
+    $currentImages = $items->getItem($this->blockId())['data']['images'];
+    unset($currentImages[$this->req->param(4)]);
+    $items->update($this->blockId(), [
+      'images' => array_values($currentImages)
+    ]);
   }
 
   function action_json_updateOrder() {

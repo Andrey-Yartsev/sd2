@@ -17,7 +17,7 @@ Ngn.sd.BackgroundInsertDialog = new Class({
     id: 'background',
     title: 'Insert background',
     okText: 'Insert',
-    dialogClass: 'dialog-images',
+    dialogClass: 'dialog dialog-images',
     onRequest: function() {
       this.initImages();
     },

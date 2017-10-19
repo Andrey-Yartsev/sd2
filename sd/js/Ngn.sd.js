@@ -847,6 +847,27 @@ Ngn.sd.BlockB = new Class({
   },
   canEdit: function() {
     return true;
+  },
+  toolbarImageTitle: function() {
+    return Ngn.String.ucfirst(this.data.type);
+  },
+  toolbarImageIcon: function() {
+    return this._data.html;
+  },
+  toolbarTextTitle: function() {
+    return this._data.html ? this._data.html : 'empty';
+  },
+  toolbarHtml: function() {
+    if (this.data.subType == 'image') {
+      return '<span class="ico 1">' + this.toolbarImageIcon() + '</span>' + this.toolbarImageTitle();
+    } else if (this.data.subType == 'text') {
+      return '<span class="ico 2">' + '<img src="/sd/img/font.png"></span>' + //
+        '<span class="text">' + this.toolbarTextTitle() + '</span>'
+    } else {
+      console.log('unsupported');
+      console.log(item);
+      return '<span class="ico"></span>unsupported';
+    }
   }
 });
 

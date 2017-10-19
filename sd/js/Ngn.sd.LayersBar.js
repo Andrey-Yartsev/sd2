@@ -94,16 +94,7 @@ Ngn.sd.LayersBar = new Class({
     }.bind(this));
   },
   getTitle: function(item) {
-    if (item.data.subType == 'image') {
-      return '<span class="ico 1">' + item._data.html + '</span>' + Ngn.String.ucfirst(item.data.type);
-    } else if (item.data.subType == 'text') {
-      return '<span class="ico 2">' + '<img src="/sd/img/font.png"></span>' + //
-      '<span class="text">' + (item._data.html ? item._data.html : 'empty') + '</span>'
-    } else {
-      console.log('unsupported');
-      console.log(item);
-      return '<span class="ico"></span>unsupported';
-    }
+    return item.toolbarHtml();
   },
   canEdit: function(item) {
     return Ngn.sd.blocks[item._data.id].canEdit();
